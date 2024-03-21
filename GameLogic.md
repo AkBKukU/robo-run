@@ -29,6 +29,8 @@ The main background will be space with stars.
 
 At the top and bottom of the screen, tiles representing a floor and ceiling will be able to encroach on the area the player can move. Touching one of these will damage the player and bounce them away from the direction they hit. There will be a minimum required distance from the floor and ceiling that will decrease as the player score increases. This will add difficulty. The floor and ceiling will be able to randomly move up and down but be slightly more likely to move towards the center of the screen.
 
+The main set of scenery tiles will not all be visible and will change each time the boss is defeated.
+
 A separate layer of decorative background objects like galaxies, space debris, or dust may be added for visual distinction.
 
 ### Boss Enemy
@@ -44,4 +46,4 @@ The boss will have different forms each time it is encountered to add to its thr
 6. All attacks at once with random rolls
 
 
-Defeating the boss will instantly push the floor and ceiling away from the center giving the feeling of moving on to a new space. Scenery tiles will have their accent colors adjusted. The decorative background will also change if it is available.
+Defeating the boss will instantly push the floor and ceiling away from the center giving the feeling of moving on to a new space. The random number seed should be reset using the base seed and a counter of bosses defeated. This will create the feeling of "levels" that can be played again despite each one being variable length. Scenery tiles will have their accent colors adjusted. The decorative background will also change if it is available.
