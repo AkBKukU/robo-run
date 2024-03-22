@@ -17,15 +17,15 @@ u32 key;
 
 ERAPI_BACKGROUND background =
 {
-  mapTiles,
+  starsTiles,
   mapSharedPal,
-  mapMap,
-  sizeof( mapTiles) >> 5,
+  starsMap,
+  sizeof( starsTiles) >> 5,
   1
 };
 
 
-unsigned short mapslide[mapMapLen/2];
+unsigned short mapslide[BACK_X*BACK_Y];
 
 
 u8 color_loop=1;
@@ -36,7 +36,7 @@ static inline void init()
 	{
 		for(u8 y=0;y<BACK_Y;++y)
 		{
-			mapslide[ (x) + (y * BACK_Y) ] = mapMap[ (x) + (y * BACK_Y)];
+			mapslide[ (x) + (y * BACK_Y) ] = starsMap[ (x) + (y * BACK_Y)];
 		}
 	}
 
@@ -59,19 +59,35 @@ void slide_map()
 		}
 	}
 
-	color_loop = ERAPI_Rand()*(u32)11;
-	u32 max = -1;
+
 	for(u8 y=0;y<BACK_Y;++y)
 	{
-		mapslide[ (31) + (y * BACK_X) ] = ERAPI_Mod(ERAPI_Rand() , 11) ;
+
+		u8 star_rand = ERAPI_Mod(ERAPI_Rand() , 30);
+		u8 star=0;
+
+		switch(star_rand)
+		{
+			case 1:
+				star=1;
+				break;
+			case 2:
+				star=2;
+				break;
+			case 3:
+				star=3;
+				break;
+		}
+
+		mapslide[ (31) + (y * BACK_X) ] = star ;
 	}
 
 	ERAPI_BACKGROUND slide =
 	{
-		mapTiles,
+		starsTiles,
 		mapSharedPal,
 		mapslide,
-		sizeof( mapTiles) >> 5,
+		sizeof( starsTiles) >> 5,
 		1
 	};
 
