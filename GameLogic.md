@@ -47,3 +47,47 @@ The boss will have different forms each time it is encountered to add to its thr
 
 
 Defeating the boss will instantly push the floor and ceiling away from the center giving the feeling of moving on to a new space. The random number seed should be reset using the base seed and a counter of bosses defeated. This will create the feeling of "levels" that can be played again despite each one being variable length. Scenery tiles will have their accent colors adjusted. The decorative background will also change if it is available.
+
+
+
+## Technical Game Details
+
+### Background Layers
+
+There are four layers available, all will be used for this game:  
+
+1. Boss Ship
+2. Tunnel
+3. Decorations
+4. Stars
+
+### Sprites
+
+1. Enemy: light
+2. Enemy: medium
+3. Enemy: heavy
+4. Player
+5. Explosion
+6. Projectile
+7. Laser
+
+
+### Entity Data
+
+- Health
+- Firing cooldown (should init with random value)
+- Path `t` position
+- Path formula
+- X/Y Postion
+- X/Y Spawn Position (this can be used to make paths dynamic)
+
+
+## Game Logic
+
+Entity update loop:
+
+1. Look for collison in player projectile table
+2. Increment `t` position
+3. Check if end of path
+4. Apply path formula to X/Y
+5. Check cooldown to fire
