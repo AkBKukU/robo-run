@@ -75,7 +75,8 @@ build/crt0.o : ../../lib/crt0.s
 
 # Graphics
 gfx/gfx.c :
-	$(GRIT) gfx/*.png -pS -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
+	$(GRIT) gfx/player.tga gfx/emy-0-light.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
+#	$(GRIT) -pS -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
 
 map/map.c :
 	$(GRIT) map/*.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map

@@ -4,16 +4,40 @@
 #include "gfx/gfx.h"
 #include "map/map.h"
 
+struct enemy_data
+{
+	u8 x;
+	u8 y;
+	u8 health;
+	u8 t;
+	u8 movement;
+	u8 x_spawn;
+	u8 y_spawn;
+	u8 type;
+	u8 cooldown;
+};
+
+u8 enemy_live=2;
+#define ENEMY_MAX 2
+struct enemy_data manger_enemy[ENEMY_MAX];
+
+ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
+ERAPI_HANDLE_SPRITE h_player;
+
+ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 1, 4, 8, 8, 1};
+ERAPI_HANDLE_SPRITE h_enemy_light[ENEMY_MAX];
+
 ERAPI_HANDLE_REGION chooser;
 extern int __end[];
 
 const u16 palette[] = { 0x0000, 0xFFFF };
 
-u8 sysexit = 0, win = 0;
+u8 sysexit = 0, win = 0, px=160,py=80;
+s8 vertical_offset = 16;
 u32 key;
 
 #define BACK_X 32
-#define BACK_Y 20
+#define BACK_Y 24
 
 ERAPI_BACKGROUND background =
 {
@@ -29,6 +53,46 @@ unsigned short mapslide[BACK_X*BACK_Y];
 
 
 u8 color_loop=1;
+
+static inline void player_move(s8 x, s8 y)
+{
+	px+=x;
+	py+=y;
+	if (px < 16) px = 16;
+	if (px > 240-16) px = 240-16;
+	if (py < 8) py = 8;
+	if (py > 160-8) py = 160-8;
+
+	vertical_offset = ERAPI_Div(py,5);
+
+	ERAPI_SetSpritePos( h_player, px, py);
+}
+
+static inline void enemy_update()
+{
+	for ( u8 i = 0; i < enemy_live; ++i )
+	{
+		ERAPI_SetSpritePos(
+			h_enemy_light[i],
+			manger_enemy[i].x,
+			manger_enemy[i].y-vertical_offset
+		);
+
+	}
+}
+
+static inline void player_control()
+{
+	key = ERAPI_GetKeyStateRaw();
+	s8 dir_x = 0, dir_y = 0;
+	if (key & ERAPI_KEY_UP)  dir_y = -1;
+	if (key & ERAPI_KEY_DOWN)  dir_y = 1;
+	if (key & ERAPI_KEY_LEFT) dir_x = -1;
+	if (key & ERAPI_KEY_RIGHT) dir_x = 1;
+	player_move(dir_x,dir_y);
+
+}
+
 
 static inline void init()
 {
@@ -46,6 +110,27 @@ static inline void init()
 	ERAPI_SetBackgroundPalette( &palette[0], 0x00, 0x04);
 	ERAPI_LoadBackgroundCustom( 3, &background);
 	ERAPI_SetBackgroundOffset(3,8,0);
+
+	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
+	ERAPI_SetSpritePos( h_player, px, py);
+
+
+	h_enemy_light[0] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+	h_enemy_light[1] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+
+	manger_enemy[0].x=px+60;
+	manger_enemy[0].y=py;
+	manger_enemy[0].health=1;
+	manger_enemy[0].t=0;
+	manger_enemy[0].movement=0;
+	manger_enemy[0].x_spawn=0;
+	manger_enemy[0].y_spawn=0;
+	manger_enemy[0].type=0;
+	manger_enemy[0].cooldown=0;
+
+	manger_enemy[1].x=px+60;
+	manger_enemy[1].y=py+32;
+
 	ERAPI_FadeIn( 1);
 }
 
@@ -92,7 +177,7 @@ void slide_map()
 	};
 
 	ERAPI_LoadBackgroundCustom( 3, &slide);
-	ERAPI_SetBackgroundOffset(3,8,0);
+	ERAPI_SetBackgroundOffset(3,8,vertical_offset);
 	ERAPI_FadeIn( 1);
 }
 
@@ -106,12 +191,14 @@ int main()
 	while (sysexit == 0)
 	{
 		++background_loop;
-		ERAPI_SetBackgroundOffset(3,background_loop,0);
+		ERAPI_SetBackgroundOffset(3,background_loop,vertical_offset);
 		if (background_loop > 16)
 		{
 			background_loop=8;
 			slide_map();
 		}
+		player_control();
+		enemy_update();
 		ERAPI_RenderFrame(1);
 	}
 
