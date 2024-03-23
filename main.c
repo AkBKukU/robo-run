@@ -39,6 +39,7 @@ u32 key;
 #define BACK_X 32
 #define BACK_Y 24
 
+
 ERAPI_BACKGROUND background =
 {
   starsTiles,
@@ -77,6 +78,23 @@ static inline void enemy_update()
 			manger_enemy[i].x,
 			manger_enemy[i].y-vertical_offset
 		);
+
+	}
+}
+
+static inline void player_hit_detect()
+{
+	for ( u8 i = 0; i < enemy_live; ++i )
+	{
+		if (ERAPI_CalcDistanceBetweenPoints(
+			manger_enemy[i].x, manger_enemy[i].y,
+			px, py
+
+		) < 16)
+		{
+		px=10;
+		ERAPI_SpriteHide( h_player);
+		}
 
 	}
 }
@@ -199,6 +217,7 @@ int main()
 		}
 		player_control();
 		enemy_update();
+		player_hit_detect();
 		ERAPI_RenderFrame(1);
 	}
 
