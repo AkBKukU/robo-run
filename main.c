@@ -123,7 +123,7 @@ static inline void player_move(s8 x, s8 y)
 	if (px < 16) px = 16;
 	if (px > 240-16) px = 240-16;
 	if (py < 8) py = 8;
-	if (py > 160-8) py = 160-8;
+	if (py > 164-8) py = 164-8;
 
 	vertical_offset = ERAPI_Div(py,5);
 
@@ -163,6 +163,20 @@ static inline void player_hit_detect()
 		{
 			u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
 			if (dist < 10)	player_bounce(angle);
+		}
+	}
+
+	// Check tunnel hit
+	u8 tile=tunnelslide[(px-tunnel_offset)/8+1+(((py+(vertical_offset)-2)/8)*BACK_X)];
+	if (tile)
+	{
+		if (py > 80)
+		{
+			fy=-10;
+
+		}else{
+			fy=10;
+
 		}
 	}
 
