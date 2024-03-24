@@ -4,8 +4,17 @@
 #include "gfx/gfx.h"
 #include "map/map.h"
 
+extern int __end[];
+const u16 palette[] = { 0x0000, 0xFFFF };
+
+#define ENEMY_MAX 32
+
+#define BACK_X 32
+#define BACK_Y 24
+
 struct enemy_data
 {
+	u8 live;
 	u8 x;
 	u8 y;
 	u8 health;
@@ -18,7 +27,6 @@ struct enemy_data
 };
 
 u8 enemy_live=2;
-#define ENEMY_MAX 2
 struct enemy_data manger_enemy[ENEMY_MAX];
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
@@ -27,33 +35,13 @@ ERAPI_HANDLE_SPRITE h_player;
 ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_enemy_light[ENEMY_MAX];
 
-ERAPI_HANDLE_REGION chooser;
-extern int __end[];
-
-const u16 palette[] = { 0x0000, 0xFFFF };
 
 u8 sysexit = 0, win = 0, px=160,py=80;
 s8 vertical_offset = 16;
 u32 key;
 
-#define BACK_X 32
-#define BACK_Y 24
-
-
-ERAPI_BACKGROUND background =
-{
-  starsTiles,
-  mapSharedPal,
-  starsMap,
-  sizeof( starsTiles) >> 5,
-  1
-};
-
-
 unsigned short mapslide[BACK_X*BACK_Y];
 
-
-u8 color_loop=1;
 
 static inline void player_move(s8 x, s8 y)
 {
@@ -71,32 +59,34 @@ static inline void player_move(s8 x, s8 y)
 
 static inline void enemy_update()
 {
-	for ( u8 i = 0; i < enemy_live; ++i )
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
+		if (!manger_enemy[i].live) continue;
+
 		ERAPI_SetSpritePos(
 			h_enemy_light[i],
 			manger_enemy[i].x,
 			manger_enemy[i].y-vertical_offset
 		);
-
 	}
 }
 
 static inline void player_hit_detect()
 {
-	for ( u8 i = 0; i < enemy_live; ++i )
+	// Check for contact with any enemies
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
+		if (!manger_enemy[i].live) continue;
 		if (ERAPI_CalcDistanceBetweenPoints(
 			manger_enemy[i].x, manger_enemy[i].y,
 			px, py
-
-		) < 16)
+			) < 16)
 		{
-		px=10;
 		ERAPI_SpriteHide( h_player);
 		}
 
 	}
+	// TODO Check for hit against projectiles
 }
 
 static inline void player_control()
@@ -118,7 +108,7 @@ static inline void init()
 	{
 		for(u8 y=0;y<BACK_Y;++y)
 		{
-			mapslide[ (x) + (y * BACK_Y) ] = starsMap[ (x) + (y * BACK_Y)];
+			mapslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
 
@@ -126,49 +116,45 @@ static inline void init()
 	ERAPI_InitMemory( (ERAPI_RAM_END - (u32)__end) >> 10);
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( &palette[0], 0x00, 0x04);
-	ERAPI_LoadBackgroundCustom( 3, &background);
 	ERAPI_SetBackgroundOffset(3,8,0);
 
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, px, py);
 
-
-	h_enemy_light[0] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
-	h_enemy_light[1] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
-
+	// Initialize enemy structs
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
+	{
+		manger_enemy[i].x = 0;
+		manger_enemy[i].y = 0;
+		manger_enemy[i].live = 0;
+		h_enemy_light[i] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+	}
 	manger_enemy[0].x=px+60;
 	manger_enemy[0].y=py;
-	manger_enemy[0].health=1;
-	manger_enemy[0].t=0;
-	manger_enemy[0].movement=0;
-	manger_enemy[0].x_spawn=0;
-	manger_enemy[0].y_spawn=0;
-	manger_enemy[0].type=0;
-	manger_enemy[0].cooldown=0;
+	manger_enemy[0].live=1;
 
 	manger_enemy[1].x=px+60;
 	manger_enemy[1].y=py+32;
+	manger_enemy[1].live=1;
 
 	ERAPI_FadeIn( 1);
 }
 
 void slide_map()
 {
-	for(u8 x=1;x<BACK_X;++x)
-	{
-		for(u8 y=0;y<BACK_Y;++y)
-		{
-			mapslide[ (x-1) + (y * BACK_X) ] = mapslide[ (x) + (y * BACK_X)];
-		}
-	}
-
-
+	// Shift background tile map
+	for(u8 x=1;x<BACK_X;++x){
 	for(u8 y=0;y<BACK_Y;++y)
 	{
+		mapslide[ (x-1) + (y * BACK_X) ] = mapslide[ (x) + (y * BACK_X)];
+	}}
 
+	// Set off screen tiles to random star tile
+	for(u8 y=0;y<BACK_Y;++y)
+	{
 		u8 star_rand = ERAPI_Mod(ERAPI_Rand() , 30);
+		// Limit amount of stars that are not blank
 		u8 star=0;
-
 		switch(star_rand)
 		{
 			case 1:
@@ -185,6 +171,7 @@ void slide_map()
 		mapslide[ (31) + (y * BACK_X) ] = star ;
 	}
 
+	// Apply new background
 	ERAPI_BACKGROUND slide =
 	{
 		starsTiles,
@@ -202,10 +189,9 @@ void slide_map()
 int main()
 {
 	init();
+
 	// Main Loop
-	u8 delay=0;
 	u8 background_loop=8;
-	ERAPI_LoadBackgroundCustom( 3, &background);
 	while (sysexit == 0)
 	{
 		++background_loop;
