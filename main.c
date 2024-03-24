@@ -14,9 +14,20 @@ const u16 palette[] = { 0x0000, 0xFFFF };
 
 #define PLAYER_BUMP_FORCE 8
 
-#define  SPRITE_PLAYER 0
-#define  SPRITE_ENEMY 1
-#define  SPRITE_PROJECTILE 2
+#define SPRITE_PLAYER 0
+#define SPRITE_ENEMY 1
+#define SPRITE_PROJECTILE 2
+
+#define STAR_SPEED 4
+u8 stars_offset = 0;
+u8 stars_offset_frames = 0;
+
+#define TUNNEL_SPEED 1
+u8 tunel_offset = 0;
+#define TUNNEL_TILE_GROUP 4
+#define TUNNEL_TILE_GROUP_COUNT 4
+#define TUNNEL_HEIGHT_MIN 8
+#define TUNNEL_HEIGHT_START 12
 
 ERAPI_HANDLE_REGION score_print;
 
@@ -48,6 +59,7 @@ u8 sysexit = 0, win = 0, px=160,py=80;
 s8 vertical_offset = 16, fx=-10,fy=0;
 u32 key;
 
+unsigned short mapslide[BACK_X*BACK_Y];
 unsigned short mapslide[BACK_X*BACK_Y];
 
 // A utility function to reverse a string
@@ -229,8 +241,17 @@ static inline void init()
 	ERAPI_FadeIn( 1);
 }
 
-void slide_map()
+void slide_stars()
 {
+	++stars_offset_frames;
+	if(ERAPI_Mod(stars_offset_frames, STAR_SPEED)==0) ++stars_offset;
+	ERAPI_SetBackgroundOffset(3,stars_offset,vertical_offset);
+	if (stars_offset <= 16)
+	{
+		return;
+	}
+	stars_offset=8;
+
 	// Shift background tile map
 	for(u8 x=1;x<BACK_X;++x){
 	for(u8 y=0;y<BACK_Y;++y)
@@ -280,16 +301,9 @@ int main()
 	init();
 
 	// Main Loop
-	u8 background_loop=8;
 	while (sysexit == 0)
 	{
-		++background_loop;
-		ERAPI_SetBackgroundOffset(3,background_loop,vertical_offset);
-		if (background_loop > 16)
-		{
-			background_loop=8;
-			slide_map();
-		}
+		slide_stars();
 		player_control();
 		enemy_update();
 		player_hit_detect();
