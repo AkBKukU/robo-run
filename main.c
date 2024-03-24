@@ -26,7 +26,7 @@ u8 stars_offset_frames = 0;
 u8 tunnel_offset = 0;
 u8 tunnel_offset_frames = 0;
 #define TUNNEL_TILE_GROUP 4
-#define TUNNEL_TILE_GROUP_COUNT 4
+#define TUNNEL_TILE_GROUP_COUNT 5
 u8 tunnel_groups[2];
 #define TUNNEL_HEIGHT_MIN 8
 #define TUNNEL_HEIGHT_START 12
@@ -146,28 +146,8 @@ static inline void enemy_update()
 
 static inline void player_bounce(u8 angle)
 {
-	u8 quad = ERAPI_Div(angle , 63);
-	switch (quad)
-	{
-		case 3:
-			fx=-1*ERAPI_Div((angle-63*3) , 63/PLAYER_BUMP_FORCE);
-			fy=-1*(PLAYER_BUMP_FORCE + fx);
-			break;
-
-		case 2:
-			fy=-1*ERAPI_Div((angle-63*2) , 63/PLAYER_BUMP_FORCE);
-			fx=PLAYER_BUMP_FORCE + fy;
-			break;
-
-		case 1:
-			fx=ERAPI_Div((angle-63) , 63/PLAYER_BUMP_FORCE);
-			fy=PLAYER_BUMP_FORCE - fx;
-			break;
-		case 0:
-			fy=ERAPI_Div(angle , 63/PLAYER_BUMP_FORCE);
-			fx=-1*(PLAYER_BUMP_FORCE - fy);
-	};
-
+	fx = -ERAPI_Cos(angle, PLAYER_BUMP_FORCE) >> 8;
+	fy = ERAPI_Sin(angle, PLAYER_BUMP_FORCE) >> 8;
 }
 
 static inline void player_hit_detect()
@@ -250,7 +230,7 @@ u8 tunnel_tile_pick()
 
 	u8 group_slot = ERAPI_Mod(ERAPI_Rand() , 2);
 
-	return tunnel_groups[group_slot] + ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP);
+	return tunnel_groups[group_slot] + ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP)+1;
 }
 void slide_tunnel()
 {
