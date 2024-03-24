@@ -12,6 +12,14 @@ const u16 palette[] = { 0x0000, 0xFFFF };
 #define BACK_X 32
 #define BACK_Y 24
 
+#define PLAYER_BUMP_FORCE 8
+
+#define  SPRITE_PLAYER 0
+#define  SPRITE_ENEMY 1
+#define  SPRITE_PROJECTILE 2
+
+ERAPI_HANDLE_REGION score_print;
+
 struct enemy_data
 {
 	u8 live;
@@ -24,6 +32,7 @@ struct enemy_data
 	u8 y_spawn;
 	u8 type;
 	u8 cooldown;
+	ERAPI_HANDLE_SPRITE handle;
 };
 
 u8 enemy_live=2;
@@ -33,20 +42,70 @@ ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
 
 ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 1, 4, 8, 8, 1};
-ERAPI_HANDLE_SPRITE h_enemy_light[ENEMY_MAX];
 
 
 u8 sysexit = 0, win = 0, px=160,py=80;
-s8 vertical_offset = 16;
+s8 vertical_offset = 16, fx=-10,fy=0;
 u32 key;
 
 unsigned short mapslide[BACK_X*BACK_Y];
 
+// A utility function to reverse a string
+static inline void reverse(char str[], int length)
+{
+	int start = 0;
+	int end = length - 1;
+	while (start < end) {
+		char temp = str[start];
+		str[start] = str[end];
+		str[end] = temp;
+		end--;
+		start++;
+	}
+}
+
+// Implementation of citoa()
+char* citoa(int num, char* str, int base)
+{
+	int i = 0;
+
+	/* Handle 0 explicitly, otherwise empty string is
+	 * printed for 0 */
+	if (num == 0) {
+		str[i++] = '0';
+		str[i] = '\0';
+		return str;
+	}
+
+	// Process individual digits
+	while (num != 0) {
+		int rem =ERAPI_Mod( num , base);
+		str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+		num =ERAPI_Div( num , base);
+	}
+
+	str[i] = '\0'; // Append string terminator
+
+	// Reverse the string
+	reverse(str, i);
+
+	return str;
+}
 
 static inline void player_move(s8 x, s8 y)
 {
 	px+=x;
 	py+=y;
+
+	px+=fx;
+	if (fx < 0) ++fx;
+	if (fx > 0) --fx;
+
+	py+=fy;
+	if (fy < 0) ++fy;
+	if (fy > 0) --fy;
+
+
 	if (px < 16) px = 16;
 	if (px > 240-16) px = 240-16;
 	if (py < 8) py = 8;
@@ -64,28 +123,55 @@ static inline void enemy_update()
 		if (!manger_enemy[i].live) continue;
 
 		ERAPI_SetSpritePos(
-			h_enemy_light[i],
+			manger_enemy[i].handle,
 			manger_enemy[i].x,
 			manger_enemy[i].y-vertical_offset
 		);
 	}
 }
 
+static inline void player_bounce(u8 angle)
+{
+	u8 quad = ERAPI_Div(angle , 63);
+	switch (quad)
+	{
+		case 3:
+			fx=-1*ERAPI_Div((angle-63*3) , 63/PLAYER_BUMP_FORCE);
+			fy=-1*(PLAYER_BUMP_FORCE + fx);
+			break;
+
+		case 2:
+			fy=-1*ERAPI_Div((angle-63*2) , 63/PLAYER_BUMP_FORCE);
+			fx=PLAYER_BUMP_FORCE + fy;
+			break;
+
+		case 1:
+			fx=ERAPI_Div((angle-63) , 63/PLAYER_BUMP_FORCE);
+			fy=PLAYER_BUMP_FORCE - fx;
+			break;
+		case 0:
+			fy=ERAPI_Div(angle , 63/PLAYER_BUMP_FORCE);
+			fx=-1*(PLAYER_BUMP_FORCE - fy);
+	};
+
+}
+
 static inline void player_hit_detect()
 {
 	// Check for contact with any enemies
+			char num_print[5];
+	u16 dist = 0;
+	ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_ENEMY, &dist);
+
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
-		if (!manger_enemy[i].live) continue;
-		if (ERAPI_CalcDistanceBetweenPoints(
-			manger_enemy[i].x, manger_enemy[i].y,
-			px, py
-			) < 16)
+		if (manger_enemy[i].handle == hit_sprite)
 		{
-		ERAPI_SpriteHide( h_player);
+			u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
+			if (dist < 10)	player_bounce(angle);
 		}
-
 	}
+
 	// TODO Check for hit against projectiles
 }
 
@@ -117,6 +203,8 @@ static inline void init()
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( &palette[0], 0x00, 0x04);
 	ERAPI_SetBackgroundOffset(3,8,0);
+	score_print = ERAPI_CreateRegion(0,0,0, 0,0xf, 0x03);
+	ERAPI_SetTextColor( score_print, 0x01, 0x00);
 
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, px, py);
@@ -127,9 +215,10 @@ static inline void init()
 		manger_enemy[i].x = 0;
 		manger_enemy[i].y = 0;
 		manger_enemy[i].live = 0;
-		h_enemy_light[i] = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
 	}
-	manger_enemy[0].x=px+60;
+	manger_enemy[0].x=px;
 	manger_enemy[0].y=py;
 	manger_enemy[0].live=1;
 
