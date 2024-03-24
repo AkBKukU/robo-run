@@ -23,7 +23,8 @@ u8 stars_offset = 0;
 u8 stars_offset_frames = 0;
 
 #define TUNNEL_SPEED 1
-u8 tunel_offset = 0;
+u8 tunnel_offset = 0;
+u8 tunnel_offset_frames = 0;
 #define TUNNEL_TILE_GROUP 4
 #define TUNNEL_TILE_GROUP_COUNT 4
 #define TUNNEL_HEIGHT_MIN 8
@@ -59,8 +60,8 @@ u8 sysexit = 0, win = 0, px=160,py=80;
 s8 vertical_offset = 16, fx=-10,fy=0;
 u32 key;
 
-unsigned short mapslide[BACK_X*BACK_Y];
-unsigned short mapslide[BACK_X*BACK_Y];
+unsigned short starslide[BACK_X*BACK_Y];
+unsigned short tunnelslide[BACK_X*BACK_Y];
 
 // A utility function to reverse a string
 static inline void reverse(char str[], int length)
@@ -206,9 +207,11 @@ static inline void init()
 	{
 		for(u8 y=0;y<BACK_Y;++y)
 		{
-			mapslide[ (x) + (y * BACK_Y) ] = 0;
+			starslide[ (x) + (y * BACK_Y) ] = 0;
+			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
+
 
 	// Init
 	ERAPI_InitMemory( (ERAPI_RAM_END - (u32)__end) >> 10);
@@ -240,6 +243,47 @@ static inline void init()
 
 	ERAPI_FadeIn( 1);
 }
+void slide_tunnel()
+{
+	++tunnel_offset_frames;
+	++tunnel_offset;
+	ERAPI_SetBackgroundOffset(2,tunnel_offset,vertical_offset);
+	if (tunnel_offset <= 16)
+	{
+		return;
+	}
+	tunnel_offset=8;
+	tunnel_offset_frames=0;
+
+	// Shift background tile map
+	for(u8 x=1;x<BACK_X;++x){
+	for(u8 y=0;y<BACK_Y;++y)
+	{
+		tunnelslide[ (x-1) + (y * BACK_X) ] = tunnelslide[ (x) + (y * BACK_X)];
+	}}
+
+	// Set off screen tiles to random star tile
+	for(u8 y=0;y<BACK_Y;++y)
+	{
+		tunnelslide[ (31) + (y * BACK_X) ] = 0 ;
+	}
+	tunnelslide[ (31) ] = 2 ;
+	tunnelslide[ (31) + ((BACK_Y-1) * BACK_X) ] = 2 ;
+
+
+	// Apply new background
+	ERAPI_BACKGROUND slide =
+	{
+		tunnelTiles,
+		mapSharedPal,
+		tunnelslide,
+		sizeof( tunnelTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( 2, &slide);
+	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
+}
 
 void slide_stars()
 {
@@ -251,12 +295,13 @@ void slide_stars()
 		return;
 	}
 	stars_offset=8;
+	stars_offset_frames=0;
 
 	// Shift background tile map
 	for(u8 x=1;x<BACK_X;++x){
 	for(u8 y=0;y<BACK_Y;++y)
 	{
-		mapslide[ (x-1) + (y * BACK_X) ] = mapslide[ (x) + (y * BACK_X)];
+		starslide[ (x-1) + (y * BACK_X) ] = starslide[ (x) + (y * BACK_X)];
 	}}
 
 	// Set off screen tiles to random star tile
@@ -278,7 +323,7 @@ void slide_stars()
 				break;
 		}
 
-		mapslide[ (31) + (y * BACK_X) ] = star ;
+		starslide[ (31) + (y * BACK_X) ] = star ;
 	}
 
 	// Apply new background
@@ -286,14 +331,13 @@ void slide_stars()
 	{
 		starsTiles,
 		mapSharedPal,
-		mapslide,
+		starslide,
 		sizeof( starsTiles) >> 5,
 		1
 	};
 
 	ERAPI_LoadBackgroundCustom( 3, &slide);
 	ERAPI_SetBackgroundOffset(3,8,vertical_offset);
-	ERAPI_FadeIn( 1);
 }
 
 int main()
@@ -303,6 +347,7 @@ int main()
 	// Main Loop
 	while (sysexit == 0)
 	{
+		slide_tunnel();
 		slide_stars();
 		player_control();
 		enemy_update();
