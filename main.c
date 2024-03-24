@@ -27,6 +27,7 @@ u8 tunnel_offset = 0;
 u8 tunnel_offset_frames = 0;
 #define TUNNEL_TILE_GROUP 4
 #define TUNNEL_TILE_GROUP_COUNT 4
+u8 tunnel_groups[2];
 #define TUNNEL_HEIGHT_MIN 8
 #define TUNNEL_HEIGHT_START 12
 
@@ -243,6 +244,14 @@ static inline void init()
 
 	ERAPI_FadeIn( 1);
 }
+
+u8 tunnel_tile_pick()
+{
+
+	u8 group_slot = ERAPI_Mod(ERAPI_Rand() , 2);
+
+	return tunnel_groups[group_slot] + ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP);
+}
 void slide_tunnel()
 {
 	++tunnel_offset_frames;
@@ -267,8 +276,8 @@ void slide_tunnel()
 	{
 		tunnelslide[ (31) + (y * BACK_X) ] = 0 ;
 	}
-	tunnelslide[ (31) ] = 2 ;
-	tunnelslide[ (31) + ((BACK_Y-1) * BACK_X) ] = 2 ;
+	tunnelslide[ (31) ] = tunnel_tile_pick() ;
+	tunnelslide[ (31) + ((BACK_Y-1) * BACK_X) ] = tunnel_tile_pick() ;
 
 
 	// Apply new background
@@ -343,6 +352,8 @@ void slide_stars()
 int main()
 {
 	init();
+	tunnel_groups[0] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
+	tunnel_groups[1] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
 
 	// Main Loop
 	while (sysexit == 0)
