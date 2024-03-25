@@ -120,6 +120,14 @@ char* citoa(int num, char* str, int base)
 	return str;
 }
 
+void gui_print_score(u32 score)
+{
+	char num_print[8];
+	citoa(score,num_print,10);
+	ERAPI_ClearRegion(score_print);
+	ERAPI_DrawText( score_print, 0, 0, num_print);
+}
+
 static inline void player_move(s8 x, s8 y)
 {
 	px+=x;
@@ -163,7 +171,6 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
 		if (manger_bullet[i].live == 1)continue;
-
 		manger_bullet[i].live = 1;
 		manger_bullet[i].x = x;
 		manger_bullet[i].y = y;
@@ -174,7 +181,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 		ERAPI_SetSpritePos(
 			manger_bullet[i].handle,
 			x,
-			y
+			y-vertical_offset
 		);
 		return;
 	}
@@ -198,6 +205,7 @@ void bullet_update()
 		){
 			manger_bullet[i].live = 0;
 			ERAPI_SpriteFree(manger_bullet[i].handle);
+			continue;
 		}
 
 		ERAPI_SetSpritePos(
