@@ -7,7 +7,9 @@
 extern int __end[];
 const u16 palette[] = { 0x0000, 0xFFFF };
 
-#define ENEMY_MAX 32
+#define ENEMY_MAX 8
+#define BULLET_MAX 8
+u8 fire_cooldown_max = 20, fire_cooldown = 0;
 
 #define BACK_X 32
 #define BACK_Y 24
@@ -47,14 +49,26 @@ struct enemy_data
 	u8 cooldown;
 	ERAPI_HANDLE_SPRITE handle;
 };
-
-u8 enemy_live=2;
 struct enemy_data manger_enemy[ENEMY_MAX];
+
+
+struct bullet_data
+{
+	u8 x;
+	u8 y;
+	u8 live;
+	u8 angle;
+	u8 speed;
+	ERAPI_HANDLE_SPRITE handle;
+};
+struct bullet_data manger_bullet[BULLET_MAX];
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
 
 ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_bullet = { bulletTiles, gfxSharedPal, 1, 1, 1, 4, 8, 8, 1};
+ERAPI_HANDLE_SPRITE the_bullet;
 
 
 u8 sysexit = 0, win = 0, px=160,py=80;
@@ -144,6 +158,56 @@ static inline void enemy_update()
 	}
 }
 
+void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
+{
+	for ( u8 i = 0; i < BULLET_MAX; ++i )
+	{
+		if (manger_bullet[i].live == 1) continue;
+
+		manger_bullet[i].live = 1;
+		manger_bullet[i].x = x;
+		manger_bullet[i].y = y;
+		manger_bullet[i].speed = speed;
+		manger_bullet[i].angle = angle;
+		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_bullet);
+
+		ERAPI_SetSpritePos(
+			manger_bullet[i].handle,
+			x,
+			y
+		);
+	}
+}
+
+void bullet_update()
+{
+	for ( u8 i = 0; i < BULLET_MAX; ++i )
+	{
+		if (!manger_bullet[i].live) continue;
+
+		manger_bullet[i].x += -ERAPI_Cos(manger_bullet[i].angle, manger_bullet[i].speed) >> 8;
+		manger_bullet[i].y += ERAPI_Sin(manger_bullet[i].angle, manger_bullet[i].speed) >> 8;
+
+
+		if (
+			(manger_bullet[i].x < 0) ||
+			(manger_bullet[i].x > 240) ||
+			(manger_bullet[i].y < 0) ||
+			(manger_bullet[i].y > 160)
+		){
+			manger_bullet[i].live = 0;
+			ERAPI_SpriteFree(manger_bullet[i].handle);
+		}
+
+		ERAPI_SetSpritePos(
+			manger_bullet[i].handle,
+			manger_bullet[i].x,
+			manger_bullet[i].y-vertical_offset
+		);
+	}
+}
+
+
 static inline void player_bounce(u8 angle)
 {
 	fx = -ERAPI_Cos(angle, PLAYER_BUMP_FORCE) >> 8;
@@ -191,8 +255,14 @@ static inline void player_control()
 	if (key & ERAPI_KEY_DOWN)  dir_y = 1;
 	if (key & ERAPI_KEY_LEFT) dir_x = -1;
 	if (key & ERAPI_KEY_RIGHT) dir_x = 1;
-	player_move(dir_x,dir_y);
 
+	if (fire_cooldown) --fire_cooldown;
+	if (key & ERAPI_KEY_A && !fire_cooldown)
+	{
+		bullet_fire(127, 4, px, py+vertical_offset);
+		fire_cooldown = fire_cooldown_max;
+	}
+	player_move(dir_x,dir_y);
 }
 
 
@@ -219,6 +289,9 @@ static inline void init()
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, px, py);
 
+	the_bullet = ERAPI_SpriteCreateCustom( 0, &sprite_bullet);
+	ERAPI_SetSpritePos( the_bullet, 255, 255);
+
 	// Initialize enemy structs
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
@@ -227,6 +300,10 @@ static inline void init()
 		manger_enemy[i].live = 0;
 		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
 		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
+	}
+	for ( u8 i = 0; i < BULLET_MAX; ++i )
+	{
+		manger_bullet[i].live = 0;
 	}
 	manger_enemy[0].x=px;
 	manger_enemy[0].y=py;
@@ -356,6 +433,7 @@ int main()
 		slide_stars();
 		player_control();
 		enemy_update();
+		bullet_update();
 		player_hit_detect();
 		ERAPI_RenderFrame(1);
 	}
