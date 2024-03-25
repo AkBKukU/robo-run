@@ -162,7 +162,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 {
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
-		if (manger_bullet[i].live == 1) continue;
+		if (manger_bullet[i].live == 1)continue;
 
 		manger_bullet[i].live = 1;
 		manger_bullet[i].x = x;
@@ -176,6 +176,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 			x,
 			y
 		);
+		return;
 	}
 }
 
