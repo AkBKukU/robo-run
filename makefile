@@ -3,7 +3,7 @@ PATH = /bin:$(DEVKITARM)/bin:../../bin:/opt/devkitpro/tools/bin
 PATH_LIB_GCC = $(DEVKITARM)/arm-none-eabi/lib/thumb
 
 # name of application
-NAME = "Custom Resources"
+NAME = "Robo Run"
 TARGET = main
 
 # Library
@@ -25,6 +25,11 @@ NEDCMAKE = nedcmake
 NEDCENC  = nedcenc
 NEDCBMP  = raw2bmp
 NESAV    = neflmake
+
+SRC     := ./src
+OBJ     := ./build
+SRCS    := $(wildcard $(SRC)/*.c)
+OBJS    := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SRCS))
 
 all : sav bmp
 
@@ -57,11 +62,11 @@ build/$(TARGET).vpk : build/$(TARGET).bin
 build/$(TARGET).bin : build/$(TARGET).elf
 	$(OBJCOPY) -O binary "$<" "$@"
 
-build/$(TARGET).elf : build/crt0.o build/$(TARGET).o ../../lib/ereader.ld build/map.o build/gfx.o
-	$(LD) build/crt0.o build/map.o build/gfx.o build/$(TARGET).o -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -O3 -o "$@"
+build/$(TARGET).elf : build/crt0.o build/map.o build/gfx.o $(OBJS)
+	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -O3  $^ -o $@
 
-build/$(TARGET).o : $(TARGET).c gfx/gfx.c map/map.c
-	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
+$(OBJ)/%.o: $(SRC)/%.c  gfx/gfx.c map/map.c
+	$(GCC) -I ./ -I ../../lib  -I lib -mthumb -c $< -o "$@"
 
 build/gfx.o : gfx/gfx.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
