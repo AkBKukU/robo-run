@@ -15,6 +15,7 @@ u8 fire_cooldown_max = 20, fire_cooldown = 0;
 #define BACK_Y 24
 
 #define PLAYER_BUMP_FORCE 8
+#define PLAYER_HIT_R 10
 
 #define SPRITE_PLAYER 0
 #define SPRITE_ENEMY 1
@@ -40,7 +41,7 @@ struct enemy_data
 	u8 live;
 	u8 x;
 	u8 y;
-	u8 health;
+	s16 health;
 	u8 t;
 	u8 movement;
 	u8 x_spawn;
@@ -66,7 +67,7 @@ struct bullet_data manger_bullet[BULLET_MAX];
 ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
 
-ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 6, 4, 0, 2, 1};
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfxSharedPal, 1, 1, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE the_bullet;
 
@@ -152,11 +153,44 @@ static inline void player_move(s8 x, s8 y)
 	ERAPI_SetSpritePos( h_player, px, py);
 }
 
+void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
+{
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
+	{
+		if (!manger_enemy[i].live) continue;
+		if (manger_enemy[i].handle == hit_sprite)
+		{
+			manger_enemy[i].health-=damage;
+			if (manger_enemy[i].health < 1)
+			{
+				manger_enemy[i].health=0;
+				ERAPI_SetSpriteFrame(hit_sprite,3);
+				ERAPI_SpriteAutoAnimate(hit_sprite,6,18);
+				continue;
+			}else{
+				ERAPI_SetSpriteFrame(hit_sprite,0);
+				ERAPI_SpriteAutoAnimate(hit_sprite,3,6);
+			}
+		}
+	}
+}
+
 static inline void enemy_update()
 {
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
 		if (!manger_enemy[i].live) continue;
+		// TODO - Add logic to remove killed enemies after animation complete
+		if(manger_enemy[i].health < 1)
+		{
+			--manger_enemy[i].health;
+			if(manger_enemy[i].health == -24)
+			{
+				manger_enemy[i].live=0;
+				ERAPI_SpriteHide(manger_enemy[i].handle);
+				continue;
+			}
+		}
 
 		ERAPI_SetSpritePos(
 			manger_enemy[i].handle,
@@ -177,6 +211,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 		manger_bullet[i].speed = speed;
 		manger_bullet[i].angle = angle;
 		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_bullet);
+		ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
 
 		ERAPI_SetSpritePos(
 			manger_bullet[i].handle,
@@ -213,6 +248,18 @@ void bullet_update()
 			manger_bullet[i].x,
 			manger_bullet[i].y-vertical_offset
 		);
+
+		// Check for contact against enemies
+		u16 dist = 0;
+		ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_ENEMY, &dist);
+		if (dist < 10)
+		{
+			enemy_damage(hit_sprite,1);
+			manger_bullet[i].live = 0;
+			ERAPI_SpriteFree(manger_bullet[i].handle);
+			continue;
+		}
+
 	}
 }
 
@@ -235,7 +282,12 @@ static inline void player_hit_detect()
 		if (manger_enemy[i].handle == hit_sprite)
 		{
 			u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
-			if (dist < 10)	player_bounce(angle);
+			if (dist < PLAYER_HIT_R)
+			{
+
+				enemy_damage(hit_sprite,1);
+				player_bounce(angle);
+			}
 		}
 	}
 
@@ -252,8 +304,6 @@ static inline void player_hit_detect()
 
 		}
 	}
-
-	// TODO Check for hit against projectiles
 }
 
 static inline void player_control()
@@ -309,6 +359,7 @@ static inline void init()
 		manger_enemy[i].live = 0;
 		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
 		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
+		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 	}
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
@@ -317,10 +368,12 @@ static inline void init()
 	manger_enemy[0].x=px;
 	manger_enemy[0].y=py;
 	manger_enemy[0].live=1;
+	manger_enemy[0].health=3;
 
 	manger_enemy[1].x=px+60;
 	manger_enemy[1].y=py+32;
 	manger_enemy[1].live=1;
+	manger_enemy[1].health=3;
 
 	ERAPI_FadeIn( 1);
 }
