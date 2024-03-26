@@ -50,9 +50,10 @@ void player_hit_detect()
 	u16 dist = 0;
 	ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_ENEMY, &dist);
 
-	u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
-	if (dist < PLAYER_HIT_R)
+
+	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
 	{
+		u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
 		enemy_damage(hit_sprite,1);
 		player_bounce(angle);
 	}

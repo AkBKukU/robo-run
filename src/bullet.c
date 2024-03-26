@@ -65,7 +65,7 @@ void bullet_update()
 		// Check for contact against enemies
 		u16 dist = 0;
 		ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_ENEMY, &dist);
-		if (dist < 10)
+		if (hit_sprite < 128 && dist < 10)
 		{
 			enemy_damage(hit_sprite,1);
 			bullet_free(i);

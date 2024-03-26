@@ -3,6 +3,10 @@
 struct enemy_data manger_enemy[ENEMY_MAX];
 ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfxSharedPal, 2, 2, 6, 4, 0, 2, 1};
 
+u32 enemy_spawn_next[ENEMY_TYPE_COUNT];
+u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
+u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
+
 // Damage enemey using sprite handle as ID
 void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 {
@@ -37,6 +41,8 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 
 void enemy_update()
 {
+	// Check to spawn new enemies
+	if(enemy_spawn_next[ENEMY_TYPE_LIGHT] < distance_tiles) enemy_spawn(ENEMY_TYPE_LIGHT);
 	// Check all enemies
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
@@ -51,10 +57,10 @@ void enemy_update()
 			{
 				// animation finished
 				manger_enemy[i].live=0;
-				ERAPI_SpriteHide(manger_enemy[i].handle);
-				// TODO - Add logic to remove killed enemies after animation complete
-				continue;
+				--enemy_spawn_count[manger_enemy[i].type];
+				ERAPI_SpriteFree(manger_enemy[i].handle);
 			}
+			continue;
 		}
 
 		// Update position
@@ -70,13 +76,40 @@ void enemy_update()
 
 void enemy_path(u8 i)
 {
-	gui_print_score(manger_enemy[0].x);
 	switch(manger_enemy[i].movement)
 	{
 		case ENEMY_PATH_STRAIGHT:
 			++manger_enemy[i].t;
 			manger_enemy[i].x = 240-ERAPI_Div(manger_enemy[i].t,5);
 			break;
+	}
+}
+
+void enemy_spawn(u8 spawn_type)
+{
+	// Check all enemies
+	if(enemy_spawn_count[spawn_type] >= enemy_spawn_max[spawn_type] ) return;
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
+	{
+		// If active, skip
+		if (manger_enemy[i].live) continue;
+
+		manger_enemy[i].x = 248;
+		manger_enemy[i].y = 8+ERAPI_RandMax(172);
+		manger_enemy[i].t = 0;
+		manger_enemy[i].health = 3;
+		manger_enemy[i].live = 1;
+		manger_enemy[i].type = spawn_type;
+		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
+
+ 		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+ 		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
+ 		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
+
+		++enemy_spawn_count[spawn_type];
+		// TODO - the 20 and 50 should scale with distance for difficulty
+		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(50);
+		return;
 	}
 }
 
@@ -89,18 +122,13 @@ void enemy_init()
 		manger_enemy[i].y = 0;
 		manger_enemy[i].live = 0;
 		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
-		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
-		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
-		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 	}
 
-	manger_enemy[0].x=px;
-	manger_enemy[0].y=py;
-	manger_enemy[0].live=1;
-	manger_enemy[0].health=3;
-
-	manger_enemy[1].x=px+60;
-	manger_enemy[1].y=py+32;
-	manger_enemy[1].live=1;
-	manger_enemy[1].health=3;
+	// Initialize enemy tracking structs
+	for ( u8 i = 0; i < ENEMY_TYPE_COUNT; ++i )
+	{
+		enemy_spawn_next[i] = 0;
+		enemy_spawn_count[i] = 0;
+	}
+	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
 }
