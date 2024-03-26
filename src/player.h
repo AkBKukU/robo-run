@@ -24,4 +24,5 @@ void player_move(s8 x, s8 y);
 void player_bounce(u8 angle);
 void player_hit_detect();
 void player_control();
+void player_init();
 #endif

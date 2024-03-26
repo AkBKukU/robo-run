@@ -28,4 +28,5 @@ extern ERAPI_SPRITE sprite_enemy_light;
 
 void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage);
 void enemy_update();
+void enemy_init();
 #endif

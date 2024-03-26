@@ -12,6 +12,21 @@ s8 vertical_offset = 16;
 unsigned short starslide[BACK_X*BACK_Y];
 unsigned short tunnelslide[BACK_X*BACK_Y];
 
+void screen_init()
+{
+	for(u8 x=0;x<BACK_X;++x)
+	{
+		for(u8 y=0;y<BACK_Y;++y)
+		{
+			starslide[ (x) + (y * BACK_Y) ] = 0;
+			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
+		}
+	}
+	tunnel_groups[0] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
+	tunnel_groups[1] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
+
+}
+
 u8 tunnel_tile_pick()
 {
 

@@ -49,3 +49,17 @@ void enemy_update()
 		);
 	}
 }
+
+void enemy_init()
+{
+	// Initialize enemy structs
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
+	{
+		manger_enemy[i].x = 0;
+		manger_enemy[i].y = 0;
+		manger_enemy[i].live = 0;
+		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
+		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
+		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
+	}
+}

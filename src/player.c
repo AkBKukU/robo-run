@@ -93,3 +93,10 @@ void player_control()
 	}
 	player_move(dir_x,dir_y);
 }
+
+void player_init()
+{
+	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
+	ERAPI_SetSpritePos( h_player, px, py);
+
+}
