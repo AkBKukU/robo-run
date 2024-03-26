@@ -18,12 +18,12 @@ const u16 palette[] = { 0x0000, 0xFFFF };
 
 static inline void init()
 {
-	// System SEtup
+	// System Setup
 	ERAPI_InitMemory( (ERAPI_RAM_END - (u32)__end) >> 10);
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( &palette[0], 0x00, 0x04);
 
-
+	// Component Setup
 	gui_init();
 	player_init();
 	screen_init();
