@@ -8,13 +8,15 @@
 #include "gamestate.h"
 #include "gfx/gfx.h"
 
+#define ENEMY_PATH_STRAIGHT 0
+
 struct enemy_data
 {
 	u8 live;
 	u8 x;
 	u8 y;
 	s16 health;
-	u8 t;
+	u16 t;
 	u8 movement;
 	u8 x_spawn;
 	u8 y_spawn;
@@ -28,5 +30,6 @@ extern ERAPI_SPRITE sprite_enemy_light;
 
 void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage);
 void enemy_update();
+void enemy_path(u8 i);
 void enemy_init();
 #endif

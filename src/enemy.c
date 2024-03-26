@@ -59,11 +59,24 @@ void enemy_update()
 
 		// Update position
 		// TODO - Add path movement
+		enemy_path(i);
 		ERAPI_SetSpritePos(
 			manger_enemy[i].handle,
 			manger_enemy[i].x,
 			manger_enemy[i].y-vertical_offset
 		);
+	}
+}
+
+void enemy_path(u8 i)
+{
+	gui_print_score(manger_enemy[0].x);
+	switch(manger_enemy[i].movement)
+	{
+		case ENEMY_PATH_STRAIGHT:
+			++manger_enemy[i].t;
+			manger_enemy[i].x = 240-ERAPI_Div(manger_enemy[i].t,5);
+			break;
 	}
 }
 
@@ -75,6 +88,7 @@ void enemy_init()
 		manger_enemy[i].x = 0;
 		manger_enemy[i].y = 0;
 		manger_enemy[i].live = 0;
+		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_enemy_light);
 		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
 		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
