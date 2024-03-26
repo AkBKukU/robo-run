@@ -62,4 +62,14 @@ void enemy_init()
 		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
 		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 	}
+
+	manger_enemy[0].x=px;
+	manger_enemy[0].y=py;
+	manger_enemy[0].live=1;
+	manger_enemy[0].health=3;
+
+	manger_enemy[1].x=px+60;
+	manger_enemy[1].y=py+32;
+	manger_enemy[1].live=1;
+	manger_enemy[1].health=3;
 }

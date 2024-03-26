@@ -4,6 +4,7 @@
 #include "gfx/gfx.h"
 #include "map/map.h"
 
+#include "gui.h"
 #include "screen.h"
 #include "enemy.h"
 #include "player.h"
@@ -15,21 +16,15 @@ const u16 palette[] = { 0x0000, 0xFFFF };
 
 
 
-
-
-
-
 static inline void init()
 {
-	// Init
+	// System SEtup
 	ERAPI_InitMemory( (ERAPI_RAM_END - (u32)__end) >> 10);
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( &palette[0], 0x00, 0x04);
-	ERAPI_SetBackgroundOffset(3,8,0);
-	score_print = ERAPI_CreateRegion(0,0,0, 0,0xf, 0x03);
-	ERAPI_SetTextColor( score_print, 0x01, 0x00);
 
 
+	gui_init();
 	player_init();
 	screen_init();
 	enemy_init();

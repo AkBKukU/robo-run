@@ -27,8 +27,4 @@
 extern u8 sysexit, win;
 
 
-extern ERAPI_HANDLE_REGION score_print;
-
-
-void gui_print_score(u32 score);
 #endif
