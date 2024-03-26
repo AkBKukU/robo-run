@@ -39,8 +39,10 @@ int main()
 {
 	init();
 	// Main Loop
+	gui_print_health(phealth);
 	while (sysexit == 0)
 	{
+		gui_print_score(player_score);
 		slide_tunnel();
 		slide_stars();
 		player_control();

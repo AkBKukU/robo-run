@@ -67,7 +67,7 @@ void enemy_update()
 		--manger_enemy[i].cooldown;
 		if(!manger_enemy[i].cooldown)
 		{
-			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y);
+			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y,manger_enemy[i].damage);
 			manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		}
 
@@ -102,10 +102,12 @@ void enemy_spawn(u8 spawn_type)
 		// If active, skip
 		if (manger_enemy[i].live) continue;
 
+		// TODO - All these values shoudl scale with distance
 		manger_enemy[i].x = 248;
 		manger_enemy[i].y = 8+ERAPI_RandMax(172);
 		manger_enemy[i].t = 0;
 		manger_enemy[i].health = 3;
+		manger_enemy[i].damage = 3;
 		manger_enemy[i].live = 1;
 		manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		manger_enemy[i].type = spawn_type;

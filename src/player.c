@@ -2,6 +2,7 @@
 #include "player.h"
 
 u8 px=160,py=80;
+s8 phealth=100;
 s8 fx=-10,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 0;
 
@@ -56,6 +57,7 @@ void player_hit_detect()
 		u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
 		enemy_damage(hit_sprite,1);
 		player_bounce(angle);
+		player_damage(1);
 	}
 
 
@@ -64,6 +66,7 @@ void player_hit_detect()
 	u8 tile=tunnelslide[(px-tunnel_offset)/8+1+(((py+(vertical_offset)-2)/8)*BACK_X)];
 	if (tile)
 	{
+		player_damage(20);
 		if (py > 80)
 		{
 			fy=-10;
@@ -73,6 +76,13 @@ void player_hit_detect()
 
 		}
 	}
+}
+
+void player_damage(u8 damage)
+{
+	phealth-=damage;
+	gui_print_health(phealth);
+	if(phealth < 0) ERAPI_SpriteHide( h_player);
 }
 
 void player_control()
@@ -91,7 +101,8 @@ void player_control()
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
-		bullet_fire(127, 4, px+8, py+vertical_offset);
+		// TODO - 1 is playeer damage that will scale with powerups
+		bullet_fire(127, 4, px+8, py+vertical_offset,1);
 		fire_cooldown = fire_cooldown_max;
 	}
 }

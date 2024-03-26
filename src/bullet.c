@@ -5,7 +5,7 @@ ERAPI_SPRITE sprite_bullet = { bulletTiles, gfxSharedPal, 1, 1, 1, 4, 8, 8, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 
-void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
+void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
 {
 	// Iterate over all bullets
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
@@ -19,6 +19,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y)
 		manger_bullet[i].y = y;
 		manger_bullet[i].speed = speed;
 		manger_bullet[i].angle = angle;
+		manger_bullet[i].damage = damage;
 		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_bullet);
 		ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
 
@@ -76,6 +77,7 @@ void bullet_update()
 		hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
 		if (hit_sprite < 128 && dist < 10)
 		{
+			player_damage(manger_bullet[i].damage);
 			bullet_free(i);
 			continue;
 		}

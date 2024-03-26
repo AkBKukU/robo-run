@@ -11,6 +11,7 @@
 #define PLAYER_HIT_R 10
 
 extern u8 px,py;
+extern s8 phealth;
 extern s8 fx,fy;
 extern u8 fire_cooldown_max, fire_cooldown;
 
@@ -23,6 +24,7 @@ extern u32 key;
 void player_move(s8 x, s8 y);
 void player_bounce(u8 angle);
 void player_hit_detect();
+void player_damage(u8 damage);
 void player_control();
 void player_init();
 #endif
