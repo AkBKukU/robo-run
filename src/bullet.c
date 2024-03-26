@@ -72,6 +72,14 @@ void bullet_update()
 			continue;
 		}
 
+		// Check for contact against player
+		hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
+		if (hit_sprite < 128 && dist < 10)
+		{
+			bullet_free(i);
+			continue;
+		}
+
 	}
 }
 

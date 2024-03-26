@@ -63,6 +63,14 @@ void enemy_update()
 			continue;
 		}
 
+		// Check fire cooldown
+		--manger_enemy[i].cooldown;
+		if(!manger_enemy[i].cooldown)
+		{
+			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y);
+			manger_enemy[i].cooldown = ERAPI_RandMax(240);
+		}
+
 		// Update position
 		// TODO - Add path movement
 		enemy_path(i);
@@ -99,6 +107,7 @@ void enemy_spawn(u8 spawn_type)
 		manger_enemy[i].t = 0;
 		manger_enemy[i].health = 3;
 		manger_enemy[i].live = 1;
+		manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		manger_enemy[i].type = spawn_type;
 		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 

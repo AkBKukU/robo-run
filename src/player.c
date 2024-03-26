@@ -91,7 +91,7 @@ void player_control()
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
-		bullet_fire(127, 4, px, py+vertical_offset);
+		bullet_fire(127, 4, px+8, py+vertical_offset);
 		fire_cooldown = fire_cooldown_max;
 	}
 }
