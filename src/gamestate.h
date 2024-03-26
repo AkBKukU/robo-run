@@ -25,6 +25,7 @@
 #include "util.h"
 
 extern u8 sysexit, win;
+extern u32 distance_tiles;
 
 
 #endif
