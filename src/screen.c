@@ -51,6 +51,7 @@ void slide_tunnel()
 		return;
 	}
 	++distance_tiles;
+	++player_score;
 	tunnel_offset=8;
 	tunnel_offset_frames=0;
 

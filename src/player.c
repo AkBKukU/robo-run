@@ -2,7 +2,7 @@
 #include "player.h"
 
 u8 px=160,py=80;
-s8 phealth=100;
+s16 phealth=100;
 s8 fx=-10,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 0;
 
@@ -43,6 +43,10 @@ void player_bounce(u8 angle)
 {
 	fx += -ERAPI_Cos(angle, PLAYER_BUMP_FORCE) >> 8;
 	fy += ERAPI_Sin(angle, PLAYER_BUMP_FORCE) >> 8;
+	if (fx < -20) fx=-20;
+	if (fx > 20) fx=20;
+	if (fy < -20) fy=-20;
+	if (fy > 20) fy=20;
 }
 
 void player_hit_detect()
@@ -97,6 +101,7 @@ void player_control()
 	if (key & ERAPI_KEY_RIGHT) dir_x = 1;
 	player_move(dir_x,dir_y);
 
+	if (key & ERAPI_KEY_B )ERAPI_SoftReset();
 	// Check if firing and can fire
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)
@@ -112,3 +117,4 @@ void player_init()
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, px, py);
 }
+

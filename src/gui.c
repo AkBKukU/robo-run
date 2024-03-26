@@ -3,7 +3,7 @@
 
 ERAPI_HANDLE_REGION score_print;
 ERAPI_HANDLE_REGION region_health;
-s8 phealth_last=0;
+s16 phealth_last=0;
 void gui_init()
 {
 	// Setup new region with white on transparent text
@@ -19,7 +19,6 @@ void gui_print_score(u32 score)
 {
 	// Create print buffer and convert int to string
 	char num_print[8];
-	score = ERAPI_GetPixel(region_health,1,0);
 	citoa(score,num_print,10);
 
 	// Clear region and print score
@@ -27,7 +26,7 @@ void gui_print_score(u32 score)
 	ERAPI_DrawText( score_print, 0, 0, num_print);
 }
 
-void gui_print_health(s8 health)
+void gui_print_health(s16 health)
 {
 	// Create print buffer and convert int to string
 	char num_print[8];
@@ -36,26 +35,33 @@ void gui_print_health(s8 health)
 	// Clear region and print score
  	ERAPI_SetRegionColor( region_health, 0x00);
 	ERAPI_ClearRegion(region_health);
-	//ERAPI_DrawText( region_health, 0, 0, num_print);
  	ERAPI_SetRegionColor( region_health, 0x05);
 // 	ERAPI_SetPixel(region_health,1,0);
 	health = (health < 0) ? 0 : health;
+	u8 space = 0;
 	if(phealth_last)
 	{
-		for (int i = 0;i < 4; ++i)
+		if (health > 16)
 		{
-			ERAPI_DrawLine(region_health,0,i,phealth_last,i,0);
-		}
-		ERAPI_SetRegionColor( region_health, 0x00);
-		for (int i = 0;i < 4; ++i)
-		{
-			ERAPI_DrawLine(region_health,phealth_last,i,health,i,10);
+			for (int i = 0;i < 4; ++i)
+			{
+				ERAPI_DrawLine(region_health,space,i,space+phealth_last,i,0);
+			}
+			ERAPI_SetRegionColor( region_health, 0x00);
+			for (int i = 0;i < 4; ++i)
+			{
+				ERAPI_DrawLine(region_health,space+phealth_last,i,space+health,i,10);
+			}
+			ERAPI_SetTextColor( region_health, 0x05, 0x00);
+			ERAPI_DrawText( region_health, 0, 0, num_print);
+		}else{
+			ERAPI_SetTextColor( region_health, 0x04, 0x00);
+			ERAPI_DrawText( region_health, 0, 0, num_print);
 		}
 		phealth_last = health;
 	}else{
 		for (int i = 0;i < 4; ++i)
-			ERAPI_DrawLine(region_health,0,i,health,i,30);
+			ERAPI_DrawLine(region_health,space,i,space+health,i,30);
 		phealth_last = health;
-
 	}
 }

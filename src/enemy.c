@@ -25,6 +25,7 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 			// If defeated start death animation
 			if (manger_enemy[i].health < 1)
 			{
+				player_score+=10;
 				manger_enemy[i].live = 2;
 				manger_enemy[i].health=0;
 				ERAPI_SetSpriteFrame(hit_sprite,3);

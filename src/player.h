@@ -11,7 +11,7 @@
 #define PLAYER_HIT_R 10
 
 extern u8 px,py;
-extern s8 phealth;
+extern s16 phealth;
 extern s8 fx,fy;
 extern u8 fire_cooldown_max, fire_cooldown;
 
