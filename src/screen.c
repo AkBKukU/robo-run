@@ -14,6 +14,7 @@ unsigned short tunnelslide[BACK_X*BACK_Y];
 
 void screen_init()
 {
+	// Initialize background tile maps to empty
 	for(u8 x=0;x<BACK_X;++x)
 	{
 		for(u8 y=0;y<BACK_Y;++y)
@@ -22,18 +23,24 @@ void screen_init()
 			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
-	tunnel_groups[0] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
-	tunnel_groups[1] = ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP_COUNT);
+
+	// Block types for tunnel
+	tunnel_groups[0] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
+	tunnel_groups[1] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 
 }
 
+// Pick a tile from the currently selected groups
+// TODO - Doesn't seem to be working right
 u8 tunnel_tile_pick()
 {
 
-	u8 group_slot = ERAPI_Mod(ERAPI_Rand() , 2);
+	u8 group_slot = ERAPI_RandMax(2);
 
-	return tunnel_groups[group_slot] + ERAPI_Mod(ERAPI_Rand() , TUNNEL_TILE_GROUP)+1;
+	return tunnel_groups[group_slot] + ERAPI_RandMax(TUNNEL_TILE_GROUP)+1;
 }
+
+// Shifts all tiles to the left for the tunnel
 void slide_tunnel()
 {
 	++tunnel_offset_frames;
@@ -53,11 +60,13 @@ void slide_tunnel()
 		tunnelslide[ (x-1) + (y * BACK_X) ] = tunnelslide[ (x) + (y * BACK_X)];
 	}}
 
-	// Set off screen tiles to random star tile
+	// Set off screen tiles to random tunnel tile
 	for(u8 y=0;y<BACK_Y;++y)
 	{
 		tunnelslide[ (31) + (y * BACK_X) ] = 0 ;
 	}
+
+	// Generate new tiles for top and bottom
 	tunnelslide[ (31) ] = tunnel_tile_pick() ;
 	tunnelslide[ (31) + ((BACK_Y-1) * BACK_X) ] = tunnel_tile_pick() ;
 
@@ -78,6 +87,7 @@ void slide_tunnel()
 
 void slide_stars()
 {
+	// Slowed background scrolling for parallax using modulos
 	++stars_offset_frames;
 	if(ERAPI_Mod(stars_offset_frames, STAR_SPEED)==0) ++stars_offset;
 	ERAPI_SetBackgroundOffset(3,stars_offset,vertical_offset);
@@ -85,6 +95,7 @@ void slide_stars()
 	{
 		return;
 	}
+
 	stars_offset=8;
 	stars_offset_frames=0;
 
@@ -98,7 +109,7 @@ void slide_stars()
 	// Set off screen tiles to random star tile
 	for(u8 y=0;y<BACK_Y;++y)
 	{
-		u8 star_rand = ERAPI_Mod(ERAPI_Rand() , 30);
+		u8 star_rand = ERAPI_RandMax(30);
 		// Limit amount of stars that are not blank
 		u8 star=0;
 		switch(star_rand)
