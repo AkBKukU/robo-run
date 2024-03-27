@@ -16,8 +16,10 @@ extern u8 tunnel_offset_frames;
 #define TUNNEL_TILE_GROUP 4
 #define TUNNEL_TILE_GROUP_COUNT 5
 extern u8 tunnel_groups[2];
-#define TUNNEL_HEIGHT_MIN 8
+#define TUNNEL_HEIGHT_MIN 6
 #define TUNNEL_HEIGHT_START 12
+extern s8 tunnel_wall_top;
+extern s8 tunnel_wall_bottom;
 
 // Screen vertical offset
 extern s8 vertical_offset;

@@ -6,6 +6,8 @@ u8 stars_offset_frames = 0;
 u8 tunnel_offset = 0;
 u8 tunnel_offset_frames = 0;
 u8 tunnel_groups[2] = {0,0};
+s8 tunnel_wall_top = 3;
+s8 tunnel_wall_bottom = 3;
 
 // Screen vertical offset
 s8 vertical_offset = 16;
@@ -34,10 +36,9 @@ void screen_init()
 // TODO - Doesn't seem to be working right
 u8 tunnel_tile_pick()
 {
-
 	u8 group_slot = ERAPI_RandMax(2);
 
-	return tunnel_groups[group_slot] + ERAPI_RandMax(TUNNEL_TILE_GROUP)+1;
+	return tunnel_groups[group_slot]*4 + ERAPI_RandMax(4)+1;
 }
 
 // Shifts all tiles to the left for the tunnel
@@ -68,9 +69,44 @@ void slide_tunnel()
 		tunnelslide[ (31) + (y * BACK_X) ] = 0 ;
 	}
 
+	if(ERAPI_RandMax(10) == 1)
+	{
+		tunnel_wall_top += ERAPI_RandMax(6)-2;
+		tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
+	}
+	if(ERAPI_RandMax(10) == 1)
+	{
+
+		tunnel_wall_bottom += ERAPI_RandMax(6)-2;
+		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
+	}
+
+	while ( (20 - tunnel_wall_top - tunnel_wall_bottom) < TUNNEL_HEIGHT_MIN )
+	{
+		--tunnel_wall_bottom;
+		--tunnel_wall_top;
+	}
+
 	// Generate new tiles for top and bottom
-	tunnelslide[ (31) ] = tunnel_tile_pick() ;
-	tunnelslide[ (31) + ((BACK_Y-1) * BACK_X) ] = tunnel_tile_pick() ;
+	if (tunnel_wall_top > 0)
+	{
+		s8 wall = tunnel_wall_top;
+		while(wall)
+		{
+			--wall;
+			tunnelslide[ (31) + (wall * BACK_X) ] = tunnel_tile_pick() ;
+		}
+	}
+
+	if (tunnel_wall_bottom > 0)
+	{
+		s8 wall = tunnel_wall_bottom;
+		while(wall)
+		{
+			--wall;
+			tunnelslide[ (31) + ((BACK_Y-1-wall) * BACK_X) ] = tunnel_tile_pick() ;
+		}
+	}
 
 
 	// Apply new background

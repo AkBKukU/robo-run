@@ -23,7 +23,7 @@ static inline void init()
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( palette, 0x00, 0x06);
 
-	ERAPI_RandInit(1337);
+	ERAPI_RandInit(9);
 
 	// Component Setup
 	gui_init();
