@@ -3,7 +3,7 @@
 #include "def.h"
 #include "erapi.h"
 
-#include "gfx/gfx.h"
+#include "gfx/gfx_enemy.h"
 
 #include "gamestate.h"
 

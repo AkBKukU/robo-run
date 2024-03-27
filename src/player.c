@@ -6,7 +6,7 @@ s16 phealth=100;
 s8 fx=-10,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 0;
 
-ERAPI_SPRITE sprite_player = { playerTiles, gfxSharedPal, 4, 2, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
 
 u32 key;
@@ -101,7 +101,6 @@ void player_control()
 	if (key & ERAPI_KEY_RIGHT) dir_x = 1;
 	player_move(dir_x,dir_y);
 
-	if (key & ERAPI_KEY_B )ERAPI_SoftReset();
 	// Check if firing and can fire
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)

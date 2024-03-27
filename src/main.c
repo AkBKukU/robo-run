@@ -1,7 +1,6 @@
 #include "def.h"
 #include "erapi.h"
 
-#include "gfx/gfx.h"
 #include "map/map.h"
 
 #include "gui.h"

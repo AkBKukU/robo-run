@@ -5,7 +5,7 @@
 #include "erapi.h"
 
 #include "gamestate.h"
-#include "gfx/gfx.h"
+#include "gfx/gfx_player.h"
 
 #define PLAYER_BUMP_FORCE 8
 #define PLAYER_HIT_R 10

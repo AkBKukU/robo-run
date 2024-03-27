@@ -3,7 +3,6 @@
 #include "def.h"
 #include "erapi.h"
 
-#include "gfx/gfx.h"
 #include "map/map.h"
 
 #define BACK_X 32
@@ -13,10 +12,14 @@
 #define SPRITE_PLAYER 0
 #define SPRITE_ENEMY 1
 #define SPRITE_PROJECTILE 2
+#define SPRITE_COOL   10
+#define SPRITE_SHIELD 11
+#define SPRITE_SPREAD 12
 
 // Sprite limits
 #define ENEMY_MAX 8
 #define BULLET_MAX 8
+#define DROPS_MAX 3
 
 #include "screen.h"
 #include "enemy.h"

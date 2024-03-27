@@ -62,13 +62,19 @@ build/$(TARGET).vpk : build/$(TARGET).bin
 build/$(TARGET).bin : build/$(TARGET).elf
 	$(OBJCOPY) -O binary "$<" "$@"
 
-build/$(TARGET).elf : build/crt0.o build/map.o build/gfx.o $(OBJS)
+build/$(TARGET).elf : build/crt0.o build/map.o build/gfx_enemy.o build/gfx_player.o build/gfx_powerup.o $(OBJS)
 	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -O3  $^ -o $@
 
-$(OBJ)/%.o: $(SRC)/%.c  gfx/gfx.c map/map.c
+$(OBJ)/%.o: $(SRC)/%.c  gfx/gfx_player.c map/map.c
 	$(GCC) -I ./ -I ../../lib  -I lib -mthumb -c $< -o "$@"
 
-build/gfx.o : gfx/gfx.c
+build/gfx_enemy.o : gfx/gfx_enemy.c
+	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
+
+build/gfx_player.o : gfx/gfx_player.c
+	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
+
+build/gfx_powerup.o : gfx/gfx_powerup.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
 
 build/map.o : map/map.c
@@ -79,9 +85,15 @@ build/crt0.o : ../../lib/crt0.s
 
 
 # Graphics
-gfx/gfx.c :
-	$(GRIT) gfx/*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
+gfx/gfx_player.c:
+	$(GRIT) gfx/player.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_player
 #	$(GRIT) -pS -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
+
+gfx/gfx_enemy.c:
+	$(GRIT) gfx/emy-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_enemy
+
+gfx/gfx_powerup.c:
+	$(GRIT) gfx/bullet.tga gfx/powerup-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_powerup
 
 map/map.c :
 	$(GRIT) map/*.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map

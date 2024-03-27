@@ -1,7 +1,7 @@
 
 #include "bullet.h"
 
-ERAPI_SPRITE sprite_bullet = { bulletTiles, gfxSharedPal, 1, 1, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 8, 8, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 
@@ -20,7 +20,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
 		manger_bullet[i].speed = speed;
 		manger_bullet[i].angle = angle;
 		manger_bullet[i].damage = damage;
-		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 0, &sprite_bullet);
+		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2, &sprite_bullet);
 		ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
 
 		ERAPI_SetSpritePos(
