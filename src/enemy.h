@@ -37,8 +37,8 @@ extern struct enemy_data manger_enemy[ENEMY_MAX];
 struct enemy_drops
 {
 	u8 live;
-	u8 x;
-	u8 y;
+	s16 x;
+	s16 y;
 	u8 type;
 	ERAPI_HANDLE_SPRITE handle;
 };

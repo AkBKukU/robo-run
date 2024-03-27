@@ -13,6 +13,6 @@ extern s16 phealth_last;
 void gui_init();
 
 void gui_print_score(u32 score);
-void gui_print_health(s16 health);
+void gui_print_health(s16 health,u8 shield);
 
 #endif

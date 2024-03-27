@@ -10,8 +10,8 @@
 
 struct bullet_data
 {
-	u8 x;
-	u8 y;
+	u16 x;
+	u16 y;
 	u8 live;
 	u8 angle;
 	u8 speed;

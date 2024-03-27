@@ -5,7 +5,9 @@ u8 px=160,py=80;
 s16 phealth=100;
 s8 fx=-10,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 0;
+u8 player_sheild_max = 1, player_sheild = 0;
 u8 shot_spread = 0;
+u8 player_iframes = 0;
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
@@ -52,6 +54,13 @@ void player_bounce(u8 angle)
 
 void player_hit_detect()
 {
+	if(player_iframes)
+	{
+		ERAPI_SetSpriteVisible(h_player,ERAPI_Mod(player_iframes,2));
+		--player_iframes;
+	}
+
+
 	// Check for contact with nearest enemy
 	u16 dist = 0;
 	ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_ENEMY, &dist);
@@ -75,9 +84,11 @@ void player_hit_detect()
 		if (py > ((tunnel_wall_top + TUNNEL_HEIGHT_MIN/2)*8))
 		{
 			fy=-10;
+			fx=-4;
 
 		}else{
 			fy=10;
+			fx=-4;
 
 		}
 	}
@@ -95,6 +106,9 @@ void player_hit_detect()
 	{
 		manager_shield.live = 0;
 		ERAPI_SpriteFree(manager_shield.handle);
+		if (player_sheild < player_sheild_max)
+			++player_sheild;
+		gui_print_health(phealth,player_sheild);
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
@@ -102,14 +116,24 @@ void player_hit_detect()
 	{
 		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
-		shot_spread = shot_spread ;
+		shot_spread += 20 ;
 	}
 }
 
 void player_damage(u8 damage)
 {
-	phealth-=damage;
-	gui_print_health(phealth);
+	if(player_iframes)
+	{
+		return;
+	}
+	if (player_sheild)
+	{
+		--player_sheild;
+	}else{
+		phealth-=damage;
+	}
+	gui_print_health(phealth,player_sheild);
+	player_iframes=PLAYER_IFRAMES_MAX;
 	if(phealth < 0) ERAPI_SpriteHide( h_player);
 }
 
@@ -130,7 +154,8 @@ void player_control()
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
 		// TODO - 1 is playeer damage that will scale with powerups
-		bullet_fire(127, 4, px+8, py+vertical_offset,1);
+		u32 rand = ERAPI_RandMax(shot_spread);
+		bullet_fire((128-shot_spread/2)+rand, 2, px+12, py+vertical_offset,1);
 		fire_cooldown = fire_cooldown_max;
 	}
 }

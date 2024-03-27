@@ -9,12 +9,16 @@
 
 #define PLAYER_BUMP_FORCE 8
 #define PLAYER_HIT_R 10
+#define PLAYER_MAX 5
+#define PLAYER_IFRAMES_MAX 15
 
 extern u8 px,py;
 extern s16 phealth;
 extern s8 fx,fy;
 extern u8 fire_cooldown_max, fire_cooldown;
+extern u8 player_sheild_max, player_sheild;
 extern u8 shot_spread;
+extern u8 player_iframes;
 
 extern ERAPI_SPRITE sprite_player;
 extern ERAPI_HANDLE_SPRITE h_player;

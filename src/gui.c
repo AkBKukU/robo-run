@@ -26,7 +26,7 @@ void gui_print_score(u32 score)
 	ERAPI_DrawText( score_print, 0, 0, num_print);
 }
 
-void gui_print_health(s16 health)
+void gui_print_health(s16 health,u8 shield)
 {
 	// Create print buffer and convert int to string
 	char num_print[8];
@@ -50,7 +50,7 @@ void gui_print_health(s16 health)
 			ERAPI_SetRegionColor( region_health, 0x00);
 			for (int i = 0;i < 4; ++i)
 			{
-				ERAPI_DrawLine(region_health,space+phealth_last,i,space+health,i,10);
+				ERAPI_DrawLine(region_health,space+phealth_last,i,space+health,i,8);
 			}
 			ERAPI_SetTextColor( region_health, 0x05, 0x00);
 			ERAPI_DrawText( region_health, 0, 0, num_print);
@@ -64,4 +64,14 @@ void gui_print_health(s16 health)
 			ERAPI_DrawLine(region_health,space,i,space+health,i,30);
 		phealth_last = health;
 	}
+
+ 	ERAPI_SetRegionColor( region_health, 0x05);
+	u8 shield_place = 20;
+	for (int y = 0;y < shield; ++y)
+	{
+			ERAPI_DrawLine(region_health,shield_place,6,shield_place+13,6,0);
+			shield_place += 16;
+
+	}
+
 }

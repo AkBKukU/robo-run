@@ -15,8 +15,8 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
 
 		// Prepare new bullet
 		manger_bullet[i].live = 1;
-		manger_bullet[i].x = x;
-		manger_bullet[i].y = y;
+		manger_bullet[i].x = x<<8;
+		manger_bullet[i].y = y<<8;
 		manger_bullet[i].speed = speed;
 		manger_bullet[i].angle = angle;
 		manger_bullet[i].damage = damage;
@@ -41,15 +41,15 @@ void bullet_update()
 		if (!manger_bullet[i].live) continue;
 
 		// Calculate next position based on angle
-		manger_bullet[i].x += -ERAPI_Cos(manger_bullet[i].angle, manger_bullet[i].speed) >> 8;
-		manger_bullet[i].y += ERAPI_Sin(manger_bullet[i].angle, manger_bullet[i].speed) >> 8;
+		manger_bullet[i].x += -ERAPI_Cos(manger_bullet[i].angle, manger_bullet[i].speed);
+		manger_bullet[i].y += ERAPI_Sin(manger_bullet[i].angle, manger_bullet[i].speed);
 
 		// Check if bullet is in bounds
 		if (
 			(manger_bullet[i].x < 0) ||
-			(manger_bullet[i].x > 240) ||
+			(manger_bullet[i].x > 240<<8) ||
 			(manger_bullet[i].y < 0) ||
-			(manger_bullet[i].y > BACK_Y * 8)
+			(manger_bullet[i].y > (BACK_Y * 8)<<8)
 		){
 			bullet_free(i);
 			continue;
@@ -59,8 +59,8 @@ void bullet_update()
 		// Update drawn position
 		ERAPI_SetSpritePos(
 			manger_bullet[i].handle,
-			manger_bullet[i].x,
-			manger_bullet[i].y-vertical_offset
+			manger_bullet[i].x / 256,
+			(manger_bullet[i].y /256)-vertical_offset
 		);
 
 		// Check for contact against enemies
