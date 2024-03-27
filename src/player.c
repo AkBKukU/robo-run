@@ -5,6 +5,7 @@ u8 px=160,py=80;
 s16 phealth=100;
 s8 fx=-10,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 0;
+u8 shot_spread = 0;
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
@@ -79,6 +80,29 @@ void player_hit_detect()
 			fy=10;
 
 		}
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
+	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	{
+		manager_cooldown.live = 0;
+		ERAPI_SpriteFree(manager_cooldown.handle);
+		fire_cooldown_max = fire_cooldown_max > 5 ? fire_cooldown_max-5 : fire_cooldown_max ;
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
+	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	{
+		manager_shield.live = 0;
+		ERAPI_SpriteFree(manager_shield.handle);
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
+	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	{
+		manager_spread.live = 0;
+		ERAPI_SpriteFree(manager_spread.handle);
+		shot_spread = shot_spread ;
 	}
 }
 

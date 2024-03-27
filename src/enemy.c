@@ -104,6 +104,7 @@ void enemy_drop(u8 i)
 			manager_cooldown.x = manger_enemy[i].x;
 			manager_cooldown.y = manger_enemy[i].y;
 			manager_cooldown.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_cooldown);
+			ERAPI_SpriteSetType(manager_cooldown.handle,SPRITE_COOL);
 			ERAPI_SetSpritePos(
 				manager_cooldown.handle,
 				manager_cooldown.x,
@@ -113,28 +114,30 @@ void enemy_drop(u8 i)
 		case 3:
 		case 4:
 			// Spread
-			if(manager_shield.live == 1) return;
-			manager_shield.live = 1;
-			manager_shield.x = manger_enemy[i].x;
-			manager_shield.y = manger_enemy[i].y;
-			manager_shield.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_spread);
-			ERAPI_SetSpritePos(
-				manager_shield.handle,
-				manager_shield.x,
-				manager_shield.y-vertical_offset
-			);
-			return;
-		case 5:
-			// Shield
 			if(manager_spread.live == 1) return;
 			manager_spread.live = 1;
 			manager_spread.x = manger_enemy[i].x;
 			manager_spread.y = manger_enemy[i].y;
 			manager_spread.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_shield);
+			ERAPI_SpriteSetType(manager_spread.handle,SPRITE_SPREAD);
 			ERAPI_SetSpritePos(
 				manager_spread.handle,
 				manager_spread.x,
 				manager_spread.y-vertical_offset
+			);
+			return;
+		case 5:
+			// Shield
+			if(manager_shield.live == 1) return;
+			manager_shield.live = 1;
+			manager_shield.x = manger_enemy[i].x;
+			manager_shield.y = manger_enemy[i].y;
+			manager_shield.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_spread);
+			ERAPI_SpriteSetType(manager_shield.handle,SPRITE_SHIELD);
+			ERAPI_SetSpritePos(
+				manager_shield.handle,
+				manager_shield.x,
+				manager_shield.y-vertical_offset
 			);
 			return;
 	}

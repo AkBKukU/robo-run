@@ -14,6 +14,7 @@ extern u8 px,py;
 extern s16 phealth;
 extern s8 fx,fy;
 extern u8 fire_cooldown_max, fire_cooldown;
+extern u8 shot_spread;
 
 extern ERAPI_SPRITE sprite_player;
 extern ERAPI_HANDLE_SPRITE h_player;
