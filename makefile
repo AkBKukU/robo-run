@@ -62,10 +62,10 @@ build/$(TARGET).vpk : build/$(TARGET).bin
 build/$(TARGET).bin : build/$(TARGET).elf
 	$(OBJCOPY) -O binary "$<" "$@"
 
-build/$(TARGET).elf : build/crt0.o build/map.o build/gfx_enemy.o build/gfx_player.o build/gfx_powerup.o $(OBJS)
+build/$(TARGET).elf : build/crt0.o build/map.o build/gfx_enemy.o build/gfx_player.o build/gfx_powerup.o build/map_boss.o $(OBJS)
 	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -O3  $^ -o $@
 
-$(OBJ)/%.o: $(SRC)/%.c  gfx/gfx_player.c map/map.c
+$(OBJ)/%.o: $(SRC)/%.c  gfx/gfx_player.c map/map.c map/map_boss.c
 	$(GCC) -I ./ -I ../../lib  -I lib -mthumb -c $< -o "$@"
 
 build/gfx_enemy.o : gfx/gfx_enemy.c
@@ -75,6 +75,9 @@ build/gfx_player.o : gfx/gfx_player.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
 
 build/gfx_powerup.o : gfx/gfx_powerup.c
+	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
+
+build/map_boss.o : map/map_boss.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
 
 build/map.o : map/map.c
@@ -96,7 +99,10 @@ gfx/gfx_powerup.c:
 	$(GRIT) gfx/bullet.tga gfx/powerup-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_powerup
 
 map/map.c :
-	$(GRIT) map/*.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map
+	$(GRIT) map/stars.tga map/tunnel.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map
+
+map/map_boss.c :
+	$(GRIT) map/map_boss.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map_boss
 
 clean :
 	rm -f build/*.o

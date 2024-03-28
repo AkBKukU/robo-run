@@ -4,6 +4,7 @@
 #include "map/map.h"
 
 #include "gui.h"
+#include "boss.h"
 #include "screen.h"
 #include "enemy.h"
 #include "player.h"
@@ -39,9 +40,10 @@ int main()
 	init();
 	// Main Loop
 	gui_print_health(phealth,player_sheild);
+	boss_spawn();
 	while (sysexit == 0)
 	{
-		gui_print_score(player_score);
+		gui_print_score(&boss_map);
 		slide_tunnel();
 		slide_stars();
 		player_control();
