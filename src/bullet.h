@@ -19,7 +19,7 @@ struct bullet_data
 	u8 damage;
 	ERAPI_HANDLE_SPRITE handle;
 };
-extern struct bullet_data* manger_bullet;
+extern struct bullet_data manger_bullet[BULLET_MAX];
 
 
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage);

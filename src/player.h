@@ -10,7 +10,7 @@
 #define PLAYER_BUMP_FORCE 8
 #define PLAYER_HIT_R 10
 #define PLAYER_MAX 5
-#define PLAYER_IFRAMES_MAX 15
+#define PLAYER_IFRAMES_MAX 16
 
 extern u8 px,py;
 extern s16 phealth;

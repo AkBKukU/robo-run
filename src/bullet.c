@@ -3,7 +3,7 @@
 
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 8, 8, 1};
 
-struct bullet_data* manger_bullet;
+struct bullet_data manger_bullet[BULLET_MAX];
 
 
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
@@ -67,7 +67,7 @@ void bullet_update()
 		// Check for contact against enemies
 		u16 dist = 0;
 		ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_ENEMY, &dist);
-		if (hit_sprite < 128 && dist < 10)
+		if (dist > 0 && dist < 10)
 		{
 			enemy_damage(hit_sprite,1);
 			bullet_free(i);
@@ -76,7 +76,7 @@ void bullet_update()
 
 		// Check for contact against player
 		hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
-		if (hit_sprite < 128 && dist < 10)
+		if (dist > 0 && dist < 10)
 		{
 			player_damage(manger_bullet[i].damage);
 			bullet_free(i);
@@ -97,7 +97,6 @@ void bullet_free(u8 i)
 
 void bullet_init()
 {
-	manger_bullet = (struct bullet_data*) ERAPI_MemAlloc(BULLET_MAX * sizeof(struct bullet_data));
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
 		manger_bullet[i].live = 0;

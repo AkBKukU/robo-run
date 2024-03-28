@@ -56,7 +56,7 @@ void player_hit_detect()
 {
 	if(player_iframes)
 	{
-		ERAPI_SetSpriteVisible(h_player,ERAPI_Mod(player_iframes,2));
+		ERAPI_SpriteToggleVisible(h_player);
 		--player_iframes;
 	}
 
@@ -66,7 +66,7 @@ void player_hit_detect()
 	ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_ENEMY, &dist);
 
 
-	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
 		enemy_damage(hit_sprite,1);
@@ -94,7 +94,7 @@ void player_hit_detect()
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
-	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
@@ -102,7 +102,7 @@ void player_hit_detect()
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
-	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		manager_shield.live = 0;
 		ERAPI_SpriteFree(manager_shield.handle);
@@ -112,7 +112,7 @@ void player_hit_detect()
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
-	if (hit_sprite < 128 && dist < PLAYER_HIT_R)
+	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
