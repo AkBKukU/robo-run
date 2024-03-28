@@ -21,6 +21,10 @@ extern u32 boss_level;
 
 extern unsigned short boss_map[BACK_X*BACK_Y];
 
+#define center (BACK_X *9 + 16)
+
 void boss_spawn();
+void boss_update();
+void boss_init();
 
 #endif

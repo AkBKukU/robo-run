@@ -49,6 +49,7 @@ int main()
 		player_control();
 		enemy_update();
 		bullet_update();
+		boss_update();
 		player_hit_detect();
 		ERAPI_RenderFrame(1);
 	}
