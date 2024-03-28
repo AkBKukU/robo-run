@@ -81,7 +81,7 @@ void player_hit_detect()
 	if (tile)
 	{
 		player_damage(20);
-		if (py > ((tunnel_wall_top + TUNNEL_HEIGHT_MIN/2)*8))
+		if (py > (tunnel_center(px/8))*8)
 		{
 			fy=-10;
 			fx=-4;

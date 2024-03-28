@@ -30,5 +30,6 @@ extern unsigned short tunnelslide[BACK_X*BACK_Y];
 u8 tunnel_tile_pick();
 void slide_tunnel();
 void slide_stars();
+u8 tunnel_center(u8 col);
 void screen_init();
 #endif

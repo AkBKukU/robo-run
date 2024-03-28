@@ -14,6 +14,8 @@ u32 enemy_spawn_next[ENEMY_TYPE_COUNT];
 u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
 u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
 
+u8 enemy_spawn_allowed=1;
+
 // Damage enemey using sprite handle as ID
 void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 {
@@ -50,7 +52,10 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 void enemy_update()
 {
 	// Check to spawn new enemies
-	if(enemy_spawn_next[ENEMY_TYPE_LIGHT] < distance_tiles) enemy_spawn(ENEMY_TYPE_LIGHT);
+	if(enemy_spawn_allowed)
+	{
+		if(enemy_spawn_next[ENEMY_TYPE_LIGHT] < distance_tiles) enemy_spawn(ENEMY_TYPE_LIGHT);
+	}
 	// Check all enemies
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{

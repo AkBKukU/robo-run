@@ -26,9 +26,14 @@
 #include "player.h"
 #include "gamestate.h"
 #include "util.h"
+#include "boss.h"
 
 extern u8 sysexit, win;
-extern u32 distance_tiles, player_score;
+extern u32 distance_tiles, player_score,frame_count;
 
+extern u16 base_seed;
+
+void rand_stable_map();
+void rand_stable_boss();
 
 #endif

@@ -44,6 +44,7 @@ u8 tunnel_tile_pick()
 // Shifts all tiles to the left for the tunnel
 void slide_tunnel()
 {
+	rand_stable_map();
 	++tunnel_offset_frames;
 	++tunnel_offset;
 	ERAPI_SetBackgroundOffset(2,tunnel_offset,vertical_offset);
@@ -123,8 +124,30 @@ void slide_tunnel()
 	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
 }
 
+u8 tunnel_center(u8 col)
+{
+	u8 ytop = 0;
+	u8 top = tunnelslide[ (col) ];
+	while(top)
+	{
+		++ytop;
+		top = tunnelslide[ (col) + (ytop * BACK_X) ];
+	}
+
+	u8 ybot = BACK_Y-1;
+	u8 bottom = tunnelslide[ (col) + (ybot * BACK_X)  ];
+	while(bottom)
+	{
+		--ybot;
+		bottom = tunnelslide[ (col) + (ybot * BACK_X) ];
+	}
+
+	return ytop+(ybot - ytop)/2;
+}
+
 void slide_stars()
 {
+	rand_stable_map();
 	// Slowed background scrolling for parallax using modulos
 	++stars_offset_frames;
 	if(ERAPI_Mod(stars_offset_frames, STAR_SPEED)==0) ++stars_offset;

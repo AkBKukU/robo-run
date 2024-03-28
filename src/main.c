@@ -23,7 +23,7 @@ static inline void init()
 	ERAPI_SetBackgroundMode( 0);
 	ERAPI_SetBackgroundPalette( palette, 0x00, 0x06);
 
-	ERAPI_RandInit(9);
+	ERAPI_RandInit(base_seed);
 
 	// Component Setup
 	gui_init();
@@ -31,6 +31,7 @@ static inline void init()
 	screen_init();
 	enemy_init();
 	bullet_init();
+	boss_init();
 
 	ERAPI_FadeIn( 1);
 }
@@ -43,7 +44,7 @@ int main()
 	boss_spawn();
 	while (sysexit == 0)
 	{
-		gui_print_score(&boss_map);
+// 		gui_print_score(player_score);
 		slide_tunnel();
 		slide_stars();
 		player_control();
@@ -51,7 +52,9 @@ int main()
 		bullet_update();
 		boss_update();
 		player_hit_detect();
+
 		ERAPI_RenderFrame(1);
+		++frame_count;
 	}
 
 	// exit

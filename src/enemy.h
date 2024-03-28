@@ -17,6 +17,8 @@ extern u32 enemy_spawn_next[ENEMY_TYPE_COUNT];
 extern u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
 extern u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
 
+extern u8 enemy_spawn_allowed;
+
 struct enemy_data
 {
 	u8 live;
