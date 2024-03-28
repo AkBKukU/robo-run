@@ -63,10 +63,10 @@ build/$(TARGET).bin : build/$(TARGET).elf
 	$(OBJCOPY) -O binary "$<" "$@"
 
 build/$(TARGET).elf : build/crt0.o build/map.o build/gfx_enemy.o build/gfx_player.o build/gfx_powerup.o build/map_boss.o $(OBJS)
-	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -O3  $^ -o $@
+	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -Os  $^ -o $@
 
 $(OBJ)/%.o: $(SRC)/%.c  gfx/gfx_player.c map/map.c map/map_boss.c
-	$(GCC) -I ./ -I ../../lib  -I lib -mthumb -c $< -o "$@"
+	$(GCC) -I ./ -I ../../lib  -I lib -Os -mthumb -c $< -o "$@"
 
 build/gfx_enemy.o : gfx/gfx_enemy.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
