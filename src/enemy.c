@@ -234,7 +234,7 @@ void enemy_spawn(u8 spawn_type)
 
 		++enemy_spawn_count[spawn_type];
 		// TODO - the 20 and 50 should scale with distance for difficulty
-		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(50);
+		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(40);
 		return;
 	}
 }

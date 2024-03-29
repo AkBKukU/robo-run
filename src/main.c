@@ -32,7 +32,6 @@ static inline void init()
 	enemy_init();
 	bullet_init();
 	boss_init();
-enemy_spawn_allowed=1;
 	ERAPI_FadeIn( 1);
 }
 
