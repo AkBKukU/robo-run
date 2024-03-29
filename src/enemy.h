@@ -11,8 +11,9 @@
 
 #define ENEMY_PATH_STRAIGHT 0
 
-#define ENEMY_TYPE_COUNT 1
-#define ENEMY_TYPE_LIGHT 0
+#define ENEMY_TYPE_COUNT 2
+#define ENEMY_TYPE_ROCK 0
+#define ENEMY_TYPE_LIGHT 1
 extern u32 enemy_spawn_next[ENEMY_TYPE_COUNT];
 extern u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
 extern u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
@@ -49,6 +50,7 @@ extern struct enemy_drops manager_shield;
 extern struct enemy_drops manager_spread;
 
 
+extern ERAPI_SPRITE sprite_enemy_rock;
 extern ERAPI_SPRITE sprite_enemy_light;
 
 extern ERAPI_SPRITE sprite_powerup_cooldown;

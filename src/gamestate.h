@@ -34,6 +34,7 @@ extern u32 distance_tiles, player_score,frame_count;
 extern u16 base_seed;
 
 void rand_stable_map();
+void rand_true();
 void rand_stable_boss(u8 boss_col);
 
 #endif

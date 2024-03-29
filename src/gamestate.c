@@ -11,6 +11,11 @@ void rand_stable_map()
 	ERAPI_RandInit(base_seed+distance_tiles*10000);
 }
 
+void rand_true()
+{
+	ERAPI_RandInit(frame_count);
+}
+
 void rand_stable_boss(u8 boss_col)
 {
 	ERAPI_RandInit(base_seed+(boss_level+boss_col*10)*10000);

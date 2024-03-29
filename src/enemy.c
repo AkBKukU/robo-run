@@ -1,7 +1,8 @@
 
 #include "enemy.h"
 struct enemy_data manger_enemy[ENEMY_MAX];
-ERAPI_SPRITE sprite_enemy_light = { emy_0_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 0, 2, 1};
+ERAPI_SPRITE sprite_enemy_rock = { emy_0_rockTiles, gfx_enemySharedPal, 4, 4, 3, 4, 0, 2, 1};
+ERAPI_SPRITE sprite_enemy_light = { emy_1_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 0, 2, 1};
 
 struct enemy_drops manager_cooldown;
 struct enemy_drops manager_shield;
@@ -27,6 +28,7 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 		// Find enemy to damage
 		if (manger_enemy[i].handle == hit_sprite)
 		{
+			if(manger_enemy[i].type == ENEMY_TYPE_ROCK) return;
 			// Check if already defeated
 			if (manger_enemy[i].live > 1) return;
 			// Damage enemy
@@ -51,10 +53,12 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 
 void enemy_update()
 {
+	rand_stable_map();
 	// Check to spawn new enemies
 	if(enemy_spawn_allowed)
 	{
-		if(enemy_spawn_next[ENEMY_TYPE_LIGHT] < distance_tiles) enemy_spawn(ENEMY_TYPE_LIGHT);
+		for ( u8 i = 0; i < ENEMY_TYPE_COUNT; ++i )
+			if(enemy_spawn_next[i] < distance_tiles) enemy_spawn(i);
 	}
 	// Check all enemies
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
@@ -79,7 +83,7 @@ void enemy_update()
 
 		// Check fire cooldown
 		--manger_enemy[i].cooldown;
-		if(!manger_enemy[i].cooldown)
+		if(!manger_enemy[i].cooldown && manger_enemy[i].type != ENEMY_TYPE_ROCK)
 		{
 			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y,manger_enemy[i].damage,BULLET_ENEMY);
 			manger_enemy[i].cooldown = ERAPI_RandMax(240);
@@ -221,16 +225,28 @@ void enemy_spawn(u8 spawn_type)
 		manger_enemy[i].x = 248;
 		manger_enemy[i].y = y;
 		manger_enemy[i].t = 0;
-		manger_enemy[i].health = 3;
 		manger_enemy[i].damage = 3;
 		manger_enemy[i].live = 1;
 		manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		manger_enemy[i].type = spawn_type;
 		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 
- 		manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
+		switch(spawn_type)
+		{
+			case ENEMY_TYPE_ROCK:
+				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_rock);
+				manger_enemy[i].health = 100;
+				rand_true();
+				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,4));
+				//ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(2));
+				break;
+			case ENEMY_TYPE_LIGHT:
+				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
+				manger_enemy[i].health = 3;
+				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
+				break;
+		}
  		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
- 		ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 
 		++enemy_spawn_count[spawn_type];
 		// TODO - the 20 and 50 should scale with distance for difficulty
@@ -258,4 +274,5 @@ void enemy_init()
 		enemy_spawn_count[i] = 0;
 	}
 	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
+	enemy_spawn_max[ENEMY_TYPE_ROCK] = 3;
 }
