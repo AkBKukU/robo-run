@@ -6,7 +6,7 @@ ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 8,
 struct bullet_data manger_bullet[BULLET_MAX];
 
 
-void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
+void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 {
 	// Iterate over all bullets
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
@@ -19,6 +19,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage)
 		manger_bullet[i].x = x<<8;
 		manger_bullet[i].y = y<<8;
 		manger_bullet[i].speed = speed;
+		manger_bullet[i].type = type;
 		manger_bullet[i].angle = angle;
 		manger_bullet[i].damage = damage;
 		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2, &sprite_bullet);
@@ -66,21 +67,27 @@ void bullet_update()
 
 		// Check for contact against enemies
 		u16 dist = 0;
-		ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_ENEMY, &dist);
-		if (dist > 0 && dist < 10)
+		if(manger_bullet[i].type == BULLET_PLAYER)
 		{
-			enemy_damage(hit_sprite,1);
-			bullet_free(i);
-			continue;
+			ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_ENEMY, &dist);
+			if (dist > 0 && dist < 10)
+			{
+				enemy_damage(hit_sprite,1);
+				bullet_free(i);
+				continue;
+			}
 		}
 
 		// Check for contact against player
-		hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
-		if (dist > 0 && dist < 10)
+		if(manger_bullet[i].type == BULLET_ENEMY)
 		{
-			player_damage(manger_bullet[i].damage);
-			bullet_free(i);
-			continue;
+			ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
+			if (dist > 0 && dist < 10)
+			{
+				player_damage(manger_bullet[i].damage);
+				bullet_free(i);
+				continue;
+			}
 		}
 	}
 }

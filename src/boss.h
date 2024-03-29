@@ -4,6 +4,7 @@
 #include "erapi.h"
 
 #include "gamestate.h"
+#include "bullet.h"
 #include "map/map_boss.h"
 
 #define BOSS_MAP_WIDTH   6

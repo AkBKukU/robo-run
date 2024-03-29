@@ -155,7 +155,7 @@ void player_control()
 	{
 		// TODO - 1 is playeer damage that will scale with powerups
 		u32 rand = ERAPI_RandMax(shot_spread);
-		bullet_fire((128-shot_spread/2)+rand, 2, px+12, py+vertical_offset,1);
+		bullet_fire((128-shot_spread/2)+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
 		fire_cooldown = fire_cooldown_max;
 	}
 }

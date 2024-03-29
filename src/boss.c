@@ -213,14 +213,14 @@ void boss_update()
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
 		{
-			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by);
+			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SPREAD)
 		{
-			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by);
-			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by);
+			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,3,BULLET_ENEMY);
+			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
 

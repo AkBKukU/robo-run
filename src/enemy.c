@@ -81,7 +81,7 @@ void enemy_update()
 		--manger_enemy[i].cooldown;
 		if(!manger_enemy[i].cooldown)
 		{
-			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y,manger_enemy[i].damage);
+			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y,manger_enemy[i].damage,BULLET_ENEMY);
 			manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		}
 
