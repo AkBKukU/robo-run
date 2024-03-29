@@ -182,6 +182,16 @@ void boss_spawn()
 	ERAPI_LoadBackgroundCustom( 1, &slide);
 }
 
+u8 boss_tile_hit_check(u8 x, u8 y)
+{
+	return (
+		boss_map[ x/8 + (
+			(y-(boss_y_offset*-1)+vertical_offset)/8
+
+		) * BACK_X ]
+	);
+}
+
 void boss_update()
 {
 	// Spawn boss if gone far enough, is called mul

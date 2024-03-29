@@ -93,6 +93,9 @@ void player_hit_detect()
 		}
 	}
 
+	// Check boss hit
+	gui_print_score(boss_tile_hit_check(px, py));
+
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
