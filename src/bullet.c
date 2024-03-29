@@ -76,6 +76,12 @@ void bullet_update()
 				bullet_free(i);
 				continue;
 			}
+
+			if(boss_tile_hit_check(manger_bullet[i].x/256, manger_bullet[i].y/256))
+			{
+				bullet_free(i);
+				continue;
+			}
 		}
 
 		// Check for contact against player
