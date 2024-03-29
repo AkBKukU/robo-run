@@ -43,7 +43,6 @@ int main()
 	gui_print_health(phealth,player_sheild);
 	while (sysexit == 0)
 	{
- 		gui_print_score(player_score);
 		slide_tunnel();
 		slide_stars();
 		player_control();
@@ -51,7 +50,11 @@ int main()
 		bullet_update();
 		boss_update();
 		effect_update();
+		powerup_update();
 		player_hit_detect();
+
+
+ 		gui_print_score(player_score);
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}

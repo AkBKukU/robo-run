@@ -4,12 +4,6 @@ struct enemy_data manger_enemy[ENEMY_MAX];
 ERAPI_SPRITE sprite_enemy_rock = { emy_0_rockTiles, gfx_enemySharedPal, 4, 4, 3, 4, 0, 2, 1};
 ERAPI_SPRITE sprite_enemy_light = { emy_1_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 0, 2, 1};
 
-struct enemy_drops manager_cooldown;
-struct enemy_drops manager_shield;
-struct enemy_drops manager_spread;
-ERAPI_SPRITE sprite_powerup_cooldown = { powerup_cooldownTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
-ERAPI_SPRITE sprite_powerup_shield = { powerup_shieldTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};;
-ERAPI_SPRITE sprite_powerup_spread = { powerup_spreadTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};;
 
 u32 enemy_spawn_next[ENEMY_TYPE_COUNT];
 u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
@@ -74,7 +68,7 @@ void enemy_update()
 			{
 				// animation finished
 				manger_enemy[i].live=0;
-				enemy_drop(i);
+				powerup_drop(manger_enemy[i].x,	manger_enemy[i].y);
 				--enemy_spawn_count[manger_enemy[i].type];
 				ERAPI_SpriteFree(manger_enemy[i].handle);
 			}
@@ -89,6 +83,14 @@ void enemy_update()
 			manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		}
 
+		// Check if enemy is off screen
+		if (manger_enemy[i].x < 16)
+		{
+			manger_enemy[i].live=0;
+			--enemy_spawn_count[manger_enemy[i].type];
+			ERAPI_SpriteFree(manger_enemy[i].handle);
+		}
+
 		// Update position
 		// TODO - Add path movement
 		enemy_path(i);
@@ -98,103 +100,9 @@ void enemy_update()
 			manger_enemy[i].y-vertical_offset
 		);
 	}
-	// Power ups
-	if(manager_cooldown.live)
-	{
-		--manager_cooldown.x;
-		ERAPI_SetSpritePos(
-			manager_cooldown.handle,
-			manager_cooldown.x/2,
-			manager_cooldown.y/2-vertical_offset
-		);
-		if(manager_cooldown.x < -4)
-		{
-			manager_cooldown.live = 0;
-			ERAPI_SpriteFree(manager_cooldown.handle);
-		}
-	}
-	if(manager_spread.live)
-	{
-		--manager_spread.x;
-		ERAPI_SetSpritePos(
-			manager_spread.handle,
-			manager_spread.x/2,
-			manager_spread.y/2-vertical_offset
-		);
-		if(manager_spread.x < -4)
-		{
-			manager_spread.live = 0;
-			ERAPI_SpriteFree(manager_spread.handle);
-		}
-	}
-	if(manager_shield.live)
-	{
-		--manager_shield.x;
-		ERAPI_SetSpritePos(
-			manager_shield.handle,
-			manager_shield.x/2,
-			manager_shield.y/2-vertical_offset
-		);
-		if(manager_shield.x < -4)
-		{
-			manager_shield.live = 0;
-			ERAPI_SpriteFree(manager_shield.handle);
-		}
-	}
-}
-
-void enemy_drop(u8 i)
-{
-	u8 type = 0;
-	switch(ERAPI_RandMax(100))
-	{
-		case 1:
-		case 2:
-			// Cooldown
-			if(manager_cooldown.live == 1) return;
-			manager_cooldown.live = 1;
-			manager_cooldown.x = manger_enemy[i].x*2;
-			manager_cooldown.y = manger_enemy[i].y*2;
-			manager_cooldown.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_cooldown);
-			ERAPI_SpriteSetType(manager_cooldown.handle,SPRITE_COOL);
-			ERAPI_SetSpritePos(
-				manager_cooldown.handle,
-				manager_cooldown.x,
-				manager_cooldown.y-vertical_offset
-			);
-			return;
-		case 3:
-		case 4:
-			// Spread
-			if(manager_spread.live == 1) return;
-			manager_spread.live = 1;
-			manager_spread.x = manger_enemy[i].x*2;
-			manager_spread.y = manger_enemy[i].y*2;
-			manager_spread.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_spread);
-			ERAPI_SpriteSetType(manager_spread.handle,SPRITE_SPREAD);
-			ERAPI_SetSpritePos(
-				manager_spread.handle,
-				manager_spread.x,
-				manager_spread.y-vertical_offset
-			);
-			return;
-		case 5:
-			// Shield
-			if(manager_shield.live == 1) return;
-			manager_shield.live = 1;
-			manager_shield.x = manger_enemy[i].x*2;
-			manager_shield.y = manger_enemy[i].y*2;
-			manager_shield.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_shield);
-			ERAPI_SpriteSetType(manager_shield.handle,SPRITE_SHIELD);
-			ERAPI_SetSpritePos(
-				manager_shield.handle,
-				manager_shield.x,
-				manager_shield.y-vertical_offset
-			);
-			return;
-	}
 
 }
+
 
 void enemy_path(u8 i)
 {
@@ -237,8 +145,8 @@ void enemy_spawn(u8 spawn_type)
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_rock);
 				manger_enemy[i].health = 100;
 				rand_true();
-				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,4));
-				//ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(2));
+				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,3));
+				ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(3));
 				break;
 			case ENEMY_TYPE_LIGHT:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);

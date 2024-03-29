@@ -93,12 +93,12 @@ void player_hit_detect()
 		}
 	}
 
-// 	// Check boss hit
-// 	if(boss_tile_hit_check(px, py+vertical_offset))
-// 	{
-// 		player_damage(10);
-// 		fx=-10;
-// 	}
+	// Check boss hit
+	if(boss_tile_hit_check(px, py+vertical_offset))
+	{
+		player_damage(10);
+		fx=-10;
+	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
 	if (dist > 0 && dist < PLAYER_HIT_R)
@@ -165,8 +165,10 @@ void player_control()
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
 		// TODO - 1 is playeer damage that will scale with powerups
+		rand_true();
 		u32 rand = ERAPI_RandMax(shot_spread);
-		bullet_fire((128-shot_spread/2)+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
+		bullet_fire(128-rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
+		bullet_fire(128+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
 		fire_cooldown = fire_cooldown_max;
 	}
 

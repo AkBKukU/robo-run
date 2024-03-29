@@ -3,7 +3,7 @@
 u8 sysexit = 0, win = 0;
 u32 distance_tiles = 0, player_score=0,frame_count=0;
 
-u16 base_seed = 1237;
+u16 base_seed = 24;
 //u16 base_seed = 54;
 
 void rand_stable_map()
