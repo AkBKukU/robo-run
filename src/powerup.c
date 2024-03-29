@@ -54,13 +54,11 @@ void powerup_update()
 	}
 }
 
-void powerup_drop(u8 x, u8 y)
+void powerup_droptype(u8 x, u8 y,u8 type)
 {
-	u8 type = 0;
-	switch(ERAPI_RandMax(10))
+	switch (type)
 	{
-		case 1:
-		case 2:
+		case POWERUP_COOLDOWN:
 			// Cooldown
 			if(manager_cooldown.live == 1) return;
 			manager_cooldown.live = 1;
@@ -74,8 +72,21 @@ void powerup_drop(u8 x, u8 y)
 				manager_cooldown.y-vertical_offset
 			);
 			return;
-		case 3:
-		case 4:
+		case POWERUP_SHIELD:
+			// Shield
+			if(manager_shield.live == 1) return;
+			manager_shield.live = 1;
+			manager_shield.x = x*2;
+			manager_shield.y = y*2;
+			manager_shield.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_shield);
+			ERAPI_SpriteSetType(manager_shield.handle,SPRITE_SHIELD);
+			ERAPI_SetSpritePos(
+				manager_shield.handle,
+				manager_shield.x,
+				manager_shield.y-vertical_offset
+			);
+			return;
+		case POWERUP_SPREAD:
 			// Spread
 			if(manager_spread.live == 1) return;
 			manager_spread.live = 1;
@@ -89,19 +100,24 @@ void powerup_drop(u8 x, u8 y)
 				manager_spread.y-vertical_offset
 			);
 			return;
+	}
+}
+
+void powerup_drop(u8 x, u8 y)
+{
+	u8 type = 0;
+	switch(ERAPI_RandMax(10))
+	{
+		case 1:
+		case 2:
+			powerup_droptype(x, y, POWERUP_COOLDOWN);
+			return;
+		case 3:
+		case 4:
+			powerup_droptype(x, y, POWERUP_SPREAD);
+			return;
 		case 5:
-			// Shield
-			if(manager_shield.live == 1) return;
-			manager_shield.live = 1;
-			manager_shield.x = x*2;
-			manager_shield.y = y*2;
-			manager_shield.handle = ERAPI_SpriteCreateCustom( 2, &sprite_powerup_shield);
-			ERAPI_SpriteSetType(manager_shield.handle,SPRITE_SHIELD);
-			ERAPI_SetSpritePos(
-				manager_shield.handle,
-				manager_shield.x,
-				manager_shield.y-vertical_offset
-			);
+			powerup_droptype(x, y, POWERUP_SHIELD);
 			return;
 	}
 

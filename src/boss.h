@@ -56,6 +56,7 @@ extern unsigned short boss_map[BACK_X*32];
 void boss_spawn();
 void boss_damage(u8 damage);
 void boss_update();
+void boss_get_pos_on(u8* x, u8* y);
 void boss_init();
 u8 boss_tile_hit_check(u8 x, u8 y);
 

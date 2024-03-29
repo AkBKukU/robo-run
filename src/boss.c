@@ -24,7 +24,7 @@ void boss_spawn()
 	{
 		boss_init();
 		boss_len = ERAPI_RandMax((boss_level > 3?3:boss_level) *BOSS_SIZE_RATIO_MAX)+5;
-		boss_health=boss_len*boss_level*2;
+		boss_health=(boss_len*boss_level)*4;
 		boss_gen_col=0;
 		boss_x_pos=15;
 		boss_y_offset=0;
@@ -198,6 +198,12 @@ u8 boss_tile_hit_check(u8 x, u8 y)
 	);
 }
 
+void boss_get_pos_on(u8* x, u8* y)
+{
+	*x = (BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8;
+	*y = ((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4;
+}
+
 void boss_update()
 {
 	// Spawn boss if gone far enough, is called mul
@@ -245,17 +251,26 @@ void boss_update()
 	{
 		boss_live = 0;
 		enemy_spawn_allowed=1;
-		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
-		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
-		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
-		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
-		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+		u8 x,y;
+		for (u8 i= 0;i < 5;++i)
+		{
+			boss_get_pos_on(&x, &y);
+			effect_explode(x,y);
+		}
+
+		boss_get_pos_on(&x, &y);
+		powerup_droptype(x,y,POWERUP_COOLDOWN);
+		boss_get_pos_on(&x, &y);
+		powerup_droptype(x,y,POWERUP_SHIELD);
+		boss_get_pos_on(&x, &y);
+		powerup_droptype(x,y,POWERUP_SPREAD);
 
 		boss_init();
 		ERAPI_LayerHide(1);
-		boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
+		boss_spawn_distance = distance_tiles+ boss_level*BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
 		player_score+=100*boss_level;
 		++boss_level;
+		player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
 
 	}
 }

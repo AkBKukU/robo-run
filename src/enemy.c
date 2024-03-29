@@ -110,7 +110,12 @@ void enemy_path(u8 i)
 	{
 		case ENEMY_PATH_STRAIGHT:
 			++manger_enemy[i].t;
-			manger_enemy[i].x = 240-ERAPI_Div(manger_enemy[i].t,5);
+			if (manger_enemy[i].type == ENEMY_TYPE_ROCK)
+			{
+				manger_enemy[i].x = 240-ERAPI_Div(manger_enemy[i].t,8);
+			} else {
+				manger_enemy[i].x = 240-ERAPI_Div(manger_enemy[i].t,5);
+			}
 			break;
 	}
 }
@@ -147,10 +152,11 @@ void enemy_spawn(u8 spawn_type)
 				rand_true();
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,3));
 				ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(3));
+				ERAPI_SpriteAutoRotateByTime(manger_enemy[i].handle,(40+ERAPI_RandMax(90))*(ERAPI_RandMax(3)-1),0);
 				break;
 			case ENEMY_TYPE_LIGHT:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
-				manger_enemy[i].health = 3;
+				manger_enemy[i].health = 6*boss_level;
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 				break;
 		}
