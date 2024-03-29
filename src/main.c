@@ -32,7 +32,7 @@ static inline void init()
 	enemy_init();
 	bullet_init();
 	boss_init();
-
+enemy_spawn_allowed=1;
 	ERAPI_FadeIn( 1);
 }
 
@@ -41,7 +41,6 @@ int main()
 	init();
 	// Main Loop
 	gui_print_health(phealth,player_sheild);
-	boss_spawn();
 	while (sysexit == 0)
 	{
 // 		gui_print_score(player_score);
@@ -53,6 +52,7 @@ int main()
 		boss_update();
 		player_hit_detect();
 
+	gui_print_score(enemy_spawn_allowed);
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}

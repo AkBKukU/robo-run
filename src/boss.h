@@ -22,7 +22,7 @@
 #define BOSS_WEAPON_COOLDOWN_MIN 30
 #define BOSS_WEAPON_COOLDOWN_MAX 250
 
-#define BOSS_SPAWN_DISTANCE_MAX 50
+#define BOSS_SPAWN_DISTANCE_MAX 150
 
 
 extern u32 boss_level;
@@ -36,6 +36,7 @@ extern u8 boss_weapon_count;
 extern u16 boss_spawn_distance;
 extern u8 weapon_laser;
 extern u8 boss_kill_count;
+extern s32 boss_health;
 
 
 struct boss_weapons
@@ -53,6 +54,7 @@ extern unsigned short boss_map[BACK_X*32];
 #define center (BACK_X *9 + 30)
 
 void boss_spawn();
+void boss_damage(u8 damage);
 void boss_update();
 void boss_init();
 u8 boss_tile_hit_check(u8 x, u8 y);

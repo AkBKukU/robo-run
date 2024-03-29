@@ -1,6 +1,6 @@
 #include "boss.h"
 
-u32 boss_level =3;
+u32 boss_level =1;
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
 u8 boss_len=0,boss_gen_col=0,boss_x_pos=0;
@@ -11,6 +11,7 @@ u8 boss_weapon_count=0;
 u8 boss_weapon_min=0;
 u8 weapon_laser=0;
 u8 boss_kill_count=0;
+s32 boss_health=0;
 
 struct boss_weapons manger_boss_weapons[BOSS_WEAPON_MAX];
 
@@ -22,12 +23,14 @@ void boss_spawn()
 	if (!boss_spawning_flag)
 	{
 		boss_init();
-		boss_len = ERAPI_RandMax(boss_level *BOSS_SIZE_RATIO_MAX)+5;
+		boss_len = ERAPI_RandMax((boss_level > 3?3:boss_level) *BOSS_SIZE_RATIO_MAX)+5;
+		boss_health=boss_len*boss_level*2;
 		boss_gen_col=0;
 		boss_x_pos=15;
 		boss_y_offset=0;
 		boss_weapon_count=0;
 		weapon_laser=1;
+		enemy_spawn_allowed=0;
 	}
 	boss_spawning_flag = 1;
 
@@ -58,6 +61,7 @@ void boss_spawn()
 				boss_map[center+BACK_X*2] = BOSS_MAP_WIDTH|0x800;
 				break;
 			case 3:
+			default:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH;
 				boss_map[center+BACK_X*2] = BOSS_MAP_WIDTH*2;
 				boss_map[center+BACK_X*3] = BOSS_MAP_WIDTH|0x800;
@@ -75,6 +79,7 @@ void boss_spawn()
 
 				boss_map[center+BACK_X*2] = (BOSS_MAP_WIDTH+BOSS_MAP_WEAPONS+1)|0x800;
 				break;
+			default:
 			case 3:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH+BOSS_MAP_WEAPONS+1;
 
@@ -95,6 +100,7 @@ void boss_spawn()
 
 				boss_map[center+BACK_X*2] = (BOSS_MAP_WIDTH+BOSS_MAP_WEAPONS+2)|0x800;
 				break;
+			default:
 			case 3:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH+BOSS_MAP_WEAPONS+2;
 
@@ -233,9 +239,23 @@ void boss_update()
 			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
-
-
 	}
+
+	if (boss_health < 0)
+	{
+		boss_live = 0;
+		enemy_spawn_allowed=1;
+		boss_init();
+		ERAPI_LayerHide(1);
+		boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
+		++boss_level;
+	}
+}
+
+void boss_damage(u8 damage)
+{
+	boss_health-=damage;
+	// TODO - change palette to flash
 }
 
 void boss_init()
@@ -249,11 +269,24 @@ void boss_init()
 		}
 	}
 
+	// Apply new background
+	ERAPI_BACKGROUND slide =
+	{
+		map_bossTiles,
+		map_bossSharedPal,
+		boss_map,
+		sizeof( map_bossTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( 1, &slide);
+	ERAPI_LayerShow(1);
+
 	for(u8 i=0;i<BOSS_WEAPON_MAX;++i)
 	{
 		manger_boss_weapons[i].type = 0;
 		manger_boss_weapons[i].alt = 0;
 	}
-// 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
- 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;
+ 	boss_spawn_distance = distance_tiles+ BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
+// 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;
 }

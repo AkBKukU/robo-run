@@ -79,6 +79,7 @@ void bullet_update()
 
 			if(boss_tile_hit_check(manger_bullet[i].x/256, manger_bullet[i].y/256))
 			{
+				boss_damage(manger_bullet[i].damage);
 				bullet_free(i);
 				continue;
 			}
