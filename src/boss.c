@@ -1,12 +1,13 @@
 #include "boss.h"
 
-u32 boss_level =2;
+u32 boss_level =3;
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
 u8 boss_len=0,boss_gen_col=0,boss_x_pos=0;
 s8 boss_y_offset=0;
 u16 boss_spawn_distance=0;
 u8 boss_weapon_allowance=0;
+u8 boss_weapon_count=0;
 u8 boss_weapon_min=0;
 u8 weapon_laser=0;
 u8 boss_kill_count=0;
@@ -17,7 +18,7 @@ unsigned short boss_map[BACK_X*32];
 
 void boss_spawn()
 {
-	rand_stable_boss();
+	rand_stable_boss(boss_gen_col);
 	if (!boss_spawning_flag)
 	{
 		boss_init();
@@ -25,9 +26,7 @@ void boss_spawn()
 		boss_gen_col=0;
 		boss_x_pos=15;
 		boss_y_offset=0;
-		boss_weapon_allowance=1+ERAPI_RandMax(boss_level*3);
-		boss_weapon_min = boss_level+1;
-		boss_weapon_allowance=boss_weapon_allowance> 10 ? 10 : boss_weapon_allowance;
+		boss_weapon_count=0;
 		weapon_laser=1;
 	}
 	boss_spawning_flag = 1;
@@ -107,29 +106,36 @@ void boss_spawn()
 	} else {
 
 		u8 v=ERAPI_RandMax(BOSS_MAP_WIDTH-3)+1;
-		u8 weapon_spawn = (ERAPI_RandMax(10) > 1 && boss_weapon_allowance);
+		u8 weapon_spawn = (ERAPI_RandMax(boss_len-3) >= boss_weapon_count);
 		switch(boss_level)
 		{
 			case 1:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH*2+v;
-				if(weapon_spawn || boss_weapon_min)
+				if(weapon_spawn)
 				{
 					u8 w=1+ERAPI_RandMax(BOSS_MAP_WEAPONS-1);
 					boss_map[center] = w;
 					boss_map[center+BACK_X*2] = w|0x800;
-					--boss_weapon_allowance;
+
+					manger_boss_weapons[boss_weapon_count].type = w;
+					manger_boss_weapons[boss_weapon_count].x = boss_gen_col;
+					manger_boss_weapons[boss_weapon_count].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+					++boss_weapon_count;
 				}
 				break;
 			case 2:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH*2+v;
 				boss_map[center+BACK_X*2] = BOSS_MAP_WIDTH*2+v;
-				if(weapon_spawn || boss_weapon_min)
+				if(weapon_spawn)
 				{
-					u8 w=1+ERAPI_RandMax(BOSS_MAP_WEAPONS-1+weapon_laser);
-					if(w == BOSS_TILE_LASER) weapon_laser=0;
+					u8 w=1+ERAPI_RandMax(BOSS_MAP_WEAPONS-1);
 					boss_map[center] = w;
 					boss_map[center+BACK_X*3] = w|0x800;
-					--boss_weapon_allowance;
+
+					manger_boss_weapons[boss_weapon_count].type = w;
+					manger_boss_weapons[boss_weapon_count].x = boss_gen_col;
+					manger_boss_weapons[boss_weapon_count].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);;
+					++boss_weapon_count;
 				}
 
 				break;
@@ -138,20 +144,23 @@ void boss_spawn()
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH+v;
 				boss_map[center+BACK_X*2] = BOSS_MAP_WIDTH*2+v;
 				boss_map[center+BACK_X*3] = (BOSS_MAP_WIDTH+v)|0x800;
-				if(weapon_spawn || boss_weapon_min)
+				if(weapon_spawn)
 				{
 					u8 w=2+ERAPI_RandMax(BOSS_MAP_WEAPONS-2+weapon_laser);
 					if(w == BOSS_TILE_LASER) weapon_laser=0;
 					boss_map[center] = w;
 					boss_map[center+BACK_X*4] = w|0x800;
-					--boss_weapon_allowance;
+
+					manger_boss_weapons[boss_weapon_count].type = w;
+					manger_boss_weapons[boss_weapon_count].x = boss_gen_col;
+					manger_boss_weapons[boss_weapon_count].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+					++boss_weapon_count;
 				}
 
 				break;
 		}
 
 	}
-	if(boss_weapon_min) --boss_weapon_min;
 
 	++boss_gen_col;
 	if(boss_gen_col > boss_len+1)
@@ -190,6 +199,33 @@ void boss_update()
 
 	if(!boss_live) return;
 
+	// fire weapons
+	for(u8 i=0;i<BOSS_WEAPON_MAX;++i)
+	{
+		if(manger_boss_weapons[i].cooldown)
+		{
+			--manger_boss_weapons[i].cooldown;
+			continue;
+		}
+
+		u8 by = ((7+manger_boss_weapons[i].alt+manger_boss_weapons[i].alt*boss_level)*8)-(boss_y_offset*-1)+vertical_offset + 4;
+		manger_boss_weapons[i].alt = !manger_boss_weapons[i].alt;
+
+		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
+		{
+			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by);
+			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+		}
+
+		if(manger_boss_weapons[i].type == BOSS_TILE_SPREAD)
+		{
+			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by);
+			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by);
+			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+		}
+
+
+	}
 }
 
 void boss_init()
@@ -201,6 +237,12 @@ void boss_init()
 
 		boss_map[x + (y * 32) ]=0;
 		}
+	}
+
+	for(u8 i=0;i<BOSS_WEAPON_MAX;++i)
+	{
+		manger_boss_weapons[i].type = 0;
+		manger_boss_weapons[i].alt = 0;
 	}
 // 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
  	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;
