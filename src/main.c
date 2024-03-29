@@ -31,6 +31,7 @@ static inline void init()
 	screen_init();
 	enemy_init();
 	bullet_init();
+	effect_init();
 	boss_init();
 	ERAPI_FadeIn( 1);
 }
@@ -42,16 +43,15 @@ int main()
 	gui_print_health(phealth,player_sheild);
 	while (sysexit == 0)
 	{
-// 		gui_print_score(player_score);
+ 		gui_print_score(player_score);
 		slide_tunnel();
 		slide_stars();
 		player_control();
 		enemy_update();
 		bullet_update();
 		boss_update();
+		effect_update();
 		player_hit_detect();
-
-	gui_print_score(enemy_spawn_allowed);
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}

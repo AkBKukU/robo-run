@@ -141,7 +141,11 @@ void player_damage(u8 damage)
 	}
 	gui_print_health(phealth,player_sheild);
 	player_iframes=PLAYER_IFRAMES_MAX;
-	if(phealth < 0) ERAPI_SpriteHide( h_player);
+	if(phealth < 0)
+	{
+		effect_explode(px,py+vertical_offset);
+		ERAPI_SpriteHide( h_player);
+	}
 }
 
 void player_control()
@@ -164,6 +168,11 @@ void player_control()
 		u32 rand = ERAPI_RandMax(shot_spread);
 		bullet_fire((128-shot_spread/2)+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
 		fire_cooldown = fire_cooldown_max;
+	}
+
+	if (key & ERAPI_KEY_B)
+	{
+		 sysexit =1;
 	}
 }
 

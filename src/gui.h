@@ -3,7 +3,7 @@
 #include "def.h"
 #include "erapi.h"
 
-#define RGB(a) ((a>>16)/8 | (((a&0xFF00)>>8)/8)<<5 | ((a&0xFF)/8) << 10)
+#include "util.h"
 
 extern ERAPI_HANDLE_REGION score_print;
 extern ERAPI_HANDLE_REGION region_health;

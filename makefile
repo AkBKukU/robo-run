@@ -89,11 +89,11 @@ build/crt0.o : ../../lib/crt0.s
 
 # Graphics
 gfx/gfx_player.c:
-	$(GRIT) gfx/player.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_player
+	$(GRIT) gfx/player.tga -pS  -gu8 -pu16 -gB4 -ftc -fa -ogfx/gfx_player
 #	$(GRIT) -pS -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx
 
 gfx/gfx_enemy.c:
-	$(GRIT) gfx/emy-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_enemy
+	$(GRIT) gfx/emy-*.tga gfx/eff-*.tga -pS  -gu8 -pu16 -gB4 -ftc -fa -ogfx/gfx_enemy
 
 gfx/gfx_powerup.c:
 	$(GRIT) gfx/bullet.tga gfx/powerup-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_powerup

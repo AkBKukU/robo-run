@@ -245,10 +245,18 @@ void boss_update()
 	{
 		boss_live = 0;
 		enemy_spawn_allowed=1;
+		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+		effect_explode((BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8,((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4);
+
 		boss_init();
 		ERAPI_LayerHide(1);
 		boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
+		player_score+=100*boss_level;
 		++boss_level;
+
 	}
 }
 
