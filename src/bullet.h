@@ -10,7 +10,7 @@
 
 #define BULLET_PLAYER 0
 #define BULLET_ENEMY 1
-#define BULLET_HIT_DELAY 8
+#define BULLET_UPDATE_DELAY 8
 
 
 struct bullet_data

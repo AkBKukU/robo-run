@@ -84,11 +84,12 @@ void enemy_update()
 		}
 
 		// Check if enemy is off screen
-		if (manger_enemy[i].x < 16)
+		if (manger_enemy[i].x < -32)
 		{
 			manger_enemy[i].live=0;
 			--enemy_spawn_count[manger_enemy[i].type];
 			ERAPI_SpriteFree(manger_enemy[i].handle);
+			continue;
 		}
 
 		// Update position
@@ -135,7 +136,7 @@ void enemy_spawn(u8 spawn_type)
 			y = (8+ERAPI_RandMax(172));
 
 		// TODO - All these values shoudl scale with distance
-		manger_enemy[i].x = 248;
+		manger_enemy[i].x = 250;
 		manger_enemy[i].y = y;
 		manger_enemy[i].t = 0;
 		manger_enemy[i].damage = 3;

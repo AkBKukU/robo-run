@@ -104,6 +104,8 @@ map/map.c :
 map/map_boss.c :
 	$(GRIT) map/map_boss.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map_boss
 
+run : sav
+	mGBA main.gba
 clean :
 	rm -f build/*.o
 	rm -f build/*.bin

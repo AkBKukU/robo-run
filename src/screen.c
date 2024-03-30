@@ -6,8 +6,9 @@ u8 stars_offset_frames = 0;
 u8 tunnel_offset = 0;
 u8 tunnel_offset_frames = 0;
 u8 tunnel_groups[2] = {0,0};
-s8 tunnel_wall_top = 3;
-s8 tunnel_wall_bottom = 3;
+s16 tunnel_wall_top = 3;
+s16 tunnel_wall_bottom = 3;
+s8 tunnel_height = TUNNEL_HEIGHT_START;
 
 // Screen vertical offset
 s8 vertical_offset = 16;
@@ -16,6 +17,7 @@ unsigned short tunnelslide[BACK_X*BACK_Y];
 
 void screen_init()
 {
+	tunnel_clear();
 	// Initialize background tile maps to empty
 	for(u8 x=0;x<BACK_X;++x)
 	{
@@ -25,11 +27,21 @@ void screen_init()
 			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
+	tunnel_wall_top = 0;
+	tunnel_wall_bottom = 0;
 
+}
+
+void tunnel_clear()
+{
+	rand_stable_boss(0);
+	tunnel_height = tunnel_height < TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
 	// Block types for tunnel
 	tunnel_groups[0] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 	tunnel_groups[1] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 
+	tunnel_wall_top = 0;
+	tunnel_wall_bottom = 0;
 }
 
 // Pick a tile from the currently selected groups
@@ -82,7 +94,7 @@ void slide_tunnel()
 		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
 	}
 
-	while ( (20 - tunnel_wall_top - tunnel_wall_bottom) < TUNNEL_HEIGHT_MIN )
+	while ( (20 - tunnel_wall_top - tunnel_wall_bottom) < tunnel_height )
 	{
 		--tunnel_wall_bottom;
 		--tunnel_wall_top;

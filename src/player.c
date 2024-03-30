@@ -145,6 +145,7 @@ void player_damage(u8 damage)
 	{
 		effect_explode(px,py+vertical_offset);
 		ERAPI_SpriteHide( h_player);
+		phealth = -1;
 	}
 }
 

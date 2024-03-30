@@ -11,6 +11,7 @@
 #include "gamestate.h"
 #include "bullet.h"
 
+#include "util.h"
 extern int __end[];
 const u16 palette[] = { 0x0000, 0xFFFF, 0x0000, 0x0FF0,0x001F,RGB(0x4986da) };
 
@@ -34,6 +35,9 @@ static inline void init()
 	effect_init();
 	boss_init();
 	ERAPI_FadeIn( 1);
+
+
+	//mgba_print_init();
 }
 
 int main()

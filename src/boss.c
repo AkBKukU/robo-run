@@ -4,7 +4,7 @@ u32 boss_level =1;
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
 u8 boss_len=0,boss_gen_col=0,boss_x_pos=0;
-s8 boss_y_offset=0;
+s16 boss_y_offset=0;
 u16 boss_spawn_distance=0;
 u8 boss_weapon_allowance=0;
 u8 boss_weapon_count=0;
@@ -213,10 +213,10 @@ void boss_update()
 
 	ERAPI_SetBackgroundOffset(1,boss_x_pos/8,(boss_y_offset*-1)+vertical_offset);
 
-	if((8+boss_level + boss_y_offset/8) > tunnel_center(31))
+	if((8+(boss_level > 3?3:boss_level) + boss_y_offset/8) > tunnel_center(31))
 		if(!ERAPI_Mod(frame_count,8)) --boss_y_offset;
 
-	if((8+boss_level + boss_y_offset/8) < tunnel_center(31))
+	if((8+(boss_level > 3?3:boss_level) + boss_y_offset/8) < tunnel_center(31))
 		if(!ERAPI_Mod(frame_count,8)) ++boss_y_offset;
 
 	if(!boss_live) return;
@@ -272,6 +272,7 @@ void boss_update()
 		++boss_level;
 		player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
 
+		tunnel_clear();
 	}
 }
 
