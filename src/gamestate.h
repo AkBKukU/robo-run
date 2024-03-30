@@ -18,7 +18,7 @@
 
 // Sprite limits
 #define ENEMY_MAX 8
-#define BULLET_MAX 12
+#define BULLET_MAX 32
 #define DROPS_MAX 3
 #define EFFECTS_MAX 5
 

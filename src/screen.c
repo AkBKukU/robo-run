@@ -27,15 +27,16 @@ void screen_init()
 			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
-	tunnel_wall_top = 0;
-	tunnel_wall_bottom = 0;
+	tunnel_wall_top = -50;
+	tunnel_wall_bottom = -50;
 
 }
 
 void tunnel_clear()
 {
 	rand_stable_boss(0);
-	tunnel_height = tunnel_height < TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
+	tunnel_height = tunnel_height > TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
+
 	// Block types for tunnel
 	tunnel_groups[0] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 	tunnel_groups[1] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
@@ -84,13 +85,13 @@ void slide_tunnel()
 
 	if(ERAPI_RandMax(10) == 1)
 	{
-		tunnel_wall_top += ERAPI_RandMax(6)-2;
+		tunnel_wall_top += ERAPI_RandMax(5)-2;
 		tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
 	}
 	if(ERAPI_RandMax(10) == 1)
 	{
 
-		tunnel_wall_bottom += ERAPI_RandMax(6)-2;
+		tunnel_wall_bottom += ERAPI_RandMax(5)-2;
 		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
 	}
 
@@ -99,6 +100,10 @@ void slide_tunnel()
 		--tunnel_wall_bottom;
 		--tunnel_wall_top;
 	}
+
+	tunnel_wall_top = (tunnel_wall_top > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_height : tunnel_wall_top;
+	tunnel_wall_bottom = (tunnel_wall_bottom > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_wall_bottom : tunnel_wall_bottom;
+
 
 	// Generate new tiles for top and bottom
 	if (tunnel_wall_top > 0)

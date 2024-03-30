@@ -131,9 +131,13 @@ void enemy_spawn(u8 spawn_type)
 		if (manger_enemy[i].live) continue;
 
 		// Prevent spawning on sold tile
+		u8 tile_giveup = 10;
 		u8 y = (8+ERAPI_RandMax(172));
-		while(tunnelslide[ (31) + (y/8 * BACK_X) ])
+		while(tunnelslide[ (31) + (y/8 * BACK_X) ] && tile_giveup)
+		{
 			y = (8+ERAPI_RandMax(172));
+			--tile_giveup;
+		}
 
 		// TODO - All these values shoudl scale with distance
 		manger_enemy[i].x = 250;
