@@ -5,6 +5,7 @@ ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 8,
 
 struct bullet_data manger_bullet[BULLET_MAX];
 
+u8 bullet_count = 0;
 
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 {
@@ -18,9 +19,15 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 		manger_bullet[i].live = 1;
 		manger_bullet[i].x = x<<8;
 		manger_bullet[i].y = y<<8;
-		manger_bullet[i].speed = speed;
-		manger_bullet[i].type = type;
 		manger_bullet[i].angle = angle;
+		manger_bullet[i].speed = speed;
+		manger_bullet[i].hitcheck = frame_count;
+
+		// Store next position based on angle
+		manger_bullet[i].xu = -ERAPI_Cos(manger_bullet[i].angle, manger_bullet[i].speed);
+		manger_bullet[i].yu = ERAPI_Sin(manger_bullet[i].angle, manger_bullet[i].speed);
+
+		manger_bullet[i].type = type;
 		manger_bullet[i].damage = damage;
 		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2, &sprite_bullet);
 		ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
@@ -30,6 +37,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 			x,
 			y-vertical_offset
 		);
+		++bullet_count;
 		return;
 	}
 }
@@ -42,9 +50,9 @@ void bullet_update()
 		// Continue if bullet is not in use
 		if (!manger_bullet[i].live) continue;
 
-		// Calculate next position based on angle
-		manger_bullet[i].x += -ERAPI_Cos(manger_bullet[i].angle, manger_bullet[i].speed);
-		manger_bullet[i].y += ERAPI_Sin(manger_bullet[i].angle, manger_bullet[i].speed);
+		// Update bullet path
+		manger_bullet[i].x += manger_bullet[i].xu;
+		manger_bullet[i].y += manger_bullet[i].yu;
 
 		// Check if bullet is in bounds
 		if (
@@ -57,6 +65,9 @@ void bullet_update()
 			continue;
 		}
 
+		// Dynamic delay based on number of bullets to prevent game lag
+		if(manger_bullet[i].hitcheck > frame_count) continue;
+		manger_bullet[i].hitcheck = frame_count + (bullet_count / BULLET_UPDATE_DELAY);
 
 		// Update drawn position
 		ERAPI_SetSpritePos(
@@ -65,7 +76,7 @@ void bullet_update()
 			(manger_bullet[i].y /256)-vertical_offset
 		);
 
-		// Check for contact against enemies
+		// Check for contact
 		u16 dist = 0;
 		if(manger_bullet[i].type == BULLET_PLAYER)
 		{
@@ -77,7 +88,7 @@ void bullet_update()
 				continue;
 			}
 
-			if(boss_tile_hit_check(manger_bullet[i].x/256, manger_bullet[i].y/256))
+			if(boss_live && boss_tile_hit_check(manger_bullet[i].x/256, manger_bullet[i].y/256))
 			{
 				boss_damage(manger_bullet[i].damage);
 				bullet_free(i);
@@ -107,6 +118,7 @@ void bullet_free(u8 i)
 	// NOTE - This works for now, but alternate frame rendering will
 	//        require a check for this in the future
 	ERAPI_SpriteFree(manger_bullet[i].handle);
+	--bullet_count;
 }
 
 void bullet_init()

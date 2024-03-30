@@ -4,9 +4,9 @@
 u8 px=160,py=80;
 s16 phealth=100;
 s8 fx=-10,fy=0;
-u8 fire_cooldown_max = 20, fire_cooldown = 0;
+u8 fire_cooldown_max = 5, fire_cooldown = 0;
 u8 player_sheild_max = 1, player_sheild = 0;
-u8 shot_spread = 0;
+u8 shot_spread = 20;
 u8 player_iframes = 0;
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
@@ -168,7 +168,8 @@ void player_control()
 		rand_true();
 		u32 rand = ERAPI_RandMax(shot_spread);
 		bullet_fire(128-rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
-		bullet_fire(128+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
+		if(shot_spread)
+			bullet_fire(128+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
 		fire_cooldown = fire_cooldown_max;
 	}
 
