@@ -37,7 +37,12 @@ static inline void init()
 	ERAPI_FadeIn( 1);
 
 
-	//mgba_print_init();
+#ifdef DEBUG_MGBA
+// Emulator debug functions
+	mgba_print_init();
+
+	mgba_print_string("Starting with print ability");
+#endif
 }
 
 int main()

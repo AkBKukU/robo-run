@@ -31,6 +31,9 @@ OBJ     := ./build
 SRCS    := $(wildcard $(SRC)/*.c)
 OBJS    := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SRCS))
 
+# Supply "-DDEBUG_MGBA" here to enable mGBA printing
+DEBUG ?=
+
 all : sav bmp
 
 sav : $(TARGET).sav
@@ -66,7 +69,7 @@ build/$(TARGET).elf : build/crt0.o build/map.o build/gfx_enemy.o build/gfx_playe
 	$(GCC) -lc -L $(PATH_LIB_GCC) -T ../../lib/ereader.ld -Os  $^ -o $@
 
 $(OBJ)/%.o: $(SRC)/%.c  gfx/gfx_player.c map/map.c map/map_boss.c
-	$(GCC) -I ./ -I ../../lib  -I lib -Os -mthumb -c $< -o "$@"
+	$(GCC) $(DEBUG) -I ./ -I ../../lib  -I lib -Os -mthumb -c $< -o "$@"
 
 build/gfx_enemy.o : gfx/gfx_enemy.c
 	$(GCC) -I ../../lib  -I lib  -mthumb -c -O2 -o "$@" "$<"
