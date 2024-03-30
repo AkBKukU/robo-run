@@ -3,6 +3,10 @@
 *.bmp
 *.sav
 
+# Ecplise
+.cproject
+.project
+
 # Prerequisites
 *.d
 
