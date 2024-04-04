@@ -9,6 +9,7 @@ u8 tunnel_groups[2] = {0,0};
 s16 tunnel_wall_top = 3;
 s16 tunnel_wall_bottom = 3;
 s8 tunnel_height = TUNNEL_HEIGHT_START;
+u8 tunnel_change_block = 0;
 
 // Screen vertical offset
 s8 vertical_offset = 16;
@@ -123,20 +124,64 @@ void slide_tunnel()
 
 void tunnel_generation()
 {
-	u8 change_chance = 10;
-	u8 change_amount = 6;
-
-	if(ERAPI_RandMax(change_chance) == 1)
+	if (level_progress_start+LEVEL_PROGRESS_1+(level_count*LEVEL_PROGRESS_INCREASE) > distance_tiles )
 	{
-		tunnel_wall_top += ERAPI_RandMax(change_amount)-(change_amount/2-1);
-		tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
-	}
-	if(ERAPI_RandMax(change_chance) == 1)
-	{
+		// Level Progress 0
+		// Details:
+		// - No tunnel
+		return;
 
-		tunnel_wall_bottom += ERAPI_RandMax(change_amount)-(change_amount/2-1);
-		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
+	}else if (level_progress_start+LEVEL_PROGRESS_2+(level_count*LEVEL_PROGRESS_INCREASE) > distance_tiles )
+	{
+		// Level Progress 1
+		if (level_progress != 1)
+		{
+			// Reset tunnel wall positions
+			level_progress = 1;
+			tunnel_wall_top = -3;
+			tunnel_wall_bottom = -3;
+		}
+		if (tunnel_change_block) {
+			--tunnel_change_block;
+			return;
+		}else{
+			// Randomly but evenly move tunnl
+			if(ERAPI_RandMax(20) == 1)
+			{
+				tunnel_wall_top += ERAPI_RandMax(10)-5;
+			}
+			if(ERAPI_RandMax(20) == 1)
+			{
+				tunnel_wall_bottom += ERAPI_RandMax(10)-5;
+			}
+		}
+
+	}else{
+		// Level Progress 2
+		if (level_progress != 2)
+		{
+			level_progress = 2;
+			 boss_spawn_init();
+		}
+
+
+		if (tunnel_change_block) {
+			--tunnel_change_block;
+			return;
+		}else{
+			// Slowly move tunnel to center
+			if(ERAPI_RandMax(10) == 1)
+			{
+				tunnel_wall_top += ERAPI_RandMax(7)-3;
+			}
+			if(ERAPI_RandMax(10) == 1)
+			{
+				tunnel_wall_bottom += ERAPI_RandMax(7)-3;
+			}
+		}
 	}
+
+	if (tunnel_change_block) return;
 
 	// Limit to tunnel height
 	while ( (BACK_Y - tunnel_wall_top - tunnel_wall_bottom) < tunnel_height )
@@ -145,9 +190,11 @@ void tunnel_generation()
 		--tunnel_wall_top;
 	}
 
-	// Prevent entire screen from filling
+	// Prevent entire screen from filling and going too far away
 	tunnel_wall_top = (tunnel_wall_top > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_height : tunnel_wall_top;
+	tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
 	tunnel_wall_bottom = (tunnel_wall_bottom > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_wall_bottom : tunnel_wall_bottom;
+	tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
 }
 
 u8 tunnel_center(u8 col)

@@ -25,7 +25,7 @@
 #define BOSS_SPAWN_DISTANCE_MAX 150
 
 
-extern u32 boss_level;
+extern u32 level_count;
 
 extern u8 boss_spawning_flag;
 extern u8 boss_live;
@@ -54,6 +54,7 @@ extern unsigned short boss_map[BACK_X*32];
 #define center (BACK_X *9 + 30)
 
 void boss_spawn();
+void boss_spawn_init();
 void boss_damage(u8 damage);
 void boss_update();
 void boss_get_pos_on(u8* x, u8* y);

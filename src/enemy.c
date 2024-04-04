@@ -161,7 +161,7 @@ void enemy_spawn(u8 spawn_type)
 				break;
 			case ENEMY_TYPE_LIGHT:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
-				manger_enemy[i].health = 6*boss_level;
+				manger_enemy[i].health = 6*level_count;
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 				break;
 		}
@@ -169,7 +169,7 @@ void enemy_spawn(u8 spawn_type)
 
 		++enemy_spawn_count[spawn_type];
 		// TODO - the 20 and 50 should scale with distance for difficulty
-		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(40);
+		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(20);
 		return;
 	}
 }

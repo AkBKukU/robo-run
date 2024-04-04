@@ -28,7 +28,7 @@
 #define LEVEL_PROGRESS_2 350
 
 extern u8 level_progress;
-extern u32 level_progress_change;
+extern u32 level_progress_start;
 
 #include "screen.h"
 #include "enemy.h"
