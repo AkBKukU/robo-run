@@ -3,7 +3,7 @@
 
 u8 px=160,py=80;
 s16 phealth=100;
-s8 fx=-10,fy=0;
+s8 fx=0,fy=0;
 u8 fire_cooldown_max = 20, fire_cooldown = 20;
 u8 player_sheild_max = 1, player_sheild = 0;
 u8 shot_spread = 0;
@@ -192,10 +192,10 @@ void player_control()
 
 void player_init()
 {
-	px=160;
+	px=120;
 	py=80;
 	phealth=100;
-	fx=-10;
+	fx=0;
 	fy=0;
 	fire_cooldown_max = 20;
 	fire_cooldown = 20;
@@ -205,7 +205,9 @@ void player_init()
 	player_iframes = 0;
 
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
-	ERAPI_SetSpritePos( h_player, px, py);
+	ERAPI_SetSpritePos( h_player, -100, py);
+	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x30,1);
+	ERAPI_SpriteAutoScaleHeightBySize(h_player,0x200,1);
 }
 
 void player_clean()

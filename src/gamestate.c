@@ -29,7 +29,11 @@ void game_init()
 	effect_init();
 	boss_init();
 	ERAPI_FadeIn( 100);
-	ERAPI_RenderFrame(100);
+	ERAPI_RenderFrame(75);
+	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x100,25);
+	ERAPI_SpriteAutoScaleHeightBySize(h_player,0x100,25);
+	ERAPI_SpriteSetPosAnimatedDuration(h_player,px,py,25);
+	ERAPI_RenderFrame(25);
 }
 
 

@@ -60,8 +60,8 @@ void screen_init()
 	tunnel_wall_top = -50;
 	tunnel_wall_bottom = -50;
 
-	stars_offset = 0;
-	stars_offset_frames = 0;
+	stars_offset=8;
+	stars_offset_frames=0;
 	tunnel_offset = 0;
 	tunnel_offset_frames = 0;
 	tunnel_groups[0] = 0;
