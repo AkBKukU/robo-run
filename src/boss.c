@@ -170,7 +170,7 @@ void boss_spawn()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 1, &slide);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_BOSS, &slide);
 }
 
 void boss_spawn_init()
@@ -210,7 +210,7 @@ void boss_update()
 
 	if(!boss_spawning_flag && !boss_live) return;
 
-	ERAPI_SetBackgroundOffset(1,boss_x_pos/8,(boss_y_offset*-1)+vertical_offset);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_BOSS,boss_x_pos/8,(boss_y_offset*-1)+vertical_offset);
 
 	if((8+(level_count > 3?3:level_count) + boss_y_offset/8) > tunnel_center(31))
 		if(!ERAPI_Mod(frame_count,8)) --boss_y_offset;
@@ -309,8 +309,8 @@ void boss_init()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 1, &slide);
-	ERAPI_LayerShow(1);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_BOSS, &slide);
+	ERAPI_LayerShow(BACKGROUND_LAYER_BOSS);
 
 	for(u8 i=0;i<BOSS_WEAPON_MAX;++i)
 	{

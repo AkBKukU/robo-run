@@ -40,8 +40,8 @@ void screen_init()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 2, &tunnel);
-	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_TUNNEL, &tunnel);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_TUNNEL,8,vertical_offset);
 
 
 	// Apply new background
@@ -54,8 +54,8 @@ void screen_init()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 3, &stars);
-	ERAPI_SetBackgroundOffset(3,8,vertical_offset);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_STARS, &stars);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_STARS,8,vertical_offset);
 
 	tunnel_wall_top = -50;
 	tunnel_wall_bottom = -50;
@@ -105,7 +105,7 @@ void slide_tunnel()
 	rand_stable_map();
 	++tunnel_offset_frames;
 	++tunnel_offset;
-	ERAPI_SetBackgroundOffset(2,tunnel_offset,vertical_offset);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_TUNNEL,tunnel_offset,vertical_offset);
 	if (tunnel_offset <= 16)
 	{
 		return;
@@ -162,8 +162,8 @@ void slide_tunnel()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 2, &slide);
-	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_TUNNEL, &slide);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_TUNNEL,8,vertical_offset);
 }
 
 void tunnel_generation()
@@ -280,7 +280,7 @@ u8 stars_pick()
 {
 	u8 star_rand = ERAPI_RandMax(30);
 	// Limit amount of stars that are not blank
-	u8 star=0;
+	u8 star=1;
 	switch(star_rand)
 	{
 		case 1:
@@ -302,7 +302,7 @@ void slide_stars()
 	// Slowed background scrolling for parallax using modulos
 	++stars_offset_frames;
 	if(ERAPI_Mod(stars_offset_frames, STAR_SPEED)==0) ++stars_offset;
-	ERAPI_SetBackgroundOffset(3,stars_offset,vertical_offset);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_STARS,stars_offset,vertical_offset);
 	if (stars_offset <= 16)
 	{
 		return;
@@ -335,6 +335,6 @@ void slide_stars()
 		1
 	};
 
-	ERAPI_LoadBackgroundCustom( 3, &slide);
-	ERAPI_SetBackgroundOffset(3,8,vertical_offset);
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_STARS, &slide);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_STARS,8,vertical_offset);
 }

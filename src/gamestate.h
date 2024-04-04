@@ -16,6 +16,12 @@
 #define SPRITE_SHIELD 11
 #define SPRITE_SPREAD 12
 
+// Background Layer Usage
+#define BACKGROUND_LAYER_UI 0
+#define BACKGROUND_LAYER_BOSS 1
+#define BACKGROUND_LAYER_TUNNEL 2
+#define BACKGROUND_LAYER_STARS 3
+
 // Sprite limits
 #define ENEMY_MAX 8
 #define BULLET_MAX 32
