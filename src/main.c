@@ -49,7 +49,6 @@ int main()
 	while (sysexit == 0)
 	{
 		game_update();
-		gui_print_score(level_progress);
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}
