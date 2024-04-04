@@ -3,11 +3,21 @@
 #include "def.h"
 #include "erapi.h"
 
+#include "gamestate.h"
 #include "util.h"
 
-extern ERAPI_HANDLE_REGION score_print;
-extern ERAPI_HANDLE_REGION region_health;
+// Score Background
+extern ERAPI_BACKGROUND_DRAW_NUMBER background_score;
+#define GUI_SCORE_PALETTE 0
+#define GUI_SCORE_STYLE 4120
+#define GUI_SCORE_TEXTSHAD_PALINDEX 2
+#define GUI_SCORE_TEXT_PALINDEX 12
+#define GUI_SCORE_LENGTH 5
 
+
+#define GUI_HEALTH_PALINDEX 0x05
+#define GUI_HEALTH_LOW_PALINDEX 0x05
+extern ERAPI_HANDLE_REGION region_health;
 extern s16 phealth_last;
 
 void gui_init();
