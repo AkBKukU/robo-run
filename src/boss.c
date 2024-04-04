@@ -268,11 +268,9 @@ void boss_update()
 		boss_init();
 		ERAPI_LayerHide(1);
 		boss_spawn_distance = distance_tiles+ boss_level*BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(boss_level*BOSS_SPAWN_DISTANCE_MAX);
-		player_score+=100*boss_level;
 		++boss_level;
-		player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
 
-		tunnel_clear();
+		level_next();
 	}
 }
 

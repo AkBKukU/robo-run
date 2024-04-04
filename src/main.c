@@ -27,13 +27,7 @@ static inline void init()
 	ERAPI_RandInit(base_seed);
 
 	// Component Setup
-	gui_init();
-	player_init();
-	screen_init();
-	enemy_init();
-	bullet_init();
-	effect_init();
-	boss_init();
+	game_init();
 	ERAPI_FadeIn( 1);
 
 
@@ -52,18 +46,7 @@ int main()
 	gui_print_health(phealth,player_sheild);
 	while (sysexit == 0)
 	{
-		slide_tunnel();
-		slide_stars();
-		player_control();
-		enemy_update();
-		bullet_update();
-		boss_update();
-		effect_update();
-		powerup_update();
-		player_hit_detect();
-
-
- 		gui_print_score(player_score);
+		game_update();
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}

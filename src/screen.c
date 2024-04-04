@@ -77,33 +77,13 @@ void slide_tunnel()
 		tunnelslide[ (x-1) + (y * BACK_X) ] = tunnelslide[ (x) + (y * BACK_X)];
 	}}
 
-	// Set off screen tiles to random tunnel tile
+	// Set off screen tiles to empty tunnel tile
 	for(u8 y=0;y<BACK_Y;++y)
 	{
 		tunnelslide[ (31) + (y * BACK_X) ] = 0 ;
 	}
 
-	if(ERAPI_RandMax(10) == 1)
-	{
-		tunnel_wall_top += ERAPI_RandMax(5)-2;
-		tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
-	}
-	if(ERAPI_RandMax(10) == 1)
-	{
-
-		tunnel_wall_bottom += ERAPI_RandMax(5)-2;
-		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
-	}
-
-	while ( (20 - tunnel_wall_top - tunnel_wall_bottom) < tunnel_height )
-	{
-		--tunnel_wall_bottom;
-		--tunnel_wall_top;
-	}
-
-	tunnel_wall_top = (tunnel_wall_top > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_height : tunnel_wall_top;
-	tunnel_wall_bottom = (tunnel_wall_bottom > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_wall_bottom : tunnel_wall_bottom;
-
+	tunnel_generation();
 
 	// Generate new tiles for top and bottom
 	if (tunnel_wall_top > 0)
@@ -139,6 +119,35 @@ void slide_tunnel()
 
 	ERAPI_LoadBackgroundCustom( 2, &slide);
 	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
+}
+
+void tunnel_generation()
+{
+	u8 change_chance = 10;
+	u8 change_amount = 6;
+
+	if(ERAPI_RandMax(change_chance) == 1)
+	{
+		tunnel_wall_top += ERAPI_RandMax(change_amount)-(change_amount/2-1);
+		tunnel_wall_top = (tunnel_wall_top < -2) ? -2 : tunnel_wall_top;
+	}
+	if(ERAPI_RandMax(change_chance) == 1)
+	{
+
+		tunnel_wall_bottom += ERAPI_RandMax(change_amount)-(change_amount/2-1);
+		tunnel_wall_bottom = (tunnel_wall_bottom < -2) ? -2 : tunnel_wall_bottom;
+	}
+
+	// Limit to tunnel height
+	while ( (BACK_Y - tunnel_wall_top - tunnel_wall_bottom) < tunnel_height )
+	{
+		--tunnel_wall_bottom;
+		--tunnel_wall_top;
+	}
+
+	// Prevent entire screen from filling
+	tunnel_wall_top = (tunnel_wall_top > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_height : tunnel_wall_top;
+	tunnel_wall_bottom = (tunnel_wall_bottom > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_wall_bottom : tunnel_wall_bottom;
 }
 
 u8 tunnel_center(u8 col)

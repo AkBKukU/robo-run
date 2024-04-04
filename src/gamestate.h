@@ -22,6 +22,14 @@
 #define DROPS_MAX 3
 #define EFFECTS_MAX 5
 
+// Level Progression
+#define LEVEL_PROGRESS_INCREASE 50
+#define LEVEL_PROGRESS_1 150
+#define LEVEL_PROGRESS_2 350
+
+extern u8 level_progress;
+extern u32 level_progress_change;
+
 #include "screen.h"
 #include "enemy.h"
 #include "player.h"
@@ -34,8 +42,12 @@ extern u32 distance_tiles, player_score,frame_count;
 
 extern u16 base_seed;
 
+void game_init();
+void game_update();
 void rand_stable_map();
 void rand_true();
 void rand_stable_boss(u8 boss_col);
+
+void level_next();
 
 #endif
