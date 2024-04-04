@@ -127,4 +127,17 @@ void bullet_init()
 	{
 		manger_bullet[i].live = 0;
 	}
+	bullet_count = 0;
+}
+
+void bullet_clean()
+{
+	// Iterate over all bullets
+	for ( u8 i = 0; i < BULLET_MAX; ++i )
+	{
+		// Continue if bullet is not in use
+		if (!manger_bullet[i].live) continue;
+
+		ERAPI_SpriteFree(manger_bullet[i].handle);
+	}
 }

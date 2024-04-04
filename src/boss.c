@@ -279,6 +279,17 @@ void boss_damage(u8 damage)
 
 void boss_init()
 {
+	boss_spawning_flag=0;
+	boss_live=0;
+	boss_len=0,boss_gen_col=0,boss_x_pos=0;
+	boss_y_offset=0;
+	boss_spawn_distance=0;
+	boss_weapon_allowance=0;
+	boss_weapon_count=0;
+	boss_weapon_min=0;
+	weapon_laser=0;
+	boss_health=0;
+
 	for(u8 x=0;x<BACK_X;++x)
 	{
 		for(u8 y=0;y<32;++y)
@@ -307,16 +318,6 @@ void boss_init()
 		manger_boss_weapons[i].alt = 0;
 	}
 
-	boss_spawning_flag=0;
-	boss_live=0;
-	boss_len=0,boss_gen_col=0,boss_x_pos=0;
-	boss_y_offset=0;
-	boss_spawn_distance=0;
-	boss_weapon_allowance=0;
-	boss_weapon_count=0;
-	boss_weapon_min=0;
-	weapon_laser=0;
-	boss_health=0;
 
 
 // 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;

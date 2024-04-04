@@ -194,4 +194,17 @@ void enemy_init()
 	}
 	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
 	enemy_spawn_max[ENEMY_TYPE_ROCK] = 3;
+	enemy_spawn_allowed=1;
+}
+
+void enemy_clean()
+{
+	// Check all enemies
+	for ( u8 i = 0; i < ENEMY_MAX; ++i )
+	{
+		// If not active, skip
+		if (!manger_enemy[i].live) continue;
+
+		ERAPI_SpriteFree(manger_enemy[i].handle);
+	}
 }

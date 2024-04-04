@@ -180,13 +180,36 @@ void player_control()
 
 	if (key & ERAPI_KEY_B)
 	{
-		 sysexit =1;
+		player_clean();
+		enemy_clean();
+		bullet_clean();
+		powerup_clean();
+
+		++base_seed;
+		game_init();
 	}
 }
 
 void player_init()
 {
+	px=160;
+	py=80;
+	phealth=100;
+	fx=-10;
+	fy=0;
+	fire_cooldown_max = 20;
+	fire_cooldown = 20;
+	player_sheild_max = 1;
+	player_sheild = 0;
+	shot_spread = 0;
+	player_iframes = 0;
+
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, px, py);
+}
+
+void player_clean()
+{
+	ERAPI_SpriteFree(h_player);
 }
 

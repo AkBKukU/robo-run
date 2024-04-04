@@ -32,4 +32,5 @@ void player_hit_detect();
 void player_damage(u8 damage);
 void player_control();
 void player_init();
+void player_clean();
 #endif

@@ -122,3 +122,21 @@ void powerup_drop(u8 x, u8 y)
 	}
 
 }
+
+void powerup_clean()
+{
+	if(manager_cooldown.live)
+	{
+		ERAPI_SpriteFree(manager_cooldown.handle);
+
+	}
+	if(manager_spread.live)
+	{
+		ERAPI_SpriteFree(manager_spread.handle);
+
+	}
+	if(manager_shield.live)
+	{
+		ERAPI_SpriteFree(manager_shield.handle);
+	}
+}

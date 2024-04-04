@@ -23,15 +23,51 @@ void screen_init()
 	// Initialize background tile maps to empty
 	for(u8 x=0;x<BACK_X;++x)
 	{
-		for(u8 y=0;y<BACK_Y;++y)
+		for(u8 y=0;y<BACK_X;++y)
 		{
-			starslide[ (x) + (y * BACK_Y) ] = 0;
+			starslide[ (x) + (y * BACK_Y) ] = stars_pick();
 			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
 
+	// Apply new background
+	ERAPI_BACKGROUND tunnel =
+	{
+		tunnelTiles,
+		mapSharedPal,
+		tunnelslide,
+		sizeof( tunnelTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( 2, &tunnel);
+	ERAPI_SetBackgroundOffset(2,8,vertical_offset);
+
+
+	// Apply new background
+	ERAPI_BACKGROUND stars =
+	{
+		starsTiles,
+		mapSharedPal,
+		starslide,
+		sizeof( starsTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( 3, &stars);
+	ERAPI_SetBackgroundOffset(3,8,vertical_offset);
+
 	tunnel_wall_top = -50;
 	tunnel_wall_bottom = -50;
+
+	stars_offset = 0;
+	stars_offset_frames = 0;
+	tunnel_offset = 0;
+	tunnel_offset_frames = 0;
+	tunnel_groups[0] = 0;
+	tunnel_groups[1] = 0;
+	tunnel_height = TUNNEL_HEIGHT_START;
+	vertical_offset = 16;
 
 	for(u8 i=0;i<TUNNEL_MIN_CHANGE;++i)
 	{
@@ -240,6 +276,26 @@ u8 tunnel_center(u8 col)
 	return ytop+(ybot - ytop)/2;
 }
 
+u8 stars_pick()
+{
+	u8 star_rand = ERAPI_RandMax(30);
+	// Limit amount of stars that are not blank
+	u8 star=0;
+	switch(star_rand)
+	{
+		case 1:
+			star=1;
+			break;
+		case 2:
+			star=2;
+			break;
+		case 3:
+			star=3;
+			break;
+	}
+	return star;
+}
+
 void slide_stars()
 {
 	rand_stable_map();
@@ -265,23 +321,8 @@ void slide_stars()
 	// Set off screen tiles to random star tile
 	for(u8 y=0;y<BACK_Y;++y)
 	{
-		u8 star_rand = ERAPI_RandMax(30);
-		// Limit amount of stars that are not blank
-		u8 star=0;
-		switch(star_rand)
-		{
-			case 1:
-				star=1;
-				break;
-			case 2:
-				star=2;
-				break;
-			case 3:
-				star=3;
-				break;
-		}
 
-		starslide[ (31) + (y * BACK_X) ] = star ;
+		starslide[ (31) + (y * BACK_X) ] = stars_pick();
 	}
 
 	// Apply new background

@@ -46,4 +46,5 @@ void enemy_update();
 void enemy_path(u8 i);
 void enemy_spawn(u8 spawn_type);
 void enemy_init();
+void enemy_clean();
 #endif

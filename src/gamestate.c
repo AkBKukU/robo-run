@@ -12,6 +12,8 @@ u16 base_seed = 24;
 
 void game_init()
 {
+	ERAPI_FadeOut(100);
+	ERAPI_RenderFrame(100);
 	distance_tiles = 0;
 	player_score=0;
 	frame_count=0;
@@ -20,13 +22,14 @@ void game_init()
 	level_progress = 0;
 	level_progress_start = 0;
 
-	gui_init();
 	player_init();
 	screen_init();
 	enemy_init();
 	bullet_init();
 	effect_init();
 	boss_init();
+	ERAPI_FadeIn( 100);
+	ERAPI_RenderFrame(100);
 }
 
 

@@ -37,6 +37,7 @@ u8 tunnel_tile_pick();
 void slide_tunnel();
 void tunnel_generation();
 void slide_stars();
+u8 stars_pick();
 u8 tunnel_center(u8 col);
 void screen_init();
 #endif

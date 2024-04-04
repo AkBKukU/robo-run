@@ -30,6 +30,7 @@ extern ERAPI_SPRITE sprite_powerup_spread;
 void powerup_update();
 void powerup_drop(u8 x, u8 y);
 void powerup_droptype(u8 x, u8 y,u8 type);
+void powerup_clean();
 
 
 #endif

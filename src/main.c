@@ -28,6 +28,7 @@ static inline void init()
 
 	// Component Setup
 	game_init();
+	gui_init();
 	ERAPI_FadeIn( 1);
 
 
