@@ -27,6 +27,7 @@
 #define LEVEL_PROGRESS_1 150
 #define LEVEL_PROGRESS_2 350
 
+extern u32 level_count;
 extern u8 level_progress;
 extern u32 level_progress_start;
 

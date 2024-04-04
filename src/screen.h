@@ -18,11 +18,13 @@ extern u8 tunnel_offset_frames;
 extern u8 tunnel_groups[2];
 #define TUNNEL_HEIGHT_MIN 6
 #define TUNNEL_HEIGHT_START 12
-extern u8 tunnel_change_block;
 #define TUNNEL_MIN_CHANGE 3
 extern s8 tunnel_height;
 extern s16 tunnel_wall_top;
 extern s16 tunnel_wall_bottom;
+
+extern s16 tunnel_wall_top_hist[TUNNEL_MIN_CHANGE];
+extern s16 tunnel_wall_bottom_hist[TUNNEL_MIN_CHANGE];
 
 // Screen vertical offset
 extern s8 vertical_offset;

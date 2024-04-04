@@ -25,7 +25,6 @@
 #define BOSS_SPAWN_DISTANCE_MAX 150
 
 
-extern u32 level_count;
 
 extern u8 boss_spawning_flag;
 extern u8 boss_live;
@@ -35,7 +34,6 @@ extern u8 boss_weapon_allowance;
 extern u8 boss_weapon_count;
 extern u16 boss_spawn_distance;
 extern u8 weapon_laser;
-extern u8 boss_kill_count;
 extern s32 boss_health;
 
 

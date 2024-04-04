@@ -4,9 +4,9 @@
 u8 px=160,py=80;
 s16 phealth=100;
 s8 fx=-10,fy=0;
-u8 fire_cooldown_max = 5, fire_cooldown = 0;
+u8 fire_cooldown_max = 20, fire_cooldown = 20;
 u8 player_sheild_max = 1, player_sheild = 0;
-u8 shot_spread = 20;
+u8 shot_spread = 0;
 u8 player_iframes = 0;
 
 ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
@@ -83,12 +83,12 @@ void player_hit_detect()
 		player_damage(20);
 		if (py > (tunnel_center(px/8))*8)
 		{
-			fy=-10;
-			fx=-4;
+			fy=-7;
+			fx=-3;
 
 		}else{
-			fy=10;
-			fx=-4;
+			fy=7;
+			fx=-3;
 
 		}
 	}
@@ -105,7 +105,7 @@ void player_hit_detect()
 	{
 		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
-		fire_cooldown_max = fire_cooldown_max > 5 ? fire_cooldown_max-5 : fire_cooldown_max ;
+		fire_cooldown_max = fire_cooldown_max > 5 ? fire_cooldown_max-1 : fire_cooldown_max ;
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
@@ -123,12 +123,16 @@ void player_hit_detect()
 	{
 		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
-		shot_spread += 20 ;
+		shot_spread += 2 ;
 	}
 }
 
 void player_damage(u8 damage)
 {
+
+#ifdef DEBUG_MGBA
+	return;
+#endif
 	if(player_iframes)
 	{
 		return;

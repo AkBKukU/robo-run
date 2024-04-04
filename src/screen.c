@@ -9,7 +9,8 @@ u8 tunnel_groups[2] = {0,0};
 s16 tunnel_wall_top = 3;
 s16 tunnel_wall_bottom = 3;
 s8 tunnel_height = TUNNEL_HEIGHT_START;
-u8 tunnel_change_block = 0;
+s16 tunnel_wall_top_hist[TUNNEL_MIN_CHANGE];
+s16 tunnel_wall_bottom_hist[TUNNEL_MIN_CHANGE];
 
 // Screen vertical offset
 s8 vertical_offset = 16;
@@ -28,8 +29,15 @@ void screen_init()
 			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
 		}
 	}
+
 	tunnel_wall_top = -50;
 	tunnel_wall_bottom = -50;
+
+	for(u8 i=0;i<TUNNEL_MIN_CHANGE;++i)
+	{
+		tunnel_wall_top_hist[i] = 0;
+		tunnel_wall_bottom_hist[i] = 0;
+	}
 
 }
 
@@ -124,6 +132,24 @@ void slide_tunnel()
 
 void tunnel_generation()
 {
+	s16 last_top = 0;
+	s16 last_bottom = 0;
+
+	// Track tunnel shape history for checking viable path
+	for(u8 i=1;i<TUNNEL_MIN_CHANGE;++i)
+	{
+		tunnel_wall_top_hist[i-1] = tunnel_wall_top_hist[i];
+		tunnel_wall_bottom_hist[i-1] = tunnel_wall_bottom_hist[i];
+
+		last_top = last_top < tunnel_wall_top_hist[i-1] ? tunnel_wall_top_hist[i-1] : last_top;
+		last_bottom = last_bottom < tunnel_wall_bottom_hist[i-1] ? tunnel_wall_bottom_hist[i-1] : last_bottom;
+	}
+	tunnel_wall_top_hist[TUNNEL_MIN_CHANGE-1] = tunnel_wall_top;
+	tunnel_wall_bottom_hist[TUNNEL_MIN_CHANGE-1] = tunnel_wall_bottom;
+
+	last_top = last_top < tunnel_wall_top ? tunnel_wall_top : last_top;
+	last_bottom = last_bottom < tunnel_wall_bottom ? tunnel_wall_bottom : last_bottom;
+
 	if (level_progress_start+LEVEL_PROGRESS_1+(level_count*LEVEL_PROGRESS_INCREASE) > distance_tiles )
 	{
 		// Level Progress 0
@@ -141,21 +167,17 @@ void tunnel_generation()
 			tunnel_wall_top = -3;
 			tunnel_wall_bottom = -3;
 		}
-		if (tunnel_change_block) {
-			--tunnel_change_block;
-			return;
-		}else{
-			// Randomly but evenly move tunnl
-			if(ERAPI_RandMax(20) == 1)
-			{
-				tunnel_wall_top += ERAPI_RandMax(10)-5;
-			}
-			if(ERAPI_RandMax(20) == 1)
-			{
-				tunnel_wall_bottom += ERAPI_RandMax(10)-5;
-			}
-		}
+		// Randomly but evenly move tunnel
+		u8 max = 10 + level_count/2;
+		if(ERAPI_RandMax(5) == 1)
+		{
+			tunnel_wall_top += ERAPI_RandMax(max)-(max/2);
 
+		}
+		if(ERAPI_RandMax(5) == 1)
+		{
+			tunnel_wall_bottom += ERAPI_RandMax(max)-(max/2);
+		}
 	}else{
 		// Level Progress 2
 		if (level_progress != 2)
@@ -164,24 +186,17 @@ void tunnel_generation()
 			 boss_spawn_init();
 		}
 
-
-		if (tunnel_change_block) {
-			--tunnel_change_block;
-			return;
-		}else{
-			// Slowly move tunnel to center
-			if(ERAPI_RandMax(10) == 1)
-			{
-				tunnel_wall_top += ERAPI_RandMax(7)-3;
-			}
-			if(ERAPI_RandMax(10) == 1)
-			{
-				tunnel_wall_bottom += ERAPI_RandMax(7)-3;
-			}
+		// Slowly move tunnel to center
+		u8 max = 7 + level_count;
+		if(ERAPI_RandMax(10) == 1)
+		{
+			tunnel_wall_top += ERAPI_RandMax(max+1)-(max/2);
+		}
+		if(ERAPI_RandMax(10) == 1)
+		{
+			tunnel_wall_bottom += ERAPI_RandMax(max+1)-(max/2);
 		}
 	}
-
-	if (tunnel_change_block) return;
 
 	// Limit to tunnel height
 	while ( (BACK_Y - tunnel_wall_top - tunnel_wall_bottom) < tunnel_height )
@@ -189,6 +204,13 @@ void tunnel_generation()
 		--tunnel_wall_bottom;
 		--tunnel_wall_top;
 	}
+
+	// Prevent impassable overlapping of top and bottom
+	if (tunnel_wall_bottom > BACK_Y-last_top-TUNNEL_MIN_CHANGE)
+		tunnel_wall_bottom = BACK_Y-last_top-TUNNEL_MIN_CHANGE;
+	if (tunnel_wall_top > BACK_Y-last_bottom-TUNNEL_MIN_CHANGE )
+		tunnel_wall_top = BACK_Y-last_bottom-TUNNEL_MIN_CHANGE;
+
 
 	// Prevent entire screen from filling and going too far away
 	tunnel_wall_top = (tunnel_wall_top > BACK_Y - tunnel_height) ?  BACK_Y - tunnel_height : tunnel_wall_top;

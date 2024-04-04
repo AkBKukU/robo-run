@@ -106,7 +106,7 @@ void powerup_droptype(u8 x, u8 y,u8 type)
 void powerup_drop(u8 x, u8 y)
 {
 	u8 type = 0;
-	switch(ERAPI_RandMax(10))
+	switch(ERAPI_RandMax(50))
 	{
 		case 1:
 		case 2:

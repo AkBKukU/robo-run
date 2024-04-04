@@ -161,7 +161,7 @@ void enemy_spawn(u8 spawn_type)
 				break;
 			case ENEMY_TYPE_LIGHT:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
-				manger_enemy[i].health = 6*level_count;
+				manger_enemy[i].health = 5*level_count;
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 				break;
 		}

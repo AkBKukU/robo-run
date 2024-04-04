@@ -36,6 +36,8 @@ static inline void init()
 	mgba_print_init();
 
 	mgba_print_string("Starting with print ability");
+	fire_cooldown_max = 5;
+	shot_spread = 20;
 #endif
 }
 

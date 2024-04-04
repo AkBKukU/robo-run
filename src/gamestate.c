@@ -2,6 +2,7 @@
 #include "gamestate.h"
 u8 sysexit = 0, win = 0;
 u32 distance_tiles = 0, player_score=0,frame_count=0;
+u32 level_count =1;
 
 u8 level_progress = 0;
 u32 level_progress_start = 0;
@@ -14,6 +15,7 @@ void game_init()
 	distance_tiles = 0;
 	player_score=0;
 	frame_count=0;
+	level_count =1;
 
 	level_progress = 0;
 	level_progress_start = 0;

@@ -1,6 +1,5 @@
 #include "boss.h"
 
-u32 level_count =1;
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
 u8 boss_len=0,boss_gen_col=0,boss_x_pos=0;
@@ -10,7 +9,6 @@ u8 boss_weapon_allowance=0;
 u8 boss_weapon_count=0;
 u8 boss_weapon_min=0;
 u8 weapon_laser=0;
-u8 boss_kill_count=0;
 s32 boss_health=0;
 
 struct boss_weapons manger_boss_weapons[BOSS_WEAPON_MAX];
@@ -231,7 +229,7 @@ void boss_update()
 			continue;
 		}
 
-		u8 by = ((7+manger_boss_weapons[i].alt+manger_boss_weapons[i].alt*level_count)*8)-(boss_y_offset*-1)+vertical_offset + 4;
+		u8 by = ((7+manger_boss_weapons[i].alt+manger_boss_weapons[i].alt*(level_count > 3?3:level_count))*8)-(boss_y_offset*-1)+vertical_offset + 4;
 		manger_boss_weapons[i].alt = !manger_boss_weapons[i].alt;
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
@@ -308,6 +306,18 @@ void boss_init()
 		manger_boss_weapons[i].type = 0;
 		manger_boss_weapons[i].alt = 0;
 	}
+
+	boss_spawning_flag=0;
+	boss_live=0;
+	boss_len=0,boss_gen_col=0,boss_x_pos=0;
+	boss_y_offset=0;
+	boss_spawn_distance=0;
+	boss_weapon_allowance=0;
+	boss_weapon_count=0;
+	boss_weapon_min=0;
+	weapon_laser=0;
+	boss_health=0;
+
 
 // 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;
 }
