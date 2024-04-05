@@ -15,11 +15,6 @@ ERAPI_BACKGROUND_DRAW_NUMBER background_seed_fade =
 };
 void menu_init()
 {
-	ERAPI_BackgroundDrawNumber(&background_seed_fade);
-}
-
-void menu_start()
-{
 	// Apply new background
 	ERAPI_BACKGROUND menu =
 	{
@@ -30,11 +25,16 @@ void menu_start()
 		1
 	};
 
+	ERAPI_BackgroundDrawNumber(&background_seed_fade);
 	ERAPI_BackgroundDrawNumberNewValue(&background_seed_fade, base_seed);
 	ERAPI_LoadBackgroundCustom( 3, &menu);
 
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(100);
+}
+
+void menu_start()
+{
 }
 
 void menu_update()

@@ -26,9 +26,7 @@ static inline void init()
 	ERAPI_RandInit(base_seed);
 
 	// Component Setup
-	gui_init();
 	menu_init();
-	menu_start();
 
 
 #ifdef DEBUG_MGBA

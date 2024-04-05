@@ -30,13 +30,15 @@ void game_init()
 	citoa(base_seed,num_print,10);
 	mgba_print_string(num_print);
 #endif
+	ERAPI_ClearSpritesAndBackgrounds();
+	ERHACK_RegionListClearUS();
 	player_init();
 	screen_init();
 	enemy_init();
 	bullet_init();
 	effect_init();
 	boss_init();
-	gui_start();
+	gui_init();
 	gui_print_health(phealth,player_sheild);
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(75);
@@ -61,6 +63,8 @@ void game_clean()
 	{
 		ERAPI_SetBackgroundOffset(i,0,0);
 	}
+	ERAPI_ClearSpritesAndBackgrounds();
+	ERHACK_RegionListClearUS();
 }
 
 

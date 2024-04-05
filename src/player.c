@@ -182,7 +182,7 @@ void player_control()
 		game_clean();
 
 		game_play=0;
-		menu_start();
+		menu_init();
 	}
 }
 

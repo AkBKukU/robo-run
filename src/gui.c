@@ -26,14 +26,14 @@ ERAPI_HANDLE_REGION region_health;
 s16 phealth_last=0;
 void gui_init()
 {
+	// Background score drawing
+	ERAPI_BackgroundDrawNumber(&background_score);
 	// Region for heath display
 	region_health = ERAPI_CreateRegion(0,0,0, 19,0xf, 0x01);
 	ERAPI_SetTextColor( region_health, 0x02, 0x00);
 }
 void gui_start()
 {
-	// Background score drawing
-	ERAPI_BackgroundDrawNumber(&background_score);
 }
 void gui_clean()
 {
