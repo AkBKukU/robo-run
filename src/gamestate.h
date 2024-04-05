@@ -44,13 +44,16 @@ extern u32 level_progress_start;
 #include "util.h"
 #include "boss.h"
 
-extern u8 sysexit, win;
+extern u8 sysexit, win, game_play;
 extern u32 distance_tiles, player_score,frame_count;
 
-extern u16 base_seed;
+extern s16 base_seed;
+
+extern u32 key;
 
 void game_init();
 void game_update();
+void game_clean();
 void rand_stable_map();
 void rand_true();
 void rand_stable_boss(u8 boss_col);

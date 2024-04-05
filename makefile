@@ -102,7 +102,7 @@ gfx/gfx_powerup.c:
 	$(GRIT) gfx/bullet.tga gfx/powerup-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_powerup
 
 map/map.c :
-	$(GRIT) map/stars.tga map/tunnel.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map
+	$(GRIT) map/stars.tga map/tunnel.tga map/menu.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map
 
 map/map_boss.c :
 	$(GRIT) map/map_boss.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map_boss

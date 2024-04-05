@@ -77,9 +77,47 @@ void screen_init()
 
 }
 
+void screen_clear()
+{
+	for(u8 x=0;x<BACK_X;++x)
+	{
+		for(u8 y=0;y<BACK_X;++y)
+		{
+			starslide[ (x) + (y * BACK_Y) ] = 0;
+			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
+		}
+	}
+
+	// Apply new background
+	ERAPI_BACKGROUND tunnel =
+	{
+		tunnelTiles,
+		mapSharedPal,
+		tunnelslide,
+		sizeof( tunnelTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_TUNNEL, &tunnel);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_TUNNEL,0,0);
+
+
+	// Apply new background
+	ERAPI_BACKGROUND stars =
+	{
+		starsTiles,
+		mapSharedPal,
+		starslide,
+		sizeof( starsTiles) >> 5,
+		1
+	};
+
+	ERAPI_LoadBackgroundCustom( BACKGROUND_LAYER_STARS, &stars);
+	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_STARS,0,0);
+}
 void tunnel_clear()
 {
-	rand_stable_boss(0);
+	rand_stable_map(0);
 	tunnel_height = tunnel_height > TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
 
 	// Block types for tunnel

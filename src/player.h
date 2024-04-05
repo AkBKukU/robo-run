@@ -23,7 +23,6 @@ extern u8 player_iframes;
 extern ERAPI_SPRITE sprite_player;
 extern ERAPI_HANDLE_SPRITE h_player;
 
-extern u32 key;
 
 
 void player_move(s8 x, s8 y);

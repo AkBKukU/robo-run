@@ -1,15 +1,16 @@
 
 #include "gamestate.h"
-u8 sysexit = 0, win = 0;
+u8 sysexit = 0, win = 0, game_play = 0;
 u32 distance_tiles = 0, player_score=0,frame_count=0;
 u32 level_count =1;
 
 u8 level_progress = 0;
 u32 level_progress_start = 0;
 
-u16 base_seed = 24;
+s16 base_seed = 24;
 //u16 base_seed = 54;
 
+u32 key;
 void game_init()
 {
 	ERAPI_FadeOut(100);
@@ -22,12 +23,21 @@ void game_init()
 	level_progress = 0;
 	level_progress_start = 0;
 
+#ifdef DEBUG_MGBA
+	mgba_print_string("Starting with seed:");
+	char num_print[5]= "    ";
+
+	citoa(base_seed,num_print,10);
+	mgba_print_string(num_print);
+#endif
 	player_init();
 	screen_init();
 	enemy_init();
 	bullet_init();
 	effect_init();
 	boss_init();
+	gui_start();
+	gui_print_health(phealth,player_sheild);
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(75);
 	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x100,25);
@@ -36,18 +46,35 @@ void game_init()
 	ERAPI_RenderFrame(25);
 }
 
+void game_clean()
+{
+	ERAPI_FadeOut(100);
+	ERAPI_RenderFrame(100);
+	boss_init();
+	bullet_clean();
+	enemy_clean();
+	gui_clean();
+	player_clean();
+	powerup_clean();
+	screen_clear();
+	for (u8 i = 0 ; i < 4 ; ++i)
+	{
+		ERAPI_SetBackgroundOffset(i,0,0);
+	}
+}
+
 
 void game_update()
 {
 	slide_tunnel();
 	slide_stars();
-	player_control();
 	enemy_update();
 	bullet_update();
 	boss_update();
 	effect_update();
 	powerup_update();
 	player_hit_detect();
+	player_control();
 
 	gui_print_score(player_score);
 }

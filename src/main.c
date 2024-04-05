@@ -10,6 +10,7 @@
 #include "player.h"
 #include "gamestate.h"
 #include "bullet.h"
+#include "menu.h"
 
 #include "util.h"
 extern int __end[];
@@ -25,9 +26,9 @@ static inline void init()
 	ERAPI_RandInit(base_seed);
 
 	// Component Setup
-	game_init();
 	gui_init();
-	ERAPI_FadeIn( 1);
+	menu_init();
+	menu_start();
 
 
 #ifdef DEBUG_MGBA
@@ -44,10 +45,14 @@ int main()
 {
 	init();
 	// Main Loop
-	gui_print_health(phealth,player_sheild);
 	while (sysexit == 0)
 	{
+		if (game_play)
+		{
 		game_update();
+		} else {
+			menu_update();
+		}
 		ERAPI_RenderFrame(1);
 		++frame_count;
 	}

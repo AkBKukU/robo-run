@@ -4,6 +4,7 @@
 #include "erapi.h"
 
 #include "gamestate.h"
+#include "map/map.h"
 
 
 #define STAR_SPEED 4
@@ -40,4 +41,5 @@ void slide_stars();
 u8 stars_pick();
 u8 tunnel_center(u8 col);
 void screen_init();
+void screen_clear();
 #endif

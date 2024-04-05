@@ -292,10 +292,9 @@ void boss_init()
 
 	for(u8 x=0;x<BACK_X;++x)
 	{
-		for(u8 y=0;y<32;++y)
+		for(u8 y=0;y<BACK_X;++y)
 		{
-
-		boss_map[x + (y * 32) ]=0;
+			boss_map[x + (y * 32) ]=0;
 		}
 	}
 

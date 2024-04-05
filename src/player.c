@@ -12,7 +12,6 @@ u8 player_iframes = 0;
 ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
 ERAPI_HANDLE_SPRITE h_player;
 
-u32 key;
 
 void player_move(s8 x, s8 y)
 {
@@ -180,13 +179,10 @@ void player_control()
 
 	if (key & ERAPI_KEY_B)
 	{
-		player_clean();
-		enemy_clean();
-		bullet_clean();
-		powerup_clean();
+		game_clean();
 
-		++base_seed;
-		game_init();
+		game_play=0;
+		menu_start();
 	}
 }
 

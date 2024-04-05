@@ -47,7 +47,7 @@ struct boss_weapons
 extern struct boss_weapons manger_boss_weapons[BOSS_WEAPON_MAX];
 
 
-extern unsigned short boss_map[BACK_X*32];
+extern unsigned short boss_map[BACK_X*BACK_X];
 
 #define center (BACK_X *9 + 30)
 
