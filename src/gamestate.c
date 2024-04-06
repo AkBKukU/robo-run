@@ -60,6 +60,7 @@ void game_clean()
 	player_clean();
 	powerup_clean();
 	screen_clear();
+	effect_clean();
 	for (u8 i = 0 ; i < 4 ; ++i)
 	{
 		ERAPI_SetBackgroundOffset(i,0,0);

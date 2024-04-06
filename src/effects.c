@@ -83,3 +83,16 @@ void effect_init()
 		manger_effects[i].live = 0;
 	}
 }
+
+void effect_clean()
+{
+	// Search effect structs
+	for ( u8 i = 0; i < EFFECTS_MAX; ++i )
+	{
+		// Check if effect is active
+		if (manger_effects[i].live)
+		{
+			ERAPI_SpriteFree(manger_effects[i].handle);
+		}
+	}
+}

@@ -26,5 +26,6 @@ void effect_init();
 void effect_update();
 s8 effect_find_free();
 void effect_explode(u8 x, u8 y);
+void effect_clean();
 
 #endif
