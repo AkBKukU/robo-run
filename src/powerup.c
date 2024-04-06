@@ -127,16 +127,19 @@ void powerup_clean()
 {
 	if(manager_cooldown.live)
 	{
+		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
 
 	}
 	if(manager_spread.live)
 	{
+		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
 
 	}
 	if(manager_shield.live)
 	{
+		manager_shield.live = 0;
 		ERAPI_SpriteFree(manager_shield.handle);
 	}
 }
