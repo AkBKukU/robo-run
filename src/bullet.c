@@ -1,7 +1,7 @@
 
 #include "bullet.h"
 
-ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 
@@ -140,4 +140,6 @@ void bullet_clean()
 
 		ERAPI_SpriteFree(manger_bullet[i].handle);
 	}
+
+	bullet_init();
 }
