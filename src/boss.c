@@ -2,7 +2,7 @@
 
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
-u8 boss_len=0,boss_gen_col=0,boss_x_pos=0;
+u8 boss_len=0, boss_level=1,boss_gen_col=0,boss_x_pos=0;
 s16 boss_y_offset=0;
 u16 boss_spawn_distance=0;
 u8 boss_weapon_allowance=0;
@@ -36,7 +36,7 @@ void boss_spawn()
 
 	if (boss_gen_col==0)
 	{
-		switch(level_count)
+		switch(boss_level)
 		{
 			case 1:
 				boss_map[center+BACK_X] = BOSS_TILE_1_TALL;
@@ -54,7 +54,7 @@ void boss_spawn()
 		}
 	}else if(boss_gen_col== boss_len-1)
 	{
-		switch(level_count)
+		switch(boss_level)
 		{
 			case 1:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH*2+BOSS_MAP_WEAPONS+1;
@@ -75,7 +75,7 @@ void boss_spawn()
 		}
 	}else if(boss_gen_col== boss_len)
 	{
-		switch(level_count)
+		switch(boss_level)
 		{
 			case 1:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH*2+BOSS_MAP_WEAPONS+2;
@@ -94,11 +94,11 @@ void boss_spawn()
 				boss_map[center+BACK_X*3] = (BOSS_MAP_WIDTH+BOSS_MAP_WEAPONS+2)|0x800;
 				break;
 		}
-	} else {
+	} else if(boss_gen_col < boss_len){
 
 		u8 v=ERAPI_RandMax(BOSS_MAP_WIDTH-3)+1;
 		u8 weapon_spawn = (ERAPI_RandMax(boss_len-3) >= boss_weapon_count);
-		switch(level_count)
+		switch(boss_level)
 		{
 			case 1:
 				boss_map[center+BACK_X] = BOSS_MAP_WIDTH*2+v;
@@ -176,7 +176,7 @@ void boss_spawn()
 void boss_spawn_init()
 {
 	rand_stable_boss(boss_gen_col);
-	boss_len = ERAPI_RandMax((level_count > 3?3:level_count) *BOSS_SIZE_RATIO_MAX)+5;
+	boss_len = ERAPI_RandMax(boss_level * BOSS_SIZE_RATIO_MAX)+5;
 	boss_health=(boss_len*level_count)*4;
 	boss_gen_col=0;
 	boss_x_pos=15;
@@ -200,7 +200,7 @@ u8 boss_tile_hit_check(u8 x, u8 y)
 void boss_get_pos_on(u8* x, u8* y)
 {
 	*x = (BACK_X-2-boss_len+ERAPI_RandMax(boss_len))*8;
-	*y = ((7+ERAPI_RandMax(5))*8)-(boss_y_offset*-1)+vertical_offset + 4;
+	*y = ((7+ERAPI_RandMax(boss_level+2))*8)-(boss_y_offset*-1)+vertical_offset + 4;
 }
 
 void boss_update()
@@ -212,10 +212,10 @@ void boss_update()
 
 	ERAPI_SetBackgroundOffset(BACKGROUND_LAYER_BOSS,boss_x_pos/8,(boss_y_offset*-1)+vertical_offset);
 
-	if((8+(level_count > 3?3:level_count) + boss_y_offset/8) > tunnel_center(31))
+	if((8+boss_level + boss_y_offset/8) > tunnel_center(31))
 		if(!ERAPI_Mod(frame_count,8)) --boss_y_offset;
 
-	if((8+(level_count > 3?3:level_count) + boss_y_offset/8) < tunnel_center(31))
+	if((8+boss_level + boss_y_offset/8) < tunnel_center(31))
 		if(!ERAPI_Mod(frame_count,8)) ++boss_y_offset;
 
 	if(!boss_live) return;
@@ -229,7 +229,7 @@ void boss_update()
 			continue;
 		}
 
-		u8 by = ((7+manger_boss_weapons[i].alt+manger_boss_weapons[i].alt*(level_count > 3?3:level_count))*8)-(boss_y_offset*-1)+vertical_offset + 4;
+		u8 by = ((7+manger_boss_weapons[i].alt+manger_boss_weapons[i].alt*boss_level)*8)-(boss_y_offset*-1)+vertical_offset + 4;
 		manger_boss_weapons[i].alt = !manger_boss_weapons[i].alt;
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
@@ -265,8 +265,6 @@ void boss_update()
 		powerup_droptype(x,y,POWERUP_SPREAD);
 
 		boss_init();
-		boss_spawn_distance = distance_tiles+ level_count*BOSS_SPAWN_DISTANCE_MAX+ERAPI_RandMax(level_count*BOSS_SPAWN_DISTANCE_MAX);
-
 		level_next();
 	}
 }
@@ -317,7 +315,4 @@ void boss_init()
 		manger_boss_weapons[i].alt = 0;
 	}
 
-
-
-// 	boss_spawn_distance = BOSS_SPAWN_DISTANCE_MAX;
 }

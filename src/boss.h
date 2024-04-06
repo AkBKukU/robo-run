@@ -14,7 +14,6 @@
 #define BOSS_TILE_LASER   3
 
 #define BOSS_TILE_1_TALL   BOSS_MAP_WIDTH*3
-// This sets the maximum dimensions before it will bump up to the next size
 #define BOSS_SIZE_RATIO_MAX 4
 #define BOSS_SIZE_HEIGHT_MAX 3
 
@@ -28,11 +27,10 @@
 
 extern u8 boss_spawning_flag;
 extern u8 boss_live;
-extern u8 boss_len, boss_gen_col,boss_x_pos;
+extern u8 boss_len, boss_level, boss_gen_col,boss_x_pos;
 extern s16 boss_y_offset;
 extern u8 boss_weapon_allowance;
 extern u8 boss_weapon_count;
-extern u16 boss_spawn_distance;
 extern u8 weapon_laser;
 extern s32 boss_health;
 
@@ -47,7 +45,11 @@ struct boss_weapons
 extern struct boss_weapons manger_boss_weapons[BOSS_WEAPON_MAX];
 
 
-extern unsigned short boss_map[BACK_X*BACK_X];
+extern unsigned short boss_map[ BACK_X * BACK_X ];
+
+// TODO - This value could be eliminated by just putting the boss in the upper
+// left of the map and specifiying a static offset instead which would be
+// used much less often
 
 #define center (BACK_X *9 + 30)
 

@@ -19,6 +19,7 @@ void game_init()
 	player_score=0;
 	frame_count=0;
 	level_count =1;
+	boss_level=1;
 
 	level_progress = 0;
 	level_progress_start = 0;
@@ -100,6 +101,8 @@ void rand_stable_boss(u8 boss_col)
 
 void level_next()
 {
+	++boss_level;
+	boss_level = (boss_level > 3?3:boss_level);
 	++level_count;
 	tunnel_clear();
 	player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
