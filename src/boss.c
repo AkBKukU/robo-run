@@ -29,7 +29,7 @@ void boss_spawn()
 
 	// Shift background tile map
 	for(u8 x=1;x<BACK_X;++x){
-	for(u8 y=0;y<32;++y)
+	for(u8 y=0;y<BACK_X;++y)
 	{
 		boss_map[ (x-1) + (y * BACK_X) ] = boss_map[ (x) + (y * BACK_X)];
 	}}
@@ -294,7 +294,7 @@ void boss_init()
 	{
 		for(u8 y=0;y<BACK_X;++y)
 		{
-			boss_map[x + (y * 32) ]=0;
+			boss_map[x + (y * BACK_X) ]=0;
 		}
 	}
 

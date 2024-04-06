@@ -23,10 +23,10 @@ void screen_init()
 	// Initialize background tile maps to empty
 	for(u8 x=0;x<BACK_X;++x)
 	{
-		for(u8 y=0;y<BACK_X;++y)
+		for(u8 y=0;y<BACK_Y;++y)
 		{
-			starslide[ (x) + (y * BACK_Y) ] = stars_pick();
-			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
+			starslide[ (x) + (y * BACK_X) ] = stars_pick();
+			tunnelslide[ (x) + (y * BACK_X) ] = 0;
 		}
 	}
 
@@ -81,10 +81,10 @@ void screen_clear()
 {
 	for(u8 x=0;x<BACK_X;++x)
 	{
-		for(u8 y=0;y<BACK_X;++y)
+		for(u8 y=0;y<BACK_Y;++y)
 		{
-			starslide[ (x) + (y * BACK_Y) ] = 0;
-			tunnelslide[ (x) + (y * BACK_Y) ] = 0;
+			starslide[ (x) + (y * BACK_X) ] = 0;
+			tunnelslide[ (x) + (y * BACK_X) ] = 0;
 		}
 	}
 
@@ -171,20 +171,16 @@ void slide_tunnel()
 	// Generate new tiles for top and bottom
 	if (tunnel_wall_top > 0)
 	{
-		s8 wall = tunnel_wall_top;
-		while(wall)
+		for(s8 wall = 0 ; wall < tunnel_wall_top; ++wall)
 		{
-			--wall;
 			tunnelslide[ (31) + (wall * BACK_X) ] = tunnel_tile_pick() ;
 		}
 	}
 
 	if (tunnel_wall_bottom > 0)
 	{
-		s8 wall = tunnel_wall_bottom;
-		while(wall)
+		for(s8 wall = 0 ; wall < tunnel_wall_bottom; ++wall)
 		{
-			--wall;
 			tunnelslide[ (31) + ((BACK_Y-1-wall) * BACK_X) ] = tunnel_tile_pick() ;
 		}
 	}
