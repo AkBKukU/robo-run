@@ -248,6 +248,7 @@ void boss_update()
 
 	if (boss_health < 0)
 	{
+		level_next();
 		boss_live = 0;
 		enemy_spawn_allowed=1;
 		u8 x,y;
@@ -264,8 +265,8 @@ void boss_update()
 		boss_get_pos_on(&x, &y);
 		powerup_droptype(x,y,POWERUP_SPREAD);
 
+		enemy_clean();
 		boss_init();
-		level_next();
 	}
 }
 

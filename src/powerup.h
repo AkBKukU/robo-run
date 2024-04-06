@@ -22,6 +22,7 @@ extern struct enemy_drops manager_spread;
 #define POWERUP_SHIELD   2
 #define POWERUP_SPREAD   3
 
+#define POWERUP_DROP_RATE 50
 
 extern ERAPI_SPRITE sprite_powerup_cooldown;
 extern ERAPI_SPRITE sprite_powerup_shield;
@@ -29,6 +30,7 @@ extern ERAPI_SPRITE sprite_powerup_spread;
 
 void powerup_update();
 void powerup_drop(u8 x, u8 y);
+u8 powerup_drop_chance();
 void powerup_droptype(u8 x, u8 y,u8 type);
 void powerup_clean();
 

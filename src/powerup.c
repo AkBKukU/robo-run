@@ -105,22 +105,34 @@ void powerup_droptype(u8 x, u8 y,u8 type)
 
 void powerup_drop(u8 x, u8 y)
 {
-	u8 type = 0;
-	switch(ERAPI_RandMax(50))
+	switch(powerup_drop_chance())
 	{
-		case 1:
-		case 2:
+		case POWERUP_COOLDOWN:
 			powerup_droptype(x, y, POWERUP_COOLDOWN);
 			return;
-		case 3:
-		case 4:
+		case POWERUP_SPREAD:
 			powerup_droptype(x, y, POWERUP_SPREAD);
 			return;
-		case 5:
+		case POWERUP_SHIELD:
 			powerup_droptype(x, y, POWERUP_SHIELD);
 			return;
 	}
+}
 
+u8 powerup_drop_chance()
+{
+	switch(ERAPI_RandMax(POWERUP_DROP_RATE))
+	{
+		case 1:
+		case 2:
+			return POWERUP_COOLDOWN;
+		case 3:
+		case 4:
+			return POWERUP_SPREAD;
+		case 5:
+			return POWERUP_SHIELD;
+	}
+	return 0;
 }
 
 void powerup_clean()

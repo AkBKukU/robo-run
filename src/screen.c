@@ -117,7 +117,7 @@ void screen_clear()
 }
 void tunnel_clear()
 {
-	rand_stable_map(0);
+	rand_stable_map();
 	tunnel_height = tunnel_height > TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
 
 	// Block types for tunnel
@@ -149,6 +149,7 @@ void slide_tunnel()
 		return;
 	}
 	++distance_tiles;
+	++level_tiles;
 	++player_score;
 	tunnel_offset=8;
 	tunnel_offset_frames=0;
@@ -202,9 +203,9 @@ void slide_tunnel()
 
 void tunnel_generation()
 {
+	rand_stable_map();
 	s16 last_top = 0;
 	s16 last_bottom = 0;
-
 	// Track tunnel shape history for checking viable path
 	for(u8 i=1;i<TUNNEL_MIN_CHANGE;++i)
 	{

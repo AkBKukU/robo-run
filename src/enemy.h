@@ -27,6 +27,7 @@ struct enemy_data
 	s16 y;
 	s16 health;
 	u16 t;
+	u8 drop_type;
 	u8 movement;
 	u8 damage;
 	u8 x_spawn;

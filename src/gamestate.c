@@ -1,7 +1,7 @@
 
 #include "gamestate.h"
 u8 sysexit = 0, win = 0, game_play = 0;
-u32 distance_tiles = 0, player_score=0,frame_count=0;
+u32 distance_tiles = 0, level_tiles = 0, player_score=0,frame_count=0;
 u32 level_count =1;
 
 u8 level_progress = 0;
@@ -20,6 +20,7 @@ void game_init()
 	frame_count=0;
 	level_count =1;
 	boss_level=1;
+	level_tiles = 0;
 
 	level_progress = 0;
 	level_progress_start = 0;
@@ -87,7 +88,12 @@ void game_update()
 
 void rand_stable_map()
 {
-	ERAPI_RandInit(base_seed+distance_tiles*10000);
+	ERAPI_RandInit((base_seed+level_count*10000)+level_tiles);
+}
+
+void rand_stable_map_var(u8 var)
+{
+	ERAPI_RandInit((base_seed+level_count*10000)+level_tiles<<var);
 }
 
 void rand_true()
@@ -105,6 +111,7 @@ void level_next()
 	++boss_level;
 	boss_level = (boss_level > 3?3:boss_level);
 	++level_count;
+	level_tiles = 0;
 	tunnel_clear();
 	player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
 	player_score+=100*level_count;
