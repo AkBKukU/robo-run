@@ -45,15 +45,17 @@ extern u32 level_progress_start;
 #include "boss.h"
 
 extern u8 sysexit, win, game_play;
-extern u32 distance_tiles, level_tiles, player_score,frame_count;
+extern u32 distance_tiles, player_score,frame_count;
 
 extern s16 base_seed;
+extern u16 level_tiles,seed_fixed;
 
 extern u32 key;
 
 void game_init();
 void game_update();
 void game_clean();
+u16 stable_map_seed();
 void rand_stable_map();
 void rand_stable_map_var(u8 var);
 void rand_true();

@@ -64,8 +64,6 @@ void screen_init()
 	stars_offset_frames=0;
 	tunnel_offset = 0;
 	tunnel_offset_frames = 0;
-	tunnel_groups[0] = 0;
-	tunnel_groups[1] = 0;
 	tunnel_height = TUNNEL_HEIGHT_START;
 	vertical_offset = 16;
 
@@ -117,11 +115,12 @@ void screen_clear()
 }
 void tunnel_clear()
 {
-	rand_stable_map();
 	tunnel_height = tunnel_height > TUNNEL_HEIGHT_MIN ? tunnel_height - 1 : tunnel_height;
 
 	// Block types for tunnel
+	rand_stable_map_var(0);
 	tunnel_groups[0] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
+	rand_stable_map_var(1);
 	tunnel_groups[1] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 
 	tunnel_wall_top = 0;
