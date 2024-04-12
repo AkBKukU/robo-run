@@ -43,6 +43,8 @@ extern u32 level_progress_start;
 #include "gamestate.h"
 #include "util.h"
 #include "boss.h"
+#include "gui.h"
+#include "effects.h"
 
 extern u8 sysexit, win, game_play;
 extern u32 distance_tiles, player_score,frame_count;

@@ -47,7 +47,7 @@ int main()
 	{
 		if (game_play)
 		{
-		game_update();
+			game_update();
 		} else {
 			menu_update();
 		}

@@ -7,7 +7,7 @@ u32 level_count =1;
 u8 level_progress = 0;
 u32 level_progress_start = 0;
 
-s16 base_seed = 24;
+s16 base_seed = 1234;
 u16 level_tiles = 0;
 
 u16 seed_fixed = 33875; // chosen by fair dice roll.
