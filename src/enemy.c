@@ -30,7 +30,7 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 			// If defeated start death animation
 			if (manger_enemy[i].health < 1)
 			{
-				player_score+=10;
+				save.score+=10;
 				manger_enemy[i].live = 2;
 				manger_enemy[i].health=0;
 				ERAPI_SetSpriteFrame(hit_sprite,3);
@@ -163,7 +163,7 @@ void enemy_spawn(u8 spawn_type)
 				break;
 			case ENEMY_TYPE_LIGHT:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
-				manger_enemy[i].health = 3*(level_count/2);
+				manger_enemy[i].health = 3*(save.level/2);
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 				// Debug, uncomment to show powerup type by flipping sprite
 				ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,manger_enemy[i].drop_type);

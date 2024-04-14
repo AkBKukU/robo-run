@@ -23,10 +23,22 @@ static inline void init()
 	ERAPI_InitMemory( (ERAPI_RAM_END - (u32)__end) >> 10);
 	ERAPI_SetBackgroundMode( 0);
 
-	ERAPI_RandInit(base_seed);
-
 	// Component Setup
-	menu_init();
+	game_load();
+	//gui_init();
+
+	//gui_print_score(save.score);
+
+	if (save.flags & SAVE_FLAG_RESUME)
+	{
+		game_init();
+		game_play = 1;
+		save.flags  = save.flags  & ~SAVE_FLAG_RESUME;
+		game_save();
+
+	}else{
+		menu_init();
+	}
 
 
 #ifdef DEBUG_MGBA
@@ -34,8 +46,8 @@ static inline void init()
 	mgba_print_init();
 
 	mgba_print_string("Starting with print ability");
-	fire_cooldown_max = 5;
-	shot_spread = 20;
+	//fire_cooldown_max = 5;
+	//shot_spread = 20;
 #endif
 }
 

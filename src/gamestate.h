@@ -5,6 +5,29 @@
 
 #include "map/map.h"
 
+// Save information
+#define SAVE_ID 42
+
+struct save_data // 16 bytes of data to allocate
+{
+	u8 flags;
+#define SAVE_FLAG_VALID 0x1
+#define SAVE_FLAG_RESUME 0x2
+	u16 high_score;
+	u16 seed;
+
+	u8 shield;
+	u8 spread;
+	u8 cooldown;
+	s8 health;
+
+	u16 score;
+	u8 level;
+
+	u8 unused[4];
+};
+extern struct save_data save;
+
 #define BACK_X 32
 #define BACK_Y 24
 
@@ -33,7 +56,7 @@
 #define LEVEL_PROGRESS_1 150
 #define LEVEL_PROGRESS_2 350
 
-extern u32 level_count;
+
 extern u8 level_progress;
 extern u32 level_progress_start;
 
@@ -47,9 +70,8 @@ extern u32 level_progress_start;
 #include "effects.h"
 
 extern u8 sysexit, win, game_play;
-extern u32 distance_tiles, player_score,frame_count;
+extern u32 distance_tiles, frame_count;
 
-extern s16 base_seed;
 extern u16 level_tiles,seed_fixed;
 
 extern u32 key;
@@ -62,6 +84,9 @@ void rand_stable_map();
 void rand_stable_map_var(u8 var);
 void rand_true();
 void rand_stable_boss(u8 boss_col);
+void game_over();
+void game_save();
+void game_load();
 
 void level_next();
 

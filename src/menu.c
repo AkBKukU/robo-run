@@ -32,13 +32,16 @@ ERAPI_BACKGROUND_DRAW_NUMBER background_seed_fade =
 	MENU_SEEDF_STYLE,
 	MENU_SEEDF_LENGTH,
 	0, // Zero pad right
-	0, // Zero pad left
+	1, // Zero pad left
 	0,
 	0
 };
 
 void menu_init()
 {
+	ERAPI_BackgroundDrawNumber(&background_seed_fade);
+	ERAPI_BackgroundDrawNumber(&background_seed_select);
+
 	// Apply new background
 	ERAPI_BACKGROUND menu =
 	{
@@ -49,13 +52,11 @@ void menu_init()
 		1
 	};
 
-	ERAPI_BackgroundDrawNumber(&background_seed_fade);
-	ERAPI_BackgroundDrawNumber(&background_seed_select);
-
 	ERAPI_SetBackgroundPalette( menu_seedf_pal, MENU_SEEDF_PALETTE*16, 3);
 	ERAPI_SetBackgroundPalette( menu_seed_pal, (MENU_SEEDF_PALETTE+1)*16, 3);
 	ERAPI_LoadBackgroundCustom( 3, &menu);
 
+	gui_init();
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(100);
 }
@@ -67,6 +68,7 @@ void menu_start()
 void menu_update()
 {
 	key = ERAPI_GetKeyStateRaw();
+	gui_print_score(save.high_score);
 
 	// Get direction of movement
 	s8 dir_x = 0, dir_y = 0;
@@ -105,22 +107,22 @@ void menu_update()
 		if (key & ERAPI_KEY_UP)
 		{
 			menu_debounce = MENU_DEBOUNCE;
-			base_seed+=pow;
+			save.seed+=pow;
 		}
 		if (key & ERAPI_KEY_DOWN)
 		{
 			menu_debounce = MENU_DEBOUNCE;
-			base_seed-=pow;
+			save.seed-=pow;
 		}
-		if (base_seed > 9999) base_seed = 9999;
-		if (base_seed < 0) base_seed = 0;
+		if (save.seed > 9999) save.seed = 9999;
+		if (save.seed < 0) save.seed = 0;
 	}
 
 	// Draw full seed to background
-	ERAPI_BackgroundDrawNumberNewValue(&background_seed_fade, base_seed);
+	ERAPI_BackgroundDrawNumberNewValue(&background_seed_fade, save.seed);
 
 	// Get only digit to edit and draw it on top
-	u8 digit = ERAPI_Mod(ERAPI_Div(base_seed, pow ),10);
+	u8 digit = ERAPI_Mod(ERAPI_Div(save.seed, pow ),10);
 	background_seed_select.x = 18-3*menu_digit_select;
 	ERAPI_BackgroundDrawNumberNewValue(&background_seed_select, digit);
 

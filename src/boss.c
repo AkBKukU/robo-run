@@ -177,7 +177,7 @@ void boss_spawn_init()
 {
 	rand_stable_boss(boss_gen_col);
 	boss_len = ERAPI_RandMax(boss_level * BOSS_SIZE_RATIO_MAX)+5;
-	boss_health=(boss_len*level_count)*4;
+	boss_health=(boss_len*save.level)*4;
 	boss_gen_col=0;
 	boss_x_pos=15;
 	boss_y_offset=0;

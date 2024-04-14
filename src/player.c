@@ -104,7 +104,7 @@ void player_hit_detect()
 	{
 		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
-		fire_cooldown_max = fire_cooldown_max > 5 ? fire_cooldown_max-1 : fire_cooldown_max ;
+		save.cooldown = save.cooldown > 5 ? save.cooldown-1 : save.cooldown ;
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
@@ -112,9 +112,9 @@ void player_hit_detect()
 	{
 		manager_shield.live = 0;
 		ERAPI_SpriteFree(manager_shield.handle);
-		if (player_sheild < player_sheild_max)
-			++player_sheild;
-		gui_print_health(phealth,player_sheild);
+		if (save.shield < player_sheild_max)
+			++save.shield;
+		gui_print_health(save.health,save.shield);
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
@@ -122,7 +122,7 @@ void player_hit_detect()
 	{
 		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
-		shot_spread += 2 ;
+		save.spread += 2 ;
 	}
 }
 
@@ -130,25 +130,26 @@ void player_damage(u8 damage)
 {
 
 #ifdef DEBUG_MGBA
-	return;
+	//return;
 #endif
 	if(player_iframes)
 	{
 		return;
 	}
-	if (player_sheild)
+	if (save.shield)
 	{
-		--player_sheild;
+		--save.shield;
 	}else{
-		phealth-=damage;
+		save.health-=damage;
 	}
-	gui_print_health(phealth,player_sheild);
+	gui_print_health(save.health,save.shield);
 	player_iframes=PLAYER_IFRAMES_MAX;
-	if(phealth < 0)
+	if(save.health < 0)
 	{
 		effect_explode(px,py+vertical_offset);
 		ERAPI_SpriteHide( h_player);
-		phealth = -1;
+		save.health = -1;
+		return;
 	}
 }
 
@@ -170,19 +171,16 @@ void player_control()
 	{
 		// TODO - 1 is playeer damage that will scale with powerups
 		rand_true();
-		u32 rand = ERAPI_RandMax(shot_spread);
+		u32 rand = ERAPI_RandMax(save.spread);
 		bullet_fire(128-rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
-		if(shot_spread)
+		if(save.spread)
 			bullet_fire(128+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
-		fire_cooldown = fire_cooldown_max;
+		fire_cooldown = save.cooldown;
 	}
 
 	if (key & ERAPI_KEY_B)
 	{
-		game_clean();
-
-		game_play=0;
-		menu_init();
+		game_over();
 	}
 }
 
@@ -190,14 +188,21 @@ void player_init()
 {
 	px=120;
 	py=80;
-	phealth=100;
 	fx=0;
 	fy=0;
-	fire_cooldown_max = 20;
-	fire_cooldown = 20;
+	fire_cooldown = PLAYER_COOLDOWN_START;
 	player_sheild_max = 1;
-	player_sheild = 0;
-	shot_spread = 0;
+
+	if (! (save.flags & SAVE_FLAG_RESUME))
+	{
+		save.spread = 0;
+		save.shield = 0;
+		save.health = 100;
+		save.cooldown = PLAYER_COOLDOWN_START;
+	}else{
+		player_sheild_max = save.level;
+		player_sheild_max = (player_sheild_max > 5?5:player_sheild_max);
+	}
 	player_iframes = 0;
 
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);

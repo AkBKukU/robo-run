@@ -149,7 +149,7 @@ void slide_tunnel()
 	}
 	++distance_tiles;
 	++level_tiles;
-	++player_score;
+	++save.score;
 	tunnel_offset=8;
 	tunnel_offset_frames=0;
 
@@ -220,14 +220,14 @@ void tunnel_generation()
 	last_top = last_top < tunnel_wall_top ? tunnel_wall_top : last_top;
 	last_bottom = last_bottom < tunnel_wall_bottom ? tunnel_wall_bottom : last_bottom;
 
-	if (level_progress_start+LEVEL_PROGRESS_1+(level_count*LEVEL_PROGRESS_INCREASE) > distance_tiles )
+	if (level_progress_start+LEVEL_PROGRESS_1+(save.level*LEVEL_PROGRESS_INCREASE) > distance_tiles )
 	{
 		// Level Progress 0
 		// Details:
 		// - No tunnel
 		return;
 
-	}else if (level_progress_start+LEVEL_PROGRESS_2+(level_count*LEVEL_PROGRESS_INCREASE) > distance_tiles )
+	}else if (level_progress_start+LEVEL_PROGRESS_2+(save.level*LEVEL_PROGRESS_INCREASE) > distance_tiles )
 	{
 		// Level Progress 1
 		if (level_progress != 1)
@@ -238,7 +238,7 @@ void tunnel_generation()
 			tunnel_wall_bottom = -3;
 		}
 		// Randomly but evenly move tunnel
-		u8 max = 10 + level_count/2;
+		u8 max = 10 + save.level/2;
 		if(ERAPI_RandMax(5) == 1)
 		{
 			tunnel_wall_top += ERAPI_RandMax(max)-(max/2);
@@ -257,7 +257,7 @@ void tunnel_generation()
 		}
 
 		// Slowly move tunnel to center
-		u8 max = 7 + level_count;
+		u8 max = 7 + save.level;
 		if(ERAPI_RandMax(10) == 1)
 		{
 			tunnel_wall_top += ERAPI_RandMax(max+1)-(max/2);

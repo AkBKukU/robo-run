@@ -5,15 +5,16 @@
 #include "erapi.h"
 
 #include "gamestate.h"
+#include "menu.h"
 #include "gfx/gfx_player.h"
 
 #define PLAYER_BUMP_FORCE 8
 #define PLAYER_HIT_R 10
 #define PLAYER_MAX 5
 #define PLAYER_IFRAMES_MAX 16
+#define PLAYER_COOLDOWN_START 20
 
 extern u8 px,py;
-extern s16 phealth;
 extern s8 fx,fy;
 extern u8 fire_cooldown_max, fire_cooldown;
 extern u8 player_sheild_max, player_sheild;
