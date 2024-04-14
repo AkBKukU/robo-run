@@ -149,7 +149,6 @@ void slide_tunnel()
 	}
 	++distance_tiles;
 	++level_tiles;
-	++save.score;
 	tunnel_offset=8;
 	tunnel_offset_frames=0;
 
@@ -225,11 +224,13 @@ void tunnel_generation()
 		// Level Progress 0
 		// Details:
 		// - No tunnel
+		++save.score;
 		return;
 
 	}else if (level_progress_start+LEVEL_PROGRESS_2+(save.level*LEVEL_PROGRESS_INCREASE) > distance_tiles )
 	{
 		// Level Progress 1
+		++save.score;
 		if (level_progress != 1)
 		{
 			// Reset tunnel wall positions
@@ -252,6 +253,7 @@ void tunnel_generation()
 		// Level Progress 2
 		if (level_progress != 2)
 		{
+			++save.score;
 			level_progress = 2;
 			 boss_spawn_init();
 		}
