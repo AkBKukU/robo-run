@@ -57,6 +57,7 @@ void menu_init()
 	ERAPI_LoadBackgroundCustom( 3, &menu);
 
 	gui_init();
+	ERAPI_DrawText(region_screen,0,0,"Booting...");
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(100);
 }
@@ -133,6 +134,7 @@ void menu_update()
 	// Start with selected seed
 	if (key & ERAPI_KEY_A)
 	{
+		gui_pause(0);
 		game_play = 1;
 		game_init();
 		return;

@@ -70,7 +70,7 @@ extern u32 level_progress_start;
 #include "effects.h"
 
 #define DEBOUNCE_SET 20
-extern u8 sysexit, win, game_play, input_debounce;
+extern u8 sysexit, win, game_play, input_debounce,no_save;
 extern u32 distance_tiles, frame_count;
 
 extern u16 level_tiles,seed_fixed;

@@ -13,6 +13,8 @@
 #define PLAYER_MAX 5
 #define PLAYER_IFRAMES_MAX 16
 #define PLAYER_COOLDOWN_START 20
+#define PLAYER_COOLDOWN_MIN 5
+#define PLAYER_SHIELD_MAX 5
 
 extern u8 px,py;
 extern s8 fx,fy;

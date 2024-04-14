@@ -49,6 +49,7 @@ void gui_clean()
 
  	ERAPI_SetRegionColor( region_health, 0x00);
 	ERAPI_ClearRegion(region_health);
+	ERAPI_ClearRegion(region_screen);
 }
 
 void gui_pause(u8 draw)
@@ -74,6 +75,7 @@ void gui_print_health(s16 health,u8 shield)
 	// Create print buffer and convert int to string
 	char num_print[8];
 	citoa(health,num_print,10);
+	shield = shield  > 5 ? 5 : shield;
 
 	// Clear region and print score
  	ERAPI_SetRegionColor( region_health, 0x00);

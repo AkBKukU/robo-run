@@ -104,7 +104,7 @@ void player_hit_detect()
 	{
 		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
-		save.cooldown = save.cooldown > 5 ? save.cooldown-1 : save.cooldown ;
+		save.cooldown = save.cooldown > PLAYER_COOLDOWN_MIN ? save.cooldown-1 : save.cooldown ;
 	}
 
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
@@ -185,10 +185,6 @@ void player_control()
 		input_debounce = DEBOUNCE_SET;
 	}
 
-	if (key & ERAPI_KEY_B)
-	{
-		game_over();
-	}
 	if (input_debounce)
 		--input_debounce;
 }

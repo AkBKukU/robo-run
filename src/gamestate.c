@@ -1,6 +1,6 @@
 
 #include "gamestate.h"
-u8 sysexit = 0, win = 0, game_play = 0, input_debounce=0;
+u8 sysexit = 0, win = 0, game_play = 0, input_debounce=0,no_save=0;
 u32 distance_tiles = 0,frame_count=0;
 
 u8 level_progress = 0;
@@ -37,6 +37,7 @@ void game_init()
 	frame_count=0;
 	boss_level=1;
 	level_tiles = 0;
+	no_save = 0;
 
 	if (! (save.flags & SAVE_FLAG_RESUME))
 	{
@@ -124,6 +125,47 @@ void game_pause()
 	gui_pause(1);
 	key = ERAPI_GetKeyStateRaw();
 
+	// Totally not cheat codes
+	if (
+		(key & ERAPI_KEY_L) &&
+		(key & ERAPI_KEY_R) &&
+		(key & ERAPI_KEY_RIGHT) &&
+		(!input_debounce)
+	){
+		save.cooldown = PLAYER_COOLDOWN_MIN;
+		ERAPI_DrawText(region_screen,0,10,"RAPID FIRE");
+		no_save = 1;
+		input_debounce = DEBOUNCE_SET;
+	}
+	if (
+		(key & ERAPI_KEY_L) &&
+		(key & ERAPI_KEY_R) &&
+		(key & ERAPI_KEY_UP) &&
+		(!input_debounce)
+	){
+		save.shield = PLAYER_SHIELD_MAX;
+		save.health = 100;
+		ERAPI_DrawText(region_screen,0,10,"REFRESHED!");
+		gui_print_health(save.health,save.shield);
+		no_save = 1;
+		input_debounce = DEBOUNCE_SET;
+	}
+	if (
+		(key & ERAPI_KEY_L) &&
+		(key & ERAPI_KEY_R) &&
+		(key & ERAPI_KEY_LEFT) &&
+		(!input_debounce)
+	){
+		save.spread = 20;
+		ERAPI_DrawText(region_screen,0,10,"WIDE SHOT!");
+		no_save = 1;
+		input_debounce = DEBOUNCE_SET;
+	}
+	if (key & ERAPI_KEY_SELECT && !input_debounce)
+	{
+		game_over();
+	}
+
 	if (key & ERAPI_KEY_START && !input_debounce)
 	{
 		game_play = 1;
@@ -166,7 +208,7 @@ void level_next()
 	++save.level;
 	level_tiles = 0;
 	tunnel_clear();
-	player_sheild_max = (player_sheild_max + 1 >5 ? 5 : player_sheild_max+1);
+	player_sheild_max = (player_sheild_max + 1 >PLAYER_SHIELD_MAX ? PLAYER_SHIELD_MAX : player_sheild_max+1);
 	save.score+=100*save.level;
 	level_progress = 0;
 	level_progress_start = distance_tiles;
@@ -189,7 +231,8 @@ void game_over()
 
 void game_save()
 {
-	ERAPI_FlashSaveUserData(SAVE_ID,&save);
+	if (!no_save)
+		ERAPI_FlashSaveUserData(SAVE_ID,&save);
 }
 
 void game_load()

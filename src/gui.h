@@ -25,7 +25,7 @@ extern ERAPI_HANDLE_REGION region_screen;
 #define GUI_SCREEN_X 9
 #define GUI_SCREEN_Y 9
 #define GUI_SCREEN_W 12
-#define GUI_SCREEN_H 2
+#define GUI_SCREEN_H 5
 
 void gui_init();
 void gui_start();
