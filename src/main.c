@@ -57,11 +57,17 @@ int main()
 	// Main Loop
 	while (sysexit == 0)
 	{
-		if (game_play)
+		switch (game_play)
 		{
-			game_update();
-		} else {
-			menu_update();
+			case 0:
+				menu_update();
+				break;
+			case 1:
+				game_update();
+				break;
+			case 2:
+				game_pause();
+				break;
 		}
 		ERAPI_RenderFrame(1);
 		++frame_count;

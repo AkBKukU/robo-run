@@ -1,6 +1,6 @@
 
 #include "gamestate.h"
-u8 sysexit = 0, win = 0, game_play = 0;
+u8 sysexit = 0, win = 0, game_play = 0, input_debounce=0;
 u32 distance_tiles = 0,frame_count=0;
 
 u8 level_progress = 0;
@@ -117,6 +117,21 @@ void game_update()
 
 	if(save.health < 0)
 		game_over();
+}
+
+void game_pause()
+{
+	gui_pause(1);
+	key = ERAPI_GetKeyStateRaw();
+
+	if (key & ERAPI_KEY_START && !input_debounce)
+	{
+		game_play = 1;
+		gui_pause(0);
+		input_debounce = DEBOUNCE_SET;
+	}
+	if (input_debounce)
+		--input_debounce;
 }
 
 u16 stable_map_seed()

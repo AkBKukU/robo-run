@@ -69,7 +69,8 @@ extern u32 level_progress_start;
 #include "gui.h"
 #include "effects.h"
 
-extern u8 sysexit, win, game_play;
+#define DEBOUNCE_SET 20
+extern u8 sysexit, win, game_play, input_debounce;
 extern u32 distance_tiles, frame_count;
 
 extern u16 level_tiles,seed_fixed;
@@ -87,6 +88,7 @@ void rand_stable_boss(u8 boss_col);
 void game_over();
 void game_save();
 void game_load();
+void game_pause();
 
 void level_next();
 

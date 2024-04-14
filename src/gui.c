@@ -23,6 +23,7 @@ ERAPI_BACKGROUND_DRAW_NUMBER background_score =
 };
 
 ERAPI_HANDLE_REGION region_health;
+ERAPI_HANDLE_REGION region_screen;
 s16 phealth_last=0;
 void gui_init()
 {
@@ -31,6 +32,11 @@ void gui_init()
 	// Region for heath display
 	region_health = ERAPI_CreateRegion(0,0,0, 19,0xf, 0x01);
 	ERAPI_SetTextColor( region_health, 0x02, 0x00);
+
+	// Region for screen
+	region_screen = ERAPI_CreateRegion(0,0,GUI_SCREEN_X,GUI_SCREEN_Y,GUI_SCREEN_W,GUI_SCREEN_H);
+	ERAPI_SetRegionColor(region_screen,0);
+	ERAPI_SetTextColor( region_screen, GUI_SCREEN_COLOR, 0x00);
 }
 void gui_start()
 {
@@ -44,6 +50,17 @@ void gui_clean()
  	ERAPI_SetRegionColor( region_health, 0x00);
 	ERAPI_ClearRegion(region_health);
 }
+
+void gui_pause(u8 draw)
+{
+	if (draw)
+	{
+		ERAPI_DrawText(region_screen,0,0,"pause");
+	}else{
+		ERAPI_ClearRegion(region_screen);
+	}
+}
+
 void gui_print_score(u32 score)
 {
 	// Print score to background

@@ -178,10 +178,19 @@ void player_control()
 		fire_cooldown = save.cooldown;
 	}
 
+	if (key & ERAPI_KEY_START && !input_debounce)
+	{
+		game_play = 2;
+		ERAPI_RenderFrame(3);
+		input_debounce = DEBOUNCE_SET;
+	}
+
 	if (key & ERAPI_KEY_B)
 	{
 		game_over();
 	}
+	if (input_debounce)
+		--input_debounce;
 }
 
 void player_init()
