@@ -158,6 +158,8 @@ void boss_spawn()
 	{
 		boss_live = 1;
 		boss_spawning_flag = 0;
+		ERAPI_SoundPause(SND_BOSS_SPAWN);
+		ERAPI_PlaySoundSystem(SND_MUSIC_BOSS);
 	}
 
 	// Apply new background
@@ -185,6 +187,8 @@ void boss_spawn_init()
 	weapon_laser=1;
 	enemy_spawn_allowed=0;
 	boss_spawning_flag = 1;
+	ERAPI_SoundPause(SND_MUSIC_6);
+	ERAPI_PlaySoundSystem(SND_BOSS_SPAWN);
 }
 
 u8 boss_tile_hit_check(u8 x, u8 y)
@@ -236,11 +240,13 @@ void boss_update()
 		{
 			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 		}
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SPREAD)
 		{
 			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,3,BULLET_ENEMY);
+			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
@@ -248,6 +254,8 @@ void boss_update()
 
 	if (boss_health < 0)
 	{
+		ERAPI_SoundPause(SND_MUSIC_BOSS);
+		ERAPI_PlaySoundSystem(SND_DEFEAT_BOSS);
 		level_next();
 		boss_live = 0;
 		enemy_spawn_allowed=1;
@@ -255,7 +263,7 @@ void boss_update()
 		for (u8 i= 0;i < 5;++i)
 		{
 			boss_get_pos_on(&x, &y);
-			effect_explode(x,y);
+			effect_explode(x,y,8*i);
 		}
 
 		boss_get_pos_on(&x, &y);
@@ -267,6 +275,7 @@ void boss_update()
 
 		enemy_clean();
 		boss_init();
+		ERAPI_PlaySoundSystem(SND_MUSIC_6);
 	}
 }
 

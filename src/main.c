@@ -16,6 +16,14 @@
 extern int __end[];
 
 
+// TODO - Enemy damage rate tied to level?
+// TODO - Enemy fire rate tied to level
+// TODO - Enemy spawn rate tied to level
+// TODO - Powerups add to score
+// TODO - Give L3 bosses small guns
+// TODO - boss gun minimum scal with level
+// TODO - Game needs more threat escalation, it's too easy
+// TODO - After death, should have to press a button to end.
 
 static inline void init()
 {

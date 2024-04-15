@@ -13,6 +13,16 @@ void effect_update()
 		// Check if effect is active
 		if (!manger_effects[i].live) continue;
 
+		if (manger_effects[i].live > 1)
+		{
+			--manger_effects[i].live;
+			if (manger_effects[i].live == 1)
+			{
+				ERAPI_PlaySoundSystem(SND_EXPLODE);
+				ERAPI_SpriteShow(manger_effects[i].handle);
+			}
+			continue;
+		}
 		// Check if effect needs updated
 		--manger_effects[i].countdown;
 
@@ -49,7 +59,7 @@ s8 effect_find_free()
 	return -1;
 }
 
-void effect_explode(u8 x, u8 y)
+void effect_explode(u8 x, u8 y, u8 delay)
 {
 	// Get free index
 	s8 i = effect_find_free();
@@ -58,9 +68,10 @@ void effect_explode(u8 x, u8 y)
 	manger_effects[i].x = x;
 	manger_effects[i].y = y;
 	manger_effects[i].type = EFFECT_EXPLOSION;
-	manger_effects[i].live = 1;
+	manger_effects[i].live = 2 + delay;
 	manger_effects[i].countdown = 18;
 	manger_effects[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_effect_explosion);
+	ERAPI_SpriteHide(manger_effects[i].handle);
 
 	ERAPI_SetSpritePos(
 		manger_effects[i].handle,

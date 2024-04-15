@@ -35,6 +35,7 @@ void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
 				manger_enemy[i].health=0;
 				ERAPI_SetSpriteFrame(hit_sprite,3);
 				ERAPI_SpriteAutoAnimate(hit_sprite,6,18);
+				ERAPI_PlaySoundSystem(SND_DEFEAT_ENEMY);
 			// Flash if not defeated
 			}else{
 				ERAPI_SetSpriteFrame(hit_sprite,0);
@@ -80,6 +81,7 @@ void enemy_update()
 		if(!manger_enemy[i].cooldown && manger_enemy[i].type != ENEMY_TYPE_ROCK)
 		{
 			bullet_fire(0, 3, manger_enemy[i].x-8, manger_enemy[i].y,manger_enemy[i].damage,BULLET_ENEMY);
+			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 			manger_enemy[i].cooldown = ERAPI_RandMax(240);
 		}
 

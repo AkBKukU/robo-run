@@ -102,6 +102,7 @@ void player_hit_detect()
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
+		ERAPI_PlaySoundSystem(SND_PICKUP);
 		manager_cooldown.live = 0;
 		ERAPI_SpriteFree(manager_cooldown.handle);
 		save.cooldown = save.cooldown > PLAYER_COOLDOWN_MIN ? save.cooldown-1 : save.cooldown ;
@@ -110,6 +111,7 @@ void player_hit_detect()
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
+		ERAPI_PlaySoundSystem(SND_PICKUP);
 		manager_shield.live = 0;
 		ERAPI_SpriteFree(manager_shield.handle);
 		if (save.shield < player_sheild_max)
@@ -120,6 +122,7 @@ void player_hit_detect()
 	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
+		ERAPI_PlaySoundSystem(SND_PICKUP);
 		manager_spread.live = 0;
 		ERAPI_SpriteFree(manager_spread.handle);
 		save.spread += 2 ;
@@ -136,6 +139,7 @@ void player_damage(u8 damage)
 	{
 		return;
 	}
+	ERAPI_PlaySoundSystem(SND_PLAYER_DAMAGE);
 	if (save.shield)
 	{
 		--save.shield;
@@ -146,7 +150,8 @@ void player_damage(u8 damage)
 	player_iframes=PLAYER_IFRAMES_MAX;
 	if(save.health < 0)
 	{
-		effect_explode(px,py+vertical_offset);
+		ERAPI_PlaySoundSystem(SND_PLAYER_LOSE);
+		effect_explode(px,py+vertical_offset,0);
 		ERAPI_SpriteHide( h_player);
 		save.health = -1;
 		return;
@@ -176,6 +181,7 @@ void player_control()
 		if(save.spread)
 			bullet_fire(128+rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
 		fire_cooldown = save.cooldown;
+		ERAPI_PlaySoundSystem(SND_PLAYER_FIRE);
 	}
 
 	if (key & ERAPI_KEY_START && !input_debounce)
@@ -183,6 +189,7 @@ void player_control()
 		game_play = 2;
 		ERAPI_RenderFrame(3);
 		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_PAUSE);
 	}
 
 	if (input_debounce)

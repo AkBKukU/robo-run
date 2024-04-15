@@ -73,6 +73,8 @@ void game_init()
 	boss_init();
 	gui_init();
 	gui_print_health(save.health,save.shield);
+	ERAPI_PlaySoundSystem(SND_PLAYER_SPAWN);
+	ERAPI_PlaySoundSystem(SND_MUSIC_6);
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(75);
 	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x100,25);
@@ -136,6 +138,7 @@ void game_pause()
 		ERAPI_DrawText(region_screen,0,10,"RAPID FIRE");
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_MUSIC_UPBEAT_SHORT);
 	}
 	if (
 		(key & ERAPI_KEY_L) &&
@@ -149,6 +152,7 @@ void game_pause()
 		gui_print_health(save.health,save.shield);
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_MUSIC_UPBEAT_SHORT);
 	}
 	if (
 		(key & ERAPI_KEY_L) &&
@@ -160,6 +164,7 @@ void game_pause()
 		ERAPI_DrawText(region_screen,0,10,"WIDE SHOT!");
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_MUSIC_UPBEAT_SHORT);
 	}
 	if (key & ERAPI_KEY_SELECT && !input_debounce)
 	{
@@ -171,6 +176,7 @@ void game_pause()
 		game_play = 1;
 		gui_pause(0);
 		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_PAUSE);
 	}
 	if (input_debounce)
 		--input_debounce;

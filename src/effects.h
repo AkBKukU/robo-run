@@ -25,7 +25,7 @@ extern struct effect_data manger_effects[EFFECTS_MAX];
 void effect_init();
 void effect_update();
 s8 effect_find_free();
-void effect_explode(u8 x, u8 y);
+void effect_explode(u8 x, u8 y, u8 delay);
 void effect_clean();
 
 #endif

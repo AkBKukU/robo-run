@@ -4,6 +4,7 @@
 #include "erapi.h"
 
 #include "gamestate.h"
+#include "sound.h"
 #include "map/map.h"
 
 

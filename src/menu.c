@@ -58,6 +58,7 @@ void menu_init()
 
 	gui_init();
 	ERAPI_DrawText(region_screen,0,0,"Booting...");
+	ERAPI_PlaySoundSystem(SND_MENU_MUSIC);
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(100);
 }
@@ -79,11 +80,13 @@ void menu_update()
 		// Change position of highlighted digit
 		if (key & ERAPI_KEY_LEFT)
 		{
+			ERAPI_PlaySoundSystem(SND_MENU_CHANGE);
 			menu_debounce = MENU_DEBOUNCE;
 			++menu_digit_select;
 		}
 		if (key & ERAPI_KEY_RIGHT)
 		{
+			ERAPI_PlaySoundSystem(SND_MENU_CHANGE);
 			menu_debounce = MENU_DEBOUNCE;
 			--menu_digit_select;
 		}
@@ -107,11 +110,13 @@ void menu_update()
 		// Check to change value of seed based on position of selected digit
 		if (key & ERAPI_KEY_UP)
 		{
+			ERAPI_PlaySoundSystem(SND_MENU_CHANGE);
 			menu_debounce = MENU_DEBOUNCE;
 			save.seed+=pow;
 		}
 		if (key & ERAPI_KEY_DOWN)
 		{
+			ERAPI_PlaySoundSystem(SND_MENU_CHANGE);
 			menu_debounce = MENU_DEBOUNCE;
 			save.seed-=pow;
 		}
@@ -134,6 +139,8 @@ void menu_update()
 	// Start with selected seed
 	if (key & ERAPI_KEY_A)
 	{
+		ERAPI_PlaySoundSystem(SND_MENU_ENTER);
+		ERAPI_SoundPause(SND_MENU_MUSIC);
 		gui_pause(0);
 		game_play = 1;
 		game_init();
