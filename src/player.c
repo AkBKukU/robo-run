@@ -104,8 +104,8 @@ void player_hit_detect()
 	{
 		ERAPI_PlaySoundSystem(SND_PICKUP);
 		save.score+=50;
-		manager_cooldown.live = 0;
-		ERAPI_SpriteFree(manager_cooldown.handle);
+		manager_drops[POWERUP_COOLDOWN].live = 0;
+		ERAPI_SpriteFree(manager_drops[POWERUP_COOLDOWN].handle);
 		save.cooldown = save.cooldown > PLAYER_COOLDOWN_MIN ? save.cooldown-1 : save.cooldown ;
 	}
 
@@ -113,9 +113,9 @@ void player_hit_detect()
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		ERAPI_PlaySoundSystem(SND_PICKUP);
-		manager_shield.live = 0;
+		manager_drops[POWERUP_SHIELD].live = 0;
 		save.score+=50;
-		ERAPI_SpriteFree(manager_shield.handle);
+		ERAPI_SpriteFree(manager_drops[POWERUP_SHIELD].handle);
 		if (save.shield < player_sheild_max)
 			++save.shield;
 		gui_print_health(save.health,save.shield);
@@ -126,8 +126,8 @@ void player_hit_detect()
 	{
 		ERAPI_PlaySoundSystem(SND_PICKUP);
 		save.score+=50;
-		manager_spread.live = 0;
-		ERAPI_SpriteFree(manager_spread.handle);
+		manager_drops[POWERUP_SPREAD].live = 0;
+		ERAPI_SpriteFree(manager_drops[POWERUP_SPREAD].handle);
 		save.spread += 2 ;
 	}
 }

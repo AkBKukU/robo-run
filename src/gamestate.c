@@ -72,6 +72,7 @@ void game_init()
 	effect_init();
 	boss_init();
 	gui_init();
+	powerup_clean();
 	gui_print_health(save.health,save.shield);
 	ERAPI_PlaySoundSystem(SND_PLAYER_SPAWN);
 	ERAPI_PlaySoundSystem(SND_MUSIC_6);

@@ -6,6 +6,11 @@
 #include "gamestate.h"
 #include "gfx/gfx_powerup.h"
 
+
+#define POWERUP_COUNT 3
+#define POWERUP_COOLDOWN 0
+#define POWERUP_SHIELD   1
+#define POWERUP_SPREAD   2
 struct enemy_drops
 {
 	u8 live;
@@ -14,13 +19,7 @@ struct enemy_drops
 	u8 type;
 	ERAPI_HANDLE_SPRITE handle;
 };
-extern struct enemy_drops manager_cooldown;
-extern struct enemy_drops manager_shield;
-extern struct enemy_drops manager_spread;
-
-#define POWERUP_COOLDOWN 1
-#define POWERUP_SHIELD   2
-#define POWERUP_SPREAD   3
+extern struct enemy_drops manager_drops[POWERUP_COUNT];
 
 #define POWERUP_DROP_RATE 50
 

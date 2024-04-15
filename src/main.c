@@ -14,12 +14,11 @@
 
 #include "util.h"
 extern int __end[];
-
+// VPK Size: 12,063  bytes
 
 // TODO - Enemy damage rate tied to level?
 // TODO - Enemy fire rate tied to level
 // TODO - Enemy spawn rate tied to level
-// TODO - Powerups add to score
 // TODO - Give L3 bosses small guns
 // TODO - boss gun minimum scal with level
 // TODO - Game needs more threat escalation, it's too easy
