@@ -67,7 +67,7 @@ void bullet_update()
 
 		// Dynamic delay based on number of bullets to prevent game lag
 		if(manger_bullet[i].hitcheck > frame_count) continue;
-		manger_bullet[i].hitcheck = frame_count + (bullet_count / BULLET_UPDATE_DELAY);
+		manger_bullet[i].hitcheck = frame_count + ERAPI_Div(bullet_count , BULLET_UPDATE_DELAY);
 
 		// Update drawn position
 		ERAPI_SetSpritePos(
