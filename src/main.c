@@ -14,7 +14,7 @@
 
 #include "util.h"
 extern int __end[];
-// VPK Size: 12,063  bytes
+// VPK Size: 12,024  bytes
 
 // TODO - Enemy damage rate tied to level?
 // TODO - Enemy fire rate tied to level
