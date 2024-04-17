@@ -99,7 +99,7 @@ gfx/gfx_enemy.c:
 	$(GRIT) gfx/emy-*.tga gfx/eff-*.tga -pS  -gu8 -pu16 -gB4 -ftc -fa -ogfx/gfx_enemy
 
 gfx/gfx_powerup.c:
-	$(GRIT) gfx/bullet.tga gfx/powerup-*.tga -pS  -gu8 -pu8 -gB4 -ftc -fa -ogfx/gfx_powerup
+	$(GRIT) gfx/bullet.tga gfx/laser.tga gfx/powerup-*.tga -pS  -gu8 -pu16 -gB4 -ftc -fa -ogfx/gfx_powerup
 
 map/map.c :
 	$(GRIT) map/stars.tga map/tunnel.tga map/menu.tga -gu8 -pu16 -mu16  -gB4 -ftc -pS -fa -m -omap/map

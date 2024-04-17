@@ -199,6 +199,11 @@ void player_control()
 		ERAPI_PlaySoundSystem(SND_PLAYER_FIRE);
 	}
 
+	if (key & ERAPI_KEY_B && !input_debounce)
+	{
+		laser_fire(0,px+16,py+vertical_offset,1,1);
+		input_debounce = DEBOUNCE_SET;
+	}
 	// Check for pause input
 	if (key & ERAPI_KEY_START && !input_debounce)
 	{

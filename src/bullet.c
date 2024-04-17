@@ -2,10 +2,68 @@
 #include "bullet.h"
 
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
+ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, 4, 1, 1, 4, 1, 1, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
+struct laser_data manager_laser[LASER_MAX];
 
 u8 bullet_count = 0;
+
+
+void laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
+{
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("firing ma laser");
+#endif
+	// Iterate over all lasers
+	for ( u8 i = 0; i < LASER_MAX; ++i )
+	{
+		if(manager_laser[i].live) continue;
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("found unused laser");
+#endif
+		s16 bi = -1;
+		u8 laser_limit = BULLET_MAX-1-(LASER_LEN_COUNT * LASER_MAX);
+		for (u8 b = BULLET_MAX-1-LASER_LEN_COUNT ; b > laser_limit; b-=LASER_LEN_COUNT )
+		{
+
+			if (manger_bullet[b].type == BULLET_LASER) continue;
+			bi = b;
+			break;
+		}
+
+		if (bi == -1) return;
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("found bullet");
+#endif
+
+		// Clear and setup laser in bullet space
+		for ( u8 b = bi; b < bi+LASER_LEN_COUNT; ++b )
+		{
+			// Free all bullets from i to laser count
+			if(manger_bullet[b].live)
+				bullet_free(b);
+			// create new bullets of lasers
+			manger_bullet[b].live = 1;
+			manger_bullet[b].x = (x+32+(b-bi)*64); // FIXME - only fires right
+			manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
+			manger_bullet[b].y = y<<8;
+			manger_bullet[b].type = BULLET_LASER;
+			// create and stretch sprites
+#ifdef DEBUG_MGBA
+	mgba_print_string("creating sprite");
+#endif
+			manger_bullet[b].handle = ERAPI_SpriteCreateCustom( 2, &sprite_laser);
+			ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
+		}
+		manager_laser[i].live = 1;
+		// Made Laser
+		return;
+	}
+}
 
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 {
@@ -58,9 +116,12 @@ void bullet_update()
 		if (!manger_bullet[i].live) continue;
 
 		// Update bullet path
-		manger_bullet[i].x += manger_bullet[i].xu;
-		manger_bullet[i].y += manger_bullet[i].yu;
 
+		if(manger_bullet[i].type != BULLET_LASER)
+		{
+			manger_bullet[i].x += manger_bullet[i].xu;
+			manger_bullet[i].y += manger_bullet[i].yu;
+		}
 		// Check if bullet is in bounds
 		if (
 			(manger_bullet[i].x < 0) ||
@@ -109,6 +170,7 @@ void bullet_free(u8 i)
 {
 	// Set bullet as free to reuse
 	manger_bullet[i].live = 0;
+	manger_bullet[i].type = 0;
 
 	// NOTE - This works for now, but alternate frame rendering will
 	//        require a check for this in the future
@@ -134,6 +196,13 @@ void bullet_init()
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
 		manger_bullet[i].live = 0;
+		manger_bullet[i].type = 0;
+	}
+
+	// Iterate over all lasers
+	for ( u8 i = 0; i < LASER_MAX; ++i )
+	{
+		manager_laser[i].live = 0;
 	}
 	bullet_count = 0;
 }
