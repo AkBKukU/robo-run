@@ -30,8 +30,15 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 		manger_bullet[i].type = type;
 		manger_bullet[i].damage = damage;
 		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2, &sprite_bullet);
-		ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
-
+		switch(type)
+		{
+			case BULLET_PLAYER:
+			ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE);
+			break;
+			case BULLET_ENEMY:
+			ERAPI_SpriteSetType(manger_bullet[i].handle,SPRITE_PROJECTILE_ENEMY);
+			break;
+		}
 		ERAPI_SetSpritePos(
 			manger_bullet[i].handle,
 			x,
@@ -95,18 +102,6 @@ void bullet_update()
 				continue;
 			}
 		}
-
-		// Check for contact against player
-		if(manger_bullet[i].type == BULLET_ENEMY)
-		{
-			ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(manger_bullet[i].handle,SPRITE_PLAYER, &dist);
-			if (dist > 0 && dist < 10)
-			{
-				player_damage(manger_bullet[i].damage);
-				bullet_free(i);
-				continue;
-			}
-		}
 	}
 }
 
@@ -119,6 +114,19 @@ void bullet_free(u8 i)
 	//        require a check for this in the future
 	ERAPI_SpriteFree(manger_bullet[i].handle);
 	--bullet_count;
+}
+
+void bullet_free_sprite(ERAPI_HANDLE_SPRITE sprite)
+{
+	// Search for bullet by sprite handle to free it
+	for ( u8 i = 0; i < BULLET_MAX; ++i )
+	{
+		if(manger_bullet[i].handle == sprite)
+		{
+			bullet_free(i);
+			return;
+		}
+	}
 }
 
 void bullet_init()

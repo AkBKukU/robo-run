@@ -14,7 +14,7 @@
 
 #include "util.h"
 extern int __end[];
-// VPK Size(Debug): 11,315  bytes
+// VPK Size(Debug): 11,405  bytes
 // Debug Adds: 144 bytes
 
 // TODO - Enemy damage rate tied to level?
@@ -24,6 +24,8 @@ extern int __end[];
 // TODO - boss gun minimum scal with level
 // TODO - Game needs more threat escalation, it's too easy
 // TODO - After death, should have to press a button to end.
+
+// TODO - Copy shared sprite tiles at runtime rather than store them.
 
 static inline void init()
 {

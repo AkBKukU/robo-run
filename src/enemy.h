@@ -19,6 +19,8 @@ extern u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
 extern u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
 
 extern u8 enemy_spawn_allowed;
+#define ENEMY_DAMAGE_START 3
+extern u8 enemy_bullet_damage;
 
 struct enemy_data
 {

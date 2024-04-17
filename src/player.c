@@ -9,7 +9,14 @@ u8 player_sheild_max = 1, player_sheild = 0;
 u8 shot_spread = 0;
 u8 player_iframes = 0;
 
-ERAPI_SPRITE sprite_player = { playerTiles, gfx_playerSharedPal, 4, 2, 1, 4, 8, 8, 1};
+ERAPI_SPRITE sprite_player = {
+		playerTiles,
+		gfx_playerSharedPal,
+		4, 2,
+		1,
+		4,
+		26, 12,
+		1};
 ERAPI_HANDLE_SPRITE h_player;
 
 
@@ -110,6 +117,13 @@ void player_hit_detect()
 		save.score+=50;
 	}
 
+	// Check for hit against enemy bullet
+	u32 enemy_bullet; // FIXME - This may cause crashes by not handling simultaneous collisions
+	if (ERAPI_SpriteFindCollisions(h_player,SPRITE_PROJECTILE_ENEMY,&enemy_bullet))
+	{
+		player_damage(enemy_bullet_damage);
+		bullet_free_sprite(enemy_bullet);
+	}
 
 	// Check tunnel hit
 	// NOTE - This is sloppy and always pushes vertically, it might be good enough though

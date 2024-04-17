@@ -35,6 +35,7 @@ extern u8 bullet_count;
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type);
 void bullet_update();
 void bullet_free(u8 i);
+void bullet_free_sprite(ERAPI_HANDLE_SPRITE sprite);
 void bullet_init();
 void bullet_clean();
 

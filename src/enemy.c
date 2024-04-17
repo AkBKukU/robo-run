@@ -10,6 +10,7 @@ u8 enemy_spawn_count[ENEMY_TYPE_COUNT];
 u8 enemy_spawn_max[ENEMY_TYPE_COUNT];
 
 u8 enemy_spawn_allowed=1;
+u8 enemy_bullet_damage = ENEMY_DAMAGE_START;
 
 // Damage enemey using sprite handle as ID
 void enemy_damage(ERAPI_HANDLE_SPRITE hit_sprite, u8 damage)
