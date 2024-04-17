@@ -34,10 +34,6 @@ void effect_update()
 
 		if (manger_effects[i].countdown) continue;
 
-
-		manger_effects[i].x = 0;
-		manger_effects[i].y = 0;
-		manger_effects[i].type = 0;
 		manger_effects[i].live = 0;
 		ERAPI_SpriteFree(manger_effects[i].handle);
 	}
@@ -88,9 +84,6 @@ void effect_init()
 	// Initialize effect structs
 	for ( u8 i = 0; i < EFFECTS_MAX; ++i )
 	{
-		manger_effects[i].x = 0;
-		manger_effects[i].y = 0;
-		manger_effects[i].type = 0;
 		manger_effects[i].live = 0;
 	}
 }

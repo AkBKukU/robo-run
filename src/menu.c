@@ -39,8 +39,6 @@ ERAPI_BACKGROUND_DRAW_NUMBER background_seed_fade =
 
 void menu_init()
 {
-	ERAPI_BackgroundDrawNumber(&background_seed_fade);
-	ERAPI_BackgroundDrawNumber(&background_seed_select);
 
 	// Apply new background
 	ERAPI_BACKGROUND menu =
@@ -51,16 +49,20 @@ void menu_init()
 		sizeof( menuTiles) >> 5,
 		1
 	};
-
-	ERAPI_SetBackgroundPalette( menu_seedf_pal, MENU_SEEDF_PALETTE*16, 3);
-	ERAPI_SetBackgroundPalette( menu_seed_pal, (MENU_SEEDF_PALETTE+1)*16, 3);
 	ERAPI_LoadBackgroundCustom( 3, &menu);
-
+	// Prep screen region
 	gui_init();
 	ERAPI_DrawText(region_screen,0,0,"Booting...");
+	// Start menu music
 	ERAPI_PlaySoundSystem(SND_MENU_MUSIC);
+	// Fade in
 	ERAPI_FadeIn( 100);
 	ERAPI_RenderFrame(100);
+	// Replace booting with numbers
+	ERAPI_BackgroundDrawNumber(&background_seed_fade);
+	ERAPI_BackgroundDrawNumber(&background_seed_select);
+	ERAPI_SetBackgroundPalette( menu_seedf_pal, MENU_SEEDF_PALETTE*16, 3);
+	ERAPI_SetBackgroundPalette( menu_seed_pal, (MENU_SEEDF_PALETTE+1)*16, 3);
 }
 
 void menu_start()
@@ -139,11 +141,11 @@ void menu_update()
 	// Start with selected seed
 	if (key & ERAPI_KEY_A)
 	{
-		ERAPI_PlaySoundSystem(SND_MENU_ENTER);
-		ERAPI_SoundPause(SND_MENU_MUSIC);
 		gui_pause(0);
-		game_play = 1;
 		game_init();
+		ERAPI_SoundPause(SND_MENU_MUSIC);
+		ERAPI_PlaySoundSystem(SND_MENU_ENTER);
+		game_play = 1;
 		return;
 	}
 

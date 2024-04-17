@@ -59,18 +59,55 @@ void player_hit_detect()
 		--player_iframes;
 	}
 
+	// Check boss hit
+	if(boss_tile_hit_check(px, py+vertical_offset))
+	{
+		player_damage(10);
+		fx=-10;
+	}
+
 
 	// Check for contact with nearest enemy
 	u16 dist = 0;
 	ERAPI_HANDLE_SPRITE hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_ENEMY, &dist);
-
-
 	if (dist > 0 && dist < PLAYER_HIT_R)
 	{
 		u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
-		enemy_damage(hit_sprite,1);
 		player_bounce(angle);
+		enemy_damage(hit_sprite,1);
 		player_damage(1);
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
+	if (dist > 0 && dist < PLAYER_HIT_R)
+	{
+		save.cooldown = save.cooldown > PLAYER_COOLDOWN_MIN ? save.cooldown-1 : save.cooldown ;
+		ERAPI_PlaySoundSystem(SND_PICKUP);
+		manager_drops[POWERUP_COOLDOWN].live = 0;
+		ERAPI_SpriteFree(manager_drops[POWERUP_COOLDOWN].handle);
+		save.score+=50;
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
+	if (dist > 0 && dist < PLAYER_HIT_R)
+	{
+		if (save.shield < player_sheild_max)
+			++save.shield;
+		gui_print_health(save.health,save.shield);
+		ERAPI_PlaySoundSystem(SND_PICKUP);
+		manager_drops[POWERUP_SHIELD].live = 0;
+		ERAPI_SpriteFree(manager_drops[POWERUP_SHIELD].handle);
+		save.score+=50;
+	}
+
+	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
+	if (dist > 0 && dist < PLAYER_HIT_R)
+	{
+		ERAPI_PlaySoundSystem(SND_PICKUP);
+		manager_drops[POWERUP_SPREAD].live = 0;
+		ERAPI_SpriteFree(manager_drops[POWERUP_SPREAD].handle);
+		save.spread += 2 ;
+		save.score+=50;
 	}
 
 
@@ -90,45 +127,6 @@ void player_hit_detect()
 			fx=-3;
 
 		}
-	}
-
-	// Check boss hit
-	if(boss_tile_hit_check(px, py+vertical_offset))
-	{
-		player_damage(10);
-		fx=-10;
-	}
-
-	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_COOL, &dist);
-	if (dist > 0 && dist < PLAYER_HIT_R)
-	{
-		ERAPI_PlaySoundSystem(SND_PICKUP);
-		save.score+=50;
-		manager_drops[POWERUP_COOLDOWN].live = 0;
-		ERAPI_SpriteFree(manager_drops[POWERUP_COOLDOWN].handle);
-		save.cooldown = save.cooldown > PLAYER_COOLDOWN_MIN ? save.cooldown-1 : save.cooldown ;
-	}
-
-	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SHIELD, &dist);
-	if (dist > 0 && dist < PLAYER_HIT_R)
-	{
-		ERAPI_PlaySoundSystem(SND_PICKUP);
-		manager_drops[POWERUP_SHIELD].live = 0;
-		save.score+=50;
-		ERAPI_SpriteFree(manager_drops[POWERUP_SHIELD].handle);
-		if (save.shield < player_sheild_max)
-			++save.shield;
-		gui_print_health(save.health,save.shield);
-	}
-
-	hit_sprite = ERAPI_SpriteFindClosestSprite(h_player,SPRITE_SPREAD, &dist);
-	if (dist > 0 && dist < PLAYER_HIT_R)
-	{
-		ERAPI_PlaySoundSystem(SND_PICKUP);
-		save.score+=50;
-		manager_drops[POWERUP_SPREAD].live = 0;
-		ERAPI_SpriteFree(manager_drops[POWERUP_SPREAD].handle);
-		save.spread += 2 ;
 	}
 }
 
@@ -177,7 +175,7 @@ void player_control()
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
-		// TODO - 1 is playeer damage that will scale with powerups
+		// TODO - 1 is player damage that will scale with powerups
 		rand_true();
 		u32 rand = ERAPI_RandMax(save.spread);
 		bullet_fire(128-rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
@@ -187,27 +185,22 @@ void player_control()
 		ERAPI_PlaySoundSystem(SND_PLAYER_FIRE);
 	}
 
+	// Check for pause input
 	if (key & ERAPI_KEY_START && !input_debounce)
 	{
 		game_play = 2;
-		ERAPI_RenderFrame(3);
 		input_debounce = DEBOUNCE_SET;
 		ERAPI_PlaySoundSystem(SND_PAUSE);
 	}
 
+	// Clear debounce
 	if (input_debounce)
 		--input_debounce;
 }
 
 void player_init()
 {
-	px=120;
-	py=80;
-	fx=0;
-	fy=0;
-	fire_cooldown = PLAYER_COOLDOWN_START;
-	player_sheild_max = 1;
-
+	// Use loaded values or reset
 	if (! (save.flags & SAVE_FLAG_RESUME))
 	{
 		save.spread = 0;
@@ -218,8 +211,17 @@ void player_init()
 		player_sheild_max = save.level;
 		player_sheild_max = (player_sheild_max > 5?5:player_sheild_max);
 	}
+
+	// Setup default values
+	px=120;
+	py=80;
+	fx=0;
+	fy=0;
+	fire_cooldown = PLAYER_COOLDOWN_START;
+	player_sheild_max = 1;
 	player_iframes = 0;
 
+	// Configure player sprite
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
 	ERAPI_SetSpritePos( h_player, -100, py);
 	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x30,1);

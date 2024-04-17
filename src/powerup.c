@@ -12,23 +12,29 @@ void powerup_update()
 	for (u8 i = 0; i < POWERUP_COUNT; ++i)
 	{
 		if (!manager_drops[i].live) continue;
+
+		// Move powerup until offscreen
 		--manager_drops[i].x;
+		if(manager_drops[i].x < -4)
+		{
+			manager_drops[i].live = 0;
+			ERAPI_SpriteFree(manager_drops[i].handle);
+			continue;
+		}
 		ERAPI_SetSpritePos(
 				manager_drops[i].handle,
 				manager_drops[i].x/2,
 				manager_drops[i].y/2-vertical_offset
 		);
-		if(manager_drops[i].x < -4)
-		{
-			manager_drops[i].live = 0;
-			ERAPI_SpriteFree(manager_drops[i].handle);
-		}
 	}
 }
 
 void powerup_droptype(u8 x, u8 y,u8 type)
 {
+	// Don't drop two of the same type
 	if(manager_drops[type].live == 1 || type == POWERUP_COUNT) return;
+
+	// Setup new powerup
 	manager_drops[type].live = 1;
 	manager_drops[type].x = x*2;
 	manager_drops[type].y = y*2;
@@ -53,23 +59,12 @@ void powerup_droptype(u8 x, u8 y,u8 type)
 			manager_drops[type].y-vertical_offset
 	);
 	return;
-
 }
 
 void powerup_drop(u8 x, u8 y)
 {
-	switch(powerup_drop_chance())
-	{
-		case POWERUP_COOLDOWN:
-			powerup_droptype(x, y, POWERUP_COOLDOWN);
-			return;
-		case POWERUP_SPREAD:
-			powerup_droptype(x, y, POWERUP_SPREAD);
-			return;
-		case POWERUP_SHIELD:
-			powerup_droptype(x, y, POWERUP_SHIELD);
-			return;
-	}
+	// Get a powerup type to drop
+	powerup_droptype(x, y, powerup_drop_chance());
 }
 
 u8 powerup_drop_chance()

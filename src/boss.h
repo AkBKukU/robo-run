@@ -29,7 +29,6 @@ extern u8 boss_spawning_flag;
 extern u8 boss_live;
 extern u8 boss_len, boss_level, boss_gen_col,boss_x_pos;
 extern s16 boss_y_offset;
-extern u8 boss_weapon_allowance;
 extern u8 boss_weapon_count;
 extern u8 weapon_laser;
 extern s32 boss_health;

@@ -16,7 +16,7 @@ extern ERAPI_BACKGROUND_DRAW_NUMBER background_score;
 
 
 #define GUI_HEALTH_PALINDEX 0x05
-#define GUI_HEALTH_LOW_PALINDEX 0x05
+#define GUI_HEALTH_LOW_PALINDEX 0x06
 extern ERAPI_HANDLE_REGION region_health;
 extern s16 phealth_last;
 
@@ -25,10 +25,9 @@ extern ERAPI_HANDLE_REGION region_screen;
 #define GUI_SCREEN_X 9
 #define GUI_SCREEN_Y 9
 #define GUI_SCREEN_W 12
-#define GUI_SCREEN_H 5
+#define GUI_SCREEN_H 2
 
 void gui_init();
-void gui_start();
 void gui_clean();
 void gui_pause(u8 draw);
 

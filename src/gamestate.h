@@ -15,13 +15,13 @@ struct save_data // 16 bytes of data to allocate
 #define SAVE_FLAG_RESUME 0x2
 	u16 high_score;
 	u16 seed;
+	u16 score;
 
 	u8 shield;
 	u8 spread;
 	u8 cooldown;
 	s8 health;
 
-	u16 score;
 	u8 level;
 
 	u8 unused[4];

@@ -13,7 +13,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 	for ( u8 i = 0; i < BULLET_MAX; ++i )
 	{
 		// Continue if bullet is in use
-		if (manger_bullet[i].live == 1)continue;
+		if (manger_bullet[i].live == 1) continue;
 
 		// Prepare new bullet
 		manger_bullet[i].live = 1;

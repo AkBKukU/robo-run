@@ -30,8 +30,8 @@ struct enemy_data
 	u8 drop_type;
 	u8 movement;
 	u8 damage;
-	u8 x_spawn;
-	u8 y_spawn;
+	u8 x_mov;
+	u8 y_mov;
 	u8 type;
 	u8 cooldown;
 	ERAPI_HANDLE_SPRITE handle;

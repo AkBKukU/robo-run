@@ -153,12 +153,16 @@ void enemy_spawn(u8 spawn_type)
 		manger_enemy[i].type = spawn_type;
 		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 
+		++enemy_spawn_count[spawn_type];
+		// TODO - the 20 and 50 should scale with distance for difficulty
+		rand_stable_map_var(manger_enemy[i].type);
+		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(20);
+
 		switch(spawn_type)
 		{
 			case ENEMY_TYPE_ROCK:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_rock);
 				manger_enemy[i].health = 100;
-				rand_true();
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,3));
 				ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(3));
 				ERAPI_SpriteAutoRotateByTime(manger_enemy[i].handle,(40+ERAPI_RandMax(90))*(ERAPI_RandMax(3)-1),0);
@@ -173,36 +177,31 @@ void enemy_spawn(u8 spawn_type)
 		}
  		ERAPI_SpriteSetType(manger_enemy[i].handle,SPRITE_ENEMY);
 
-		++enemy_spawn_count[spawn_type];
-		// TODO - the 20 and 50 should scale with distance for difficulty
-		rand_stable_map_var(manger_enemy[i].type);
-		enemy_spawn_next[spawn_type] = distance_tiles + 20+ERAPI_RandMax(20);
 		return;
 	}
 }
 
 void enemy_init()
 {
+	// Set spawn controls
+	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
+	enemy_spawn_max[ENEMY_TYPE_ROCK] = 3;
+	enemy_spawn_allowed=1;
+
 	// Initialize enemy structs
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
 	{
-		manger_enemy[i].x = 0;
-		manger_enemy[i].y = 0;
 		manger_enemy[i].live = 0;
 		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 	}
 
-
-	// Initialize enemy tracking structs
+	// Initialize enemy tracking arrays
 	for ( u8 i = 0; i < ENEMY_TYPE_COUNT; ++i )
 	{
 		rand_stable_map_var(i);
 		enemy_spawn_next[i] = distance_tiles + 20+ERAPI_RandMax(20);
 		enemy_spawn_count[i] = 0;
 	}
-	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
-	enemy_spawn_max[ENEMY_TYPE_ROCK] = 3;
-	enemy_spawn_allowed=1;
 }
 
 void enemy_clean()
@@ -212,19 +211,8 @@ void enemy_clean()
 	{
 		// If not active, skip
 		if (!manger_enemy[i].live) continue;
-
-		manger_enemy[i].x = 0;
-		manger_enemy[i].y = 0;
+		// Set not live and remove sprite
 		manger_enemy[i].live = 0;
-		manger_enemy[i].movement = ENEMY_PATH_STRAIGHT;
 		ERAPI_SpriteFree(manger_enemy[i].handle);
-	}
-	// Initialize enemy tracking structs
-	rand_stable_map();
-	for ( u8 i = 0; i < ENEMY_TYPE_COUNT; ++i )
-	{
-		rand_stable_map_var(i);
-		enemy_spawn_next[i] = distance_tiles + 20+ERAPI_RandMax(20);
-		enemy_spawn_count[i] = 0;
 	}
 }

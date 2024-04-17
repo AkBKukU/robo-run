@@ -11,22 +11,7 @@ u16 level_tiles = 0;
 u16 seed_fixed = 33875; // chosen by fair dice roll.
                         // guaranteed to be random.
 //u16 base_seed = 54;
-struct save_data save =
-{
-		0,
-		0,
-		0,
-
-		0,
-		0,
-		0,
-		0,
-
-		0,
-		0,
-
-		{0,0,0,0}
-};
+struct save_data save;
 
 u32 key;
 void game_init()
@@ -136,7 +121,7 @@ void game_pause()
 		(!input_debounce)
 	){
 		save.cooldown = PLAYER_COOLDOWN_MIN;
-		ERAPI_DrawText(region_screen,0,10,"RAPID FIRE");
+		ERAPI_DrawText(region_screen,0,8,"RAPID FIRE");
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
 		ERAPI_PlaySoundSystem(SND_MUSIC_UPBEAT_SHORT);
@@ -149,7 +134,7 @@ void game_pause()
 	){
 		save.shield = PLAYER_SHIELD_MAX;
 		save.health = 100;
-		ERAPI_DrawText(region_screen,0,10,"REFRESHED!");
+		ERAPI_DrawText(region_screen,0,8,"REFRESHED!");
 		gui_print_health(save.health,save.shield);
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
@@ -162,7 +147,7 @@ void game_pause()
 		(!input_debounce)
 	){
 		save.spread = 20;
-		ERAPI_DrawText(region_screen,0,10,"WIDE SHOT!");
+		ERAPI_DrawText(region_screen,0,8,"WIDE SHOT!");
 		no_save = 1;
 		input_debounce = DEBOUNCE_SET;
 		ERAPI_PlaySoundSystem(SND_MUSIC_UPBEAT_SHORT);
@@ -227,7 +212,8 @@ void game_over()
 {
 	save.flags = save.flags  & ~SAVE_FLAG_RESUME;
 	// Save new score if it is higher
-	save.high_score = save.high_score < save.score ? save.score : save.high_score;
+	if (!no_save)
+		save.high_score = save.high_score < save.score ? save.score : save.high_score;
 	save.score = save.high_score;
 	game_save();
 	game_clean();
