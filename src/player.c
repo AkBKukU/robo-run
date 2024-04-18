@@ -4,10 +4,12 @@
 u8 px=160,py=80;
 s16 phealth=100;
 s8 fx=0,fy=0;
-u8 fire_cooldown_max = 20, fire_cooldown = 20;
+u8 fire_cooldown_max = 20, fire_cooldown = 20, laser_firing=0;
 u8 player_sheild_max = 1, player_sheild = 0;
 u8 shot_spread = 0;
 u8 player_iframes = 0;
+
+u8 laser_angle = 32;
 
 ERAPI_SPRITE sprite_player = {
 		playerTiles,
@@ -199,11 +201,36 @@ void player_control()
 		ERAPI_PlaySoundSystem(SND_PLAYER_FIRE);
 	}
 
+	if(laser_firing)
+	{
+		laser_update(laser_firing-1, px+16, py+vertical_offset,laser_angle);
+	}
+
 	if (key & ERAPI_KEY_B && !input_debounce)
 	{
-		laser_fire(0,px+16,py+vertical_offset,1,1);
-		input_debounce = DEBOUNCE_SET;
+		if(!laser_firing)
+		{
+			laser_firing = laser_fire(laser_angle,px+16,py+vertical_offset,1,1)+1;
+			input_debounce = DEBOUNCE_SET;
+		}
+	}else if (!(key & ERAPI_KEY_B) && laser_firing)
+	{
+		laser_relese(laser_firing-1);
+		laser_firing=0;
+
 	}
+	// Check for pause input
+	if (key & ERAPI_KEY_R && !input_debounce)
+	{
+		++laser_angle;
+	}
+	// Check for pause input
+	if (key & ERAPI_KEY_L && !input_debounce)
+	{
+		--laser_angle;
+	}
+
+
 	// Check for pause input
 	if (key & ERAPI_KEY_START && !input_debounce)
 	{

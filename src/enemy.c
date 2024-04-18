@@ -2,7 +2,7 @@
 #include "enemy.h"
 struct enemy_data manger_enemy[ENEMY_MAX];
 ERAPI_SPRITE sprite_enemy_rock = { emy_0_rockTiles, gfx_enemySharedPal, 4, 4, 3, 4, 0, 2, 1};
-ERAPI_SPRITE sprite_enemy_light = { emy_1_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 0, 2, 1};
+ERAPI_SPRITE sprite_enemy_light = { emy_1_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 12, 12, 1};
 
 
 u32 enemy_spawn_next[ENEMY_TYPE_COUNT];

@@ -2,7 +2,7 @@
 #include "bullet.h"
 
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
-ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, 4, 1, 1, 4, 1, 1, 1};
+ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, 8, 1, 1, 1, 63, 8, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 struct laser_data manager_laser[LASER_MAX];
@@ -10,7 +10,7 @@ struct laser_data manager_laser[LASER_MAX];
 u8 bullet_count = 0;
 
 
-void laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
+u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 {
 
 #ifdef DEBUG_MGBA
@@ -34,8 +34,13 @@ void laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 			break;
 		}
 
-		if (bi == -1) return;
+		if (bi == -1) return 0;
 
+		manager_laser[i].live = 1;
+		manager_laser[i].x = x;
+		manager_laser[i].y = y;
+		manager_laser[i].angle = angle;
+		manager_laser[i].b_index = bi;
 #ifdef DEBUG_MGBA
 	mgba_print_string("found bullet");
 #endif
@@ -48,21 +53,56 @@ void laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 				bullet_free(b);
 			// create new bullets of lasers
 			manger_bullet[b].live = 1;
-			manger_bullet[b].x = (x+32+(b-bi)*64); // FIXME - only fires right
-			manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
-			manger_bullet[b].y = y<<8;
 			manger_bullet[b].type = BULLET_LASER;
+			manger_bullet[b].xu = 0;
+			manger_bullet[b].yu = 0;
+			++bullet_count;
 			// create and stretch sprites
 #ifdef DEBUG_MGBA
 	mgba_print_string("creating sprite");
 #endif
 			manger_bullet[b].handle = ERAPI_SpriteCreateCustom( 2, &sprite_laser);
-			ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
+			//ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
+			ERAPI_SpriteSetType(manger_bullet[b].handle,SPRITE_PROJECTILE);
 		}
-		manager_laser[i].live = 1;
+		laser_update(i, x, y,manager_laser[i].angle);
+
 		// Made Laser
-		return;
+		return i;
 	}
+}
+
+void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
+{
+	manager_laser[laser_id].angle = angle;
+	manager_laser[laser_id].x = x;
+	manager_laser[laser_id].y = y;
+	// Clear and setup laser in bullet space
+	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
+	{
+		// create new bullets of lasers
+		manger_bullet[b].x = (x+32+(b-manager_laser[laser_id].b_index)*64); // FIXME - only fires right
+		manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
+		manger_bullet[b].y = y<<8;
+		/*
+		u8 dist =2;
+		manger_bullet[b].x = manager_laser[laser_id].x<<8 - ERAPI_Cos(manager_laser[laser_id].angle, dist );
+		manger_bullet[b].y = manager_laser[laser_id].y<<8 + ERAPI_Sin(manager_laser[laser_id].angle, dist );
+		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, angle,1);
+		*/
+	}
+}
+
+void laser_relese(u8 laser_id)
+{
+	// Clear and setup laser in bullet space
+	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
+	{
+		// create new bullets of lasers
+		bullet_free(b);
+	}
+
+	manager_laser[laser_id].live = 0;
 }
 
 void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
@@ -115,22 +155,30 @@ void bullet_update()
 		// Continue if bullet is not in use
 		if (!manger_bullet[i].live) continue;
 
-		// Update bullet path
-
-		if(manger_bullet[i].type != BULLET_LASER)
+		if (manger_bullet[i].type != BULLET_LASER)
 		{
+			// Update bullet path
 			manger_bullet[i].x += manger_bullet[i].xu;
 			manger_bullet[i].y += manger_bullet[i].yu;
-		}
-		// Check if bullet is in bounds
-		if (
-			(manger_bullet[i].x < 0) ||
-			(manger_bullet[i].x > 240<<8) ||
-			(manger_bullet[i].y < 0) ||
-			(manger_bullet[i].y > (BACK_Y * 8)<<8)
-		){
-			bullet_free(i);
-			continue;
+
+			// Check if bullet is in bounds
+			if (
+				(manger_bullet[i].x < 0) ||
+				(manger_bullet[i].x > 240<<8) ||
+				(manger_bullet[i].y < 0) ||
+				(manger_bullet[i].y > (BACK_Y * 8)<<8)
+			){
+				bullet_free(i);
+				continue;
+			}
+		}else{
+
+			// Check for hit against enemy bullet
+			u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
+			if (ERAPI_SpriteFindCollisions(manger_bullet[i].handle,SPRITE_ENEMY,&enemy))
+			{
+				enemy_damage(enemy,1);
+			}
 		}
 
 		// Dynamic delay based on number of bullets to prevent game lag

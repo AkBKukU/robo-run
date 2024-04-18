@@ -18,7 +18,7 @@
 
 extern u8 px,py;
 extern s8 fx,fy;
-extern u8 fire_cooldown_max, fire_cooldown;
+extern u8 fire_cooldown_max, fire_cooldown, laser_firing;
 extern u8 player_sheild_max, player_sheild;
 extern u8 shot_spread;
 extern u8 player_iframes;

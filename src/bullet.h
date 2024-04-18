@@ -49,7 +49,10 @@ struct laser_data
 	u8 damage;
 };
 extern struct laser_data manager_laser[LASER_MAX];
-void laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type);
+
+u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type);
+void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle);
+void laser_relese(u8 laser_id);
 
 void bullet_update();
 void bullet_free(u8 i);
