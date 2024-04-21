@@ -9,7 +9,7 @@ u8 player_sheild_max = 1, player_sheild = 0;
 u8 shot_spread = 0;
 u8 player_iframes = 0;
 
-u8 laser_angle = 32;
+u8 laser_angle = 128;
 
 ERAPI_SPRITE sprite_player = {
 		playerTiles,
@@ -266,6 +266,8 @@ void player_init()
 	fire_cooldown = PLAYER_COOLDOWN_START;
 	player_sheild_max = 1;
 	player_iframes = 0;
+	laser_angle = 128;
+	laser_firing=0;
 
 	// Configure player sprite
 	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);

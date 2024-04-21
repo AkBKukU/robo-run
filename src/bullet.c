@@ -77,6 +77,15 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 	manager_laser[laser_id].angle = angle;
 	manager_laser[laser_id].x = x;
 	manager_laser[laser_id].y = y;
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("Laser Angle:");
+	mgba_print_num(angle);
+	mgba_print_string("Laser X:");
+	mgba_print_num(x);
+	mgba_print_string("Laser Y:");
+	mgba_print_num(y);
+#endif
 	// Clear and setup laser in bullet space
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
 	{
@@ -84,10 +93,23 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 		manger_bullet[b].x = (x+32+(b-manager_laser[laser_id].b_index)*64); // FIXME - only fires right
 		manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
 		manger_bullet[b].y = y<<8;
+
 		/*
-		u8 dist =2;
+
+		s16 dist =((b-manager_laser[laser_id].b_index)*64);
 		manger_bullet[b].x = manager_laser[laser_id].x<<8 - ERAPI_Cos(manager_laser[laser_id].angle, dist );
 		manger_bullet[b].y = manager_laser[laser_id].y<<8 + ERAPI_Sin(manager_laser[laser_id].angle, dist );
+
+#ifdef DEBUG_MGBA
+		mgba_print_string("bullet id:");
+		mgba_print_num(b);
+		mgba_print_string("dist:");
+		mgba_print_num(dist);
+		mgba_print_string("bullet X:");
+		mgba_print_num(manger_bullet[b].x);
+		mgba_print_string("bullet Y:");
+		mgba_print_num(manger_bullet[b].y);
+#endif
 		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, angle,1);
 		*/
 	}
