@@ -13,7 +13,7 @@ TARGET = main
 GRIT     = grit
 
 # assemble and link
-PREFIX  := arm-none-eabi-
+PREFIX  := $(DEVKITARM)/bin/arm-none-eabi-
 GCC      = $(PREFIX)gcc
 AS       = $(PREFIX)as
 LD       = $(PREFIX)ld

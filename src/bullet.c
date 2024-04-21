@@ -89,16 +89,35 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 	// Clear and setup laser in bullet space
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
 	{
+		/*
+
 		// create new bullets of lasers
 		manger_bullet[b].x = (x+32+(b-manager_laser[laser_id].b_index)*64); // FIXME - only fires right
 		manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
 		manger_bullet[b].y = y<<8;
 
-		/*
+		*/
 
-		s16 dist =((b-manager_laser[laser_id].b_index)*64);
-		manger_bullet[b].x = manager_laser[laser_id].x<<8 - ERAPI_Cos(manager_laser[laser_id].angle, dist );
-		manger_bullet[b].y = manager_laser[laser_id].y<<8 + ERAPI_Sin(manager_laser[laser_id].angle, dist );
+		s16 dist =32+((b-manager_laser[laser_id].b_index)*64);
+		u8 bounds_check=1;
+		while(bounds_check)
+		{
+			manger_bullet[b].xu = -ERAPI_Cos(manager_laser[laser_id].angle, dist );
+			manger_bullet[b].yu =  ERAPI_Sin(manager_laser[laser_id].angle, dist );
+			manger_bullet[b].x = (manager_laser[laser_id].x<<8) - manger_bullet[b].xu;
+			manger_bullet[b].y = (manager_laser[laser_id].y<<8) + manger_bullet[b].yu;
+			if(
+				//FIXME- Bounding box is not right
+				(manger_bullet[b].x < 0) ||
+				(manger_bullet[b].x > 240<<8) ||
+				(manger_bullet[b].y < 0) ||
+				(manger_bullet[b].y > 160<<8)
+			){
+				dist-=16;
+			}else{
+				bounds_check=0;
+			}
+		}
 
 #ifdef DEBUG_MGBA
 		mgba_print_string("bullet id:");
@@ -109,9 +128,12 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 		mgba_print_num(manger_bullet[b].x);
 		mgba_print_string("bullet Y:");
 		mgba_print_num(manger_bullet[b].y);
+		mgba_print_string("bullet XU:");
+		mgba_print_num(manger_bullet[b].xu);
+		mgba_print_string("bullet YU:");
+		mgba_print_num(manger_bullet[b].yu);
 #endif
-		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, angle,1);
-		*/
+		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, -angle,1);
 	}
 }
 
