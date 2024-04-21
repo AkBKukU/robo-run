@@ -62,13 +62,20 @@ char* citoa(int num, char* str, int base)
 // Emulator debug functions
 void mgba_print_init(void)
 {
-    *REG_DEBUG_ENABLE = 0xC0DE;
+	*REG_DEBUG_ENABLE = 0xC0DE;
 }
 
 void mgba_print_string(const char *str)
 {
-    strcpy(REG_DEBUG_STRING, str);
-    *REG_DEBUG_FLAGS = 0x100 | 4; // MGBA_LOG_DEBUG
+	strcpy(REG_DEBUG_STRING, str);
+	*REG_DEBUG_FLAGS = 0x100 | 4; // MGBA_LOG_DEBUG
+}
+
+void mgba_print_num(int num)
+{
+	char str[12];
+	citoa(num, &str, 10);
+	mgba_print_string(&str);
 }
 
 #endif

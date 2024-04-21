@@ -43,10 +43,7 @@ void game_init()
 
 #ifdef DEBUG_MGBA
 	mgba_print_string("Starting with seed:");
-	char num_print[5]= "    ";
-
-	citoa(save.seed,num_print,10);
-	mgba_print_string(num_print);
+	mgba_print_num(save.seed);
 #endif
 	ERAPI_ClearSpritesAndBackgrounds();
 	ERHACK_RegionListClearUS();

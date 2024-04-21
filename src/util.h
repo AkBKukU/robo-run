@@ -18,6 +18,7 @@ char* citoa(int num, char* str, int base);
 void mgba_print_init(void);
 
 void mgba_print_string(const char *str);
+void mgba_print_num(int num);
 #endif
 
 #endif
