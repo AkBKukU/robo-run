@@ -31,7 +31,10 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 		manager_laser[i].live = 1;
 		manager_laser[i].x = x;
 		manager_laser[i].y = y;
+		manager_laser[i].hitcheck = LASER_HITCHECK_DELAY;
+		manager_laser[i].type = type;
 		manager_laser[i].angle = angle;
+		manager_laser[i].damage = damage;
 		manager_laser[i].b_index = bi;
 
 		// Clear and setup laser in bullet space
@@ -42,6 +45,7 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 				bullet_free(b);
 			// create new bullets of lasers
 			manger_bullet[b].live = 1;
+			manger_bullet[b].damage = damage;
 			manger_bullet[b].type = BULLET_LASER;
 			manger_bullet[b].xu = 0;
 			manger_bullet[b].yu = 0;
@@ -64,6 +68,8 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 	manager_laser[laser_id].angle = angle;
 	manager_laser[laser_id].x = x;
 	manager_laser[laser_id].y = y;
+
+	--manager_laser[laser_id].hitcheck;
 
 	// Go over all bullets for the laser
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
@@ -106,6 +112,27 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 			(manger_bullet[b].x / 256),
 			((manger_bullet[b].y /256)-vertical_offset)
 		);
+
+		if(manager_laser[laser_id].hitcheck == 0)
+		{
+			if(manager_laser[laser_id].type == BULLET_PLAYER)
+			{
+				// Check for hit against enemy bullet
+				u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
+				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_ENEMY,&enemy))
+				{
+					enemy_damage(enemy,1);
+				}
+			}
+		}
+	}
+	if(manager_laser[laser_id].hitcheck == 0)
+	{
+		if(boss_live && boss_tile_hit_check(224, manager_laser[laser_id].y))
+		{
+			boss_damage(manager_laser[laser_id].damage);
+		}
+		manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY;
 	}
 }
 
@@ -184,14 +211,6 @@ void bullet_update()
 			){
 				bullet_free(i);
 				continue;
-			}
-		}else{
-
-			// Check for hit against enemy bullet
-			u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
-			if (ERAPI_SpriteFindCollisions(manger_bullet[i].handle,SPRITE_ENEMY,&enemy))
-			{
-				enemy_damage(enemy,1);
 			}
 		}
 

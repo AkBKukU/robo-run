@@ -210,7 +210,7 @@ void player_control()
 	{
 		if(!laser_firing)
 		{
-			laser_firing = laser_fire(laser_angle,px+16,py+vertical_offset,1,1)+1;
+			laser_firing = laser_fire(laser_angle,px+16,py+vertical_offset,1,BULLET_PLAYER)+1;
 			input_debounce = DEBOUNCE_SET;
 		}
 	}else if (!(key & ERAPI_KEY_B) && laser_firing)
