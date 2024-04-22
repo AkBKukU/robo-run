@@ -92,8 +92,8 @@ void game_update()
 	slide_tunnel();
 	slide_stars();
 	enemy_update();
-	bullet_update();
 	boss_update();
+	bullet_update();
 	effect_update();
 	powerup_update();
 

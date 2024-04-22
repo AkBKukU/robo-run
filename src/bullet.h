@@ -15,7 +15,7 @@
 #define BULLET_UPDATE_DELAY 6
 
 #define LASER_LEN_COUNT 3
-#define LASER_HITCHECK_DELAY 15
+#define LASER_HITCHECK_DELAY 5
 
 
 struct bullet_data
