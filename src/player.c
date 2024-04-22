@@ -39,8 +39,8 @@ void player_move(s8 x, s8 y)
 
 	// Bound player to screen
 	if (px < 16) px = 16;
-	if (px > 240-16) px = 240-16;
-	if (py < 8) py = 8;
+	if (px > 240-16-17) px = 240-16-17;
+	if (py < 9) py = 9;
 	if (py > 164-8) py = 164-8;
 
 	// Calculate vertical offset of world based on updated player position

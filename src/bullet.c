@@ -12,21 +12,13 @@ u8 bullet_count = 0;
 
 u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 {
-
-#ifdef DEBUG_MGBA
-	mgba_print_string("firing ma laser");
-#endif
 	// Iterate over all lasers
 	for ( u8 i = 0; i < LASER_MAX; ++i )
 	{
 		if(manager_laser[i].live) continue;
-
-#ifdef DEBUG_MGBA
-	mgba_print_string("found unused laser");
-#endif
 		s16 bi = -1;
-		u8 laser_limit = BULLET_MAX-1-(LASER_LEN_COUNT * LASER_MAX);
-		for (u8 b = BULLET_MAX-1-LASER_LEN_COUNT ; b > laser_limit; b-=LASER_LEN_COUNT )
+		u8 laser_limit = BULLET_MAX-(LASER_LEN_COUNT * LASER_MAX);
+		for (u8 b = BULLET_MAX-LASER_LEN_COUNT ; b > laser_limit; b-=LASER_LEN_COUNT )
 		{
 
 			if (manger_bullet[b].type == BULLET_LASER) continue;
@@ -41,9 +33,6 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 		manager_laser[i].y = y;
 		manager_laser[i].angle = angle;
 		manager_laser[i].b_index = bi;
-#ifdef DEBUG_MGBA
-	mgba_print_string("found bullet");
-#endif
 
 		// Clear and setup laser in bullet space
 		for ( u8 b = bi; b < bi+LASER_LEN_COUNT; ++b )
@@ -58,48 +47,34 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 			manger_bullet[b].yu = 0;
 			++bullet_count;
 			// create and stretch sprites
-#ifdef DEBUG_MGBA
-	mgba_print_string("creating sprite");
-#endif
 			manger_bullet[b].handle = ERAPI_SpriteCreateCustom( 2, &sprite_laser);
 			//ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
 			ERAPI_SpriteSetType(manger_bullet[b].handle,SPRITE_PROJECTILE);
 		}
 		laser_update(i, x, y,manager_laser[i].angle);
 
-		// Made Laser
+		// Return laser index for later updating
 		return i;
 	}
 }
 
 void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 {
+	// Update laser manager
 	manager_laser[laser_id].angle = angle;
 	manager_laser[laser_id].x = x;
 	manager_laser[laser_id].y = y;
 
-#ifdef DEBUG_MGBA
-	mgba_print_string("Laser Angle:");
-	mgba_print_num(angle);
-	mgba_print_string("Laser X:");
-	mgba_print_num(x);
-	mgba_print_string("Laser Y:");
-	mgba_print_num(y);
-#endif
-	// Clear and setup laser in bullet space
+	// Go over all bullets for the laser
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
 	{
-		/*
 
-		// create new bullets of lasers
-		manger_bullet[b].x = (x+32+(b-manager_laser[laser_id].b_index)*64); // FIXME - only fires right
-		manger_bullet[b].x = manger_bullet[b].x > 240 ? 240<<8 :manger_bullet[b].x<<8 ;
-		manger_bullet[b].y = y<<8;
-
-		*/
-
-		s16 dist =32+((b-manager_laser[laser_id].b_index)*64);
+		// Determine the max distance a laser can be placed
+		s16 dist_max =32+((b-manager_laser[laser_id].b_index)*64);
+		s16 dist =32;
 		u8 bounds_check=1;
+		// Check laser position is valid and move it farther until it isn't
+		// NOTE - This is a workaround for preventing lasers from wrapping around the screen
 		while(bounds_check)
 		{
 			manger_bullet[b].xu = -ERAPI_Cos(manager_laser[laser_id].angle, dist );
@@ -107,33 +82,30 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 			manger_bullet[b].x = (manager_laser[laser_id].x<<8) - manger_bullet[b].xu;
 			manger_bullet[b].y = (manager_laser[laser_id].y<<8) + manger_bullet[b].yu;
 			if(
-				//FIXME- Bounding box is not right
-				(manger_bullet[b].x < 0) ||
-				(manger_bullet[b].x > 240<<8) ||
-				(manger_bullet[b].y < 0) ||
-				(manger_bullet[b].y > 160<<8)
+				// Bounds checks inset slightly
+				(manger_bullet[b].x>>8 < 240) &&
+				(manger_bullet[b].x>>8 > 16) &&
+				((manger_bullet[b].y>>8)-vertical_offset < 160) &&
+				((manger_bullet[b].y>>8)-vertical_offset > 8) &&
+				dist < dist_max
 			){
-				dist-=16;
+				// Move laser farther
+				dist+=8;
 			}else{
+				// At max viable distance
 				bounds_check=0;
 			}
 		}
 
-#ifdef DEBUG_MGBA
-		mgba_print_string("bullet id:");
-		mgba_print_num(b);
-		mgba_print_string("dist:");
-		mgba_print_num(dist);
-		mgba_print_string("bullet X:");
-		mgba_print_num(manger_bullet[b].x);
-		mgba_print_string("bullet Y:");
-		mgba_print_num(manger_bullet[b].y);
-		mgba_print_string("bullet XU:");
-		mgba_print_num(manger_bullet[b].xu);
-		mgba_print_string("bullet YU:");
-		mgba_print_num(manger_bullet[b].yu);
-#endif
+		// Rotate sprite to match fire angle
 		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, -angle,1);
+		// Update drawn position
+		// NOTE - This bypasses the bullet drawing delay to make the sprites all line up properly
+		ERAPI_SetSpritePos(
+			manger_bullet[b].handle,
+			(manger_bullet[b].x / 256),
+			((manger_bullet[b].y /256)-vertical_offset)
+		);
 	}
 }
 
@@ -207,9 +179,7 @@ void bullet_update()
 
 			// Check if bullet is in bounds
 			if (
-				(manger_bullet[i].x < 0) ||
 				(manger_bullet[i].x > 240<<8) ||
-				(manger_bullet[i].y < 0) ||
 				(manger_bullet[i].y > (BACK_Y * 8)<<8)
 			){
 				bullet_free(i);
@@ -229,12 +199,13 @@ void bullet_update()
 		if(manger_bullet[i].hitcheck > frame_count) continue;
 		manger_bullet[i].hitcheck = frame_count + ERAPI_Div(bullet_count , BULLET_UPDATE_DELAY);
 
-		// Update drawn position
-		ERAPI_SetSpritePos(
-			manger_bullet[i].handle,
-			manger_bullet[i].x / 256,
-			(manger_bullet[i].y /256)-vertical_offset
-		);
+		// Update drawn position for non-lasers
+		if (manger_bullet[i].type != BULLET_LASER)
+			ERAPI_SetSpritePos(
+				manger_bullet[i].handle,
+				(manger_bullet[i].x / 256),
+				((manger_bullet[i].y /256)-vertical_offset)
+			);
 
 		// Check for contact
 		u16 dist = 0;
