@@ -274,6 +274,7 @@ void player_init()
 	ERAPI_SetSpritePos( h_player, -100, py);
 	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x30,1);
 	ERAPI_SpriteAutoScaleHeightBySize(h_player,0x200,1);
+	ERAPI_SpriteSetType(h_player,SPRITE_PLAYER);
 }
 
 void player_clean()

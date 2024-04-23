@@ -2,7 +2,7 @@
 
 u8 boss_spawning_flag=0;
 u8 boss_live=0;
-u8 boss_len=0, boss_level=1,boss_gen_col=0,boss_x_pos=0;
+u8 boss_len=0, boss_level=1,boss_gen_col=0,boss_x_pos=0, laser_top=0, laser_bottom=0, boss_laser_angle=0;
 s16 boss_y_offset=0;
 u8 boss_weapon_count=0;
 u8 weapon_laser=0;
@@ -226,27 +226,83 @@ void boss_update()
 		if(manger_boss_weapons[i].cooldown)
 		{
 			--manger_boss_weapons[i].cooldown;
+			if(manger_boss_weapons[i].type == BOSS_TILE_LASER && laser_top != 0)
+			{
+				if(ERAPI_Mod(frame_count, 2))
+					--boss_laser_angle;
+				laser_update(
+						laser_top-1,
+						(BACK_X-boss_len-3+manger_boss_weapons[i].x )*8,
+						(9*8)+boss_y_offset + 4,
+						boss_laser_angle
+					);
+
+				laser_update(
+						laser_bottom-1,
+						(BACK_X-boss_len-3+manger_boss_weapons[i].x )*8,
+						((9+(boss_level+1))*8)+boss_y_offset + 4,
+						255-boss_laser_angle
+					);
+
+				if(manger_boss_weapons[i].cooldown == 0)
+				{
+					laser_relese(laser_top-1);
+					laser_relese(laser_bottom-1);
+					laser_top = 0;
+					laser_bottom = 0;
+					manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+#ifdef DEBUG_MGBA
+	mgba_print_string("Laser removal cooldown set");
+#endif
+				}
+			}
 			continue;
 		}
 		// Player fire sound
 		ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
-		// Set next cooldown
-		manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 
 		// Determine Y position for alternating firing
-		u8 by = ((7+manger_boss_weapons[i].alt*(boss_level+1))*8)+boss_y_offset+vertical_offset + 4;
+		u8 by = ((9+manger_boss_weapons[i].alt*(boss_level+1))*8)+boss_y_offset + 4;
 		manger_boss_weapons[i].alt = !manger_boss_weapons[i].alt;
 
 		// Fire based on weapon type
 		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
 		{
 			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
+			// Set next cooldown
+			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SPREAD)
 		{
 			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,3,BULLET_ENEMY);
 			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
+			// Set next cooldown
+			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+		}
+
+		if(manger_boss_weapons[i].type == BOSS_TILE_LASER && laser_top == 0)
+		{
+			boss_laser_angle = 200;
+			laser_top =  laser_fire(
+					boss_laser_angle,
+					(BACK_X-boss_len-3+manger_boss_weapons[i].x )*8,
+					(9*8)+boss_y_offset + 4,
+					1,
+					BULLET_ENEMY
+				)+1;
+
+			laser_bottom = laser_fire(
+					255-boss_laser_angle,
+					(BACK_X-boss_len-3+manger_boss_weapons[i].x )*8,
+					((9+(boss_level+1))*8)+boss_y_offset + 4,
+					1,
+					BULLET_ENEMY
+				)+1;
+
+
+			// Set next cooldown
+			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
 	}
 }

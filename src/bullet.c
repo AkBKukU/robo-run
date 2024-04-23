@@ -28,6 +28,11 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 
 		if (bi == -1) return 0;
 
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("Laser bullet found:");
+	mgba_print_num(bi);
+#endif
 		manager_laser[i].live = 1;
 		manager_laser[i].x = x;
 		manager_laser[i].y = y;
@@ -124,25 +129,50 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 					enemy_damage(enemy,1);
 				}
 			}
+			if(manager_laser[laser_id].type == BULLET_ENEMY)
+			{
+#ifdef DEBUG_MGBA
+	mgba_print_string("BULLET_ENEMY");
+#endif
+				// Check for hit against enemy bullet
+				u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
+				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_PLAYER,&enemy))
+				{
+					player_damage(enemy_bullet_damage);
+				}
+				manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY;
+			}
 		}
 	}
-	if(manager_laser[laser_id].hitcheck == 0)
+	if(manager_laser[laser_id].type == BULLET_PLAYER)
 	{
-		if(boss_live && boss_tile_hit_check(224, manager_laser[laser_id].y))
+		if(manager_laser[laser_id].hitcheck == 0)
 		{
-			boss_damage(manager_laser[laser_id].damage);
+			if(boss_live && boss_tile_hit_check(224, manager_laser[laser_id].y))
+			{
+				boss_damage(manager_laser[laser_id].damage);
+			}
+			manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY;
 		}
-		manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY;
 	}
 }
 
 void laser_relese(u8 laser_id)
 {
+
+#ifdef DEBUG_MGBA
+	mgba_print_string("Laser removal:");
+	mgba_print_num(laser_id);
+#endif
 	// Clear and setup laser in bullet space
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
 	{
 		// create new bullets of lasers
 		bullet_free(b);
+#ifdef DEBUG_MGBA
+	mgba_print_string("bullet removal:");
+	mgba_print_num(b);
+#endif
 	}
 
 	manager_laser[laser_id].live = 0;
