@@ -49,7 +49,6 @@ extern struct save_data save;
 // Sprite limits
 #define ENEMY_MAX 8
 #define BULLET_MAX 32
-#define LASER_MAX 3
 #define DROPS_MAX 3
 #define EFFECTS_MAX 5
 
@@ -58,6 +57,7 @@ extern struct save_data save;
 #define LEVEL_PROGRESS_1 150
 #define LEVEL_PROGRESS_2 350
 
+#define LASER_MAX 3
 
 extern u8 level_progress;
 extern u32 level_progress_start;

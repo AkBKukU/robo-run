@@ -18,7 +18,7 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 		if(manager_laser[i].live) continue;
 		s16 bi = -1;
 		u8 laser_limit = BULLET_MAX-(LASER_LEN_COUNT * LASER_MAX);
-		for (u8 b = BULLET_MAX-LASER_LEN_COUNT ; b > laser_limit; b-=LASER_LEN_COUNT )
+		for (u8 b = BULLET_MAX-LASER_LEN_COUNT ; b >= laser_limit; b-=LASER_LEN_COUNT )
 		{
 
 			if (manger_bullet[b].type == BULLET_LASER) continue;
@@ -131,9 +131,6 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 			}
 			if(manager_laser[laser_id].type == BULLET_ENEMY)
 			{
-#ifdef DEBUG_MGBA
-	mgba_print_string("BULLET_ENEMY");
-#endif
 				// Check for hit against enemy bullet
 				u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
 				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_PLAYER,&enemy))
