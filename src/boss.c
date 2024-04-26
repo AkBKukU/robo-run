@@ -258,8 +258,6 @@ void boss_update()
 			}
 			continue;
 		}
-		// Player fire sound
-		ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 
 		// Determine Y position for alternating firing
 		u8 by = ((9+manger_boss_weapons[i].alt*(boss_level+1))*8)+boss_y_offset + 4;
@@ -268,6 +266,8 @@ void boss_update()
 		// Fire based on weapon type
 		if(manger_boss_weapons[i].type == BOSS_TILE_SINGLE)
 		{
+			// Player fire sound
+			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			// Set next cooldown
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
@@ -275,6 +275,8 @@ void boss_update()
 
 		if(manger_boss_weapons[i].type == BOSS_TILE_SPREAD)
 		{
+			// Player fire sound
+			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
 			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,3,BULLET_ENEMY);
 			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,3,BULLET_ENEMY);
 			// Set next cooldown
