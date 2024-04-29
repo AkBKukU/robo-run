@@ -244,7 +244,7 @@ void boss_update()
 						255-boss_laser_angle
 					);
 
-				if(manger_boss_weapons[i].cooldown == 0)
+				if(manger_boss_weapons[i].cooldown == 0)// || boss_laser_angle < 135)
 				{
 					laser_relese(laser_top-1);
 					laser_relese(laser_bottom-1);

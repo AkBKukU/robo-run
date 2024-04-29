@@ -14,7 +14,8 @@
 
 #define BULLET_UPDATE_DELAY 6
 
-#define LASER_LEN_COUNT 3
+#define LASER_LEN_COUNT 4
+#define LASER_LEN_PX (8*5)
 #define LASER_HITCHECK_DELAY 5
 
 

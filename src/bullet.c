@@ -2,7 +2,7 @@
 #include "bullet.h"
 
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
-ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, 8, 1, 1, 1, 63, 8, 1};
+ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, LASER_LEN_PX/8, 1, 1, 1, LASER_LEN_PX-1, LASER_LEN_PX/8, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 struct laser_data manager_laser[LASER_MAX];
@@ -81,8 +81,8 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 	{
 
 		// Determine the max distance a laser can be placed
-		s16 dist_max =32+((b-manager_laser[laser_id].b_index)*64);
-		s16 dist =32;
+		s16 dist_max =LASER_LEN_PX/2+((b-manager_laser[laser_id].b_index)*LASER_LEN_PX);
+		s16 dist =LASER_LEN_PX/2;
 		u8 bounds_check=1;
 		// Check laser position is valid and move it farther until it isn't
 		// NOTE - This is a workaround for preventing lasers from wrapping around the screen
@@ -240,6 +240,22 @@ void bullet_update()
 				continue;
 			}
 		}
+
+		/*
+		if (ERAPI_Mod(frame_count,2) == 1 && ERAPI_Mod(i,2) == 1 )
+		{
+			ERAPI_SpriteShow(manger_bullet[i].handle);
+		}else if (ERAPI_Mod(frame_count,2) == 1 && ERAPI_Mod(i,2) == 0 )
+		{
+			ERAPI_SpriteHide(manger_bullet[i].handle);
+		}else if (ERAPI_Mod(frame_count,2) == 0 && ERAPI_Mod(i,2) == 0 )
+		{
+			ERAPI_SpriteShow(manger_bullet[i].handle);
+		}else if (ERAPI_Mod(frame_count,2) == 0 && ERAPI_Mod(i,2) == 1 )
+		{
+			ERAPI_SpriteHide(manger_bullet[i].handle);
+		}
+		*/
 
 		// Dynamic delay based on number of bullets to prevent game lag
 		if(manger_bullet[i].hitcheck > frame_count) continue;
