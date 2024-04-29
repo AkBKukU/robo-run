@@ -14,9 +14,16 @@
 
 #define BULLET_UPDATE_DELAY 6
 
-#define LASER_LEN_COUNT 4
-#define LASER_LEN_PX (8*5)
+#define LASER_LEN_COUNT 6
+#define LASER_LEN_PX (8*4)
+#define LASER_LEN_PY (8*2)
 #define LASER_HITCHECK_DELAY 5
+
+#define LASER_PX_0 0x00
+#define LASER_PX_1 0x44
+#define LASER_PX_2 0x55
+#define LASER_PX_3 0x66
+#define LASER_PX_4 0x77
 
 
 struct bullet_data
@@ -55,6 +62,9 @@ extern struct laser_data manager_laser[LASER_MAX];
 u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type);
 void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle);
 void laser_relese(u8 laser_id);
+
+//unsigned char laserTilesGen[LASER_LEN_PX*LASER_LEN_PY];
+//void laser_sprite_build();
 
 void bullet_update();
 void bullet_free(u8 i);

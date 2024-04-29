@@ -2,13 +2,63 @@
 #include "bullet.h"
 
 ERAPI_SPRITE sprite_bullet = { bulletTiles, gfx_powerupSharedPal, 1, 1, 1, 4, 1, 1, 1};
-ERAPI_SPRITE sprite_laser = {laserTiles , gfx_powerupSharedPal, LASER_LEN_PX/8, 1, 1, 1, LASER_LEN_PX-1, LASER_LEN_PX/8, 1};
+ERAPI_SPRITE sprite_laser = {
+		laserTiles , gfx_powerupSharedPal,
+		LASER_LEN_PX/8, LASER_LEN_PY/8,
+		1,
+		1,
+		(LASER_LEN_PX)-1, 8
+		, 1};
 
 struct bullet_data manger_bullet[BULLET_MAX];
 struct laser_data manager_laser[LASER_MAX];
 
 u8 bullet_count = 0;
+/*
+unsigned char laserTilesGen[LASER_LEN_PX*(8*3)];
+unsigned char laser_color_order[LASER_LEN_PY]={
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
 
+		LASER_PX_1,
+		LASER_PX_2,
+		LASER_PX_3,
+		LASER_PX_4,
+		LASER_PX_4,
+		LASER_PX_3,
+		LASER_PX_2,
+		LASER_PX_1,
+
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0,
+		LASER_PX_0
+};
+void laser_sprite_build()
+{
+	for (u8 t = 0; t < LASER_LEN_PX/8 ; t+=(LASER_LEN_PY*8))
+	{
+		for (u8 y = 0; y < LASER_LEN_PY ; ++y)
+		{
+			for (u8 x = 0; x < 8 ; ++x)
+			{
+				laserTilesGen[i]=LASER_PX_0;
+				laserTilesGen[i+1]=LASER_PX_0;
+			}
+		}
+	}
+}
+*/
 
 u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 {
@@ -79,11 +129,11 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 	// Go over all bullets for the laser
 	for ( u8 b = manager_laser[laser_id].b_index; b < manager_laser[laser_id].b_index+LASER_LEN_COUNT; ++b )
 	{
-
 		// Determine the max distance a laser can be placed
 		s16 dist_max =LASER_LEN_PX/2+((b-manager_laser[laser_id].b_index)*LASER_LEN_PX);
 		s16 dist =LASER_LEN_PX/2;
 		u8 bounds_check=1;
+		manger_bullet[b].angle = -angle;
 		// Check laser position is valid and move it farther until it isn't
 		// NOTE - This is a workaround for preventing lasers from wrapping around the screen
 		while(bounds_check)
@@ -112,11 +162,13 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, -angle,1);
 		// Update drawn position
 		// NOTE - This bypasses the bullet drawing delay to make the sprites all line up properly
+		/*
 		ERAPI_SetSpritePos(
 			manger_bullet[b].handle,
 			(manger_bullet[b].x / 256),
 			((manger_bullet[b].y /256)-vertical_offset)
 		);
+		*/
 
 		if(manager_laser[laser_id].hitcheck == 0)
 		{
@@ -261,13 +313,24 @@ void bullet_update()
 		if(manger_bullet[i].hitcheck > frame_count) continue;
 		manger_bullet[i].hitcheck = frame_count + ERAPI_Div(bullet_count , BULLET_UPDATE_DELAY);
 
+		/*
 		// Update drawn position for non-lasers
-		if (manger_bullet[i].type != BULLET_LASER)
-			ERAPI_SetSpritePos(
-				manger_bullet[i].handle,
-				(manger_bullet[i].x / 256),
-				((manger_bullet[i].y /256)-vertical_offset)
-			);
+		if (manger_bullet[i].type == BULLET_LASER)
+		{
+#ifdef DEBUG_MGBA
+	mgba_print_string("laser angle:");
+	mgba_print_num(manger_bullet[i].angle);
+#endif
+			ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[i].handle, manger_bullet[i].angle,1);
+		}
+		*/
+
+		ERAPI_SetSpritePos(
+			manger_bullet[i].handle,
+			(manger_bullet[i].x / 256),
+			((manger_bullet[i].y /256)-vertical_offset)
+		);
+
 
 		// Check for contact
 		u16 dist = 0;

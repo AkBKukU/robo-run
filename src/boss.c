@@ -228,7 +228,7 @@ void boss_update()
 			--manger_boss_weapons[i].cooldown;
 			if(manger_boss_weapons[i].type == BOSS_TILE_LASER && laser_top != 0)
 			{
-				if(ERAPI_Mod(frame_count, 2))
+				if(ERAPI_Mod(frame_count, 2) && boss_laser_angle > 130)
 					--boss_laser_angle;
 				laser_update(
 						laser_top-1,
@@ -244,7 +244,7 @@ void boss_update()
 						255-boss_laser_angle
 					);
 
-				if(manger_boss_weapons[i].cooldown == 0)// || boss_laser_angle < 135)
+				if(manger_boss_weapons[i].cooldown == 0 )//|| boss_laser_angle < 135)
 				{
 					laser_relese(laser_top-1);
 					laser_relese(laser_bottom-1);
