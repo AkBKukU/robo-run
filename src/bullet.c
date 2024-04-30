@@ -249,7 +249,7 @@ void bullet_fire(u8 angle, u8 speed, u8 x, u8 y, u8 damage, u8 type)
 
 		manger_bullet[i].type = type;
 		manger_bullet[i].damage = damage;
-		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2, &sprite_bullet);
+		manger_bullet[i].handle = ERAPI_SpriteCreateCustom( 2|0x80, &sprite_bullet);
 		switch(type)
 		{
 			case BULLET_PLAYER:
