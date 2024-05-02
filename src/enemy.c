@@ -139,13 +139,8 @@ void enemy_spawn(u8 spawn_type)
 
 		// Prevent spawning on sold tile
 		u8 tile_giveup = 10;
-		u8 y = (8+ERAPI_RandMax(172));
-		while(tunnelslide[ (31) + (y/8 * BACK_X) ] && tile_giveup)
-		{
-			// TODO - Rewrite this to use tunnel_center with an offset of tunnel height
-			y = (8+ERAPI_RandMax(172));
-			--tile_giveup;
-		}
+		u8 th = 160-(tunnel_wall_bottom>0?tunnel_wall_bottom:0)*8-(tunnel_wall_top>0?tunnel_wall_top:0)*8;
+		u8 y = tunnel_center(31)*8-(th/2) + (ERAPI_RandMax(th));
 
 		manger_enemy[i].x = 250;
 		manger_enemy[i].y = y;
