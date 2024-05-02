@@ -36,6 +36,7 @@ extern struct save_data save;
 #define SPRITE_ENEMY 1
 #define SPRITE_PROJECTILE 2
 #define SPRITE_PROJECTILE_ENEMY 3
+#define SPRITE_PROJECTILE_LASER 4
 #define SPRITE_COOL   10
 #define SPRITE_SHIELD 11
 #define SPRITE_SPREAD 12

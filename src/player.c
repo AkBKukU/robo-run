@@ -62,6 +62,7 @@ void player_bounce(u8 angle)
 
 void player_hit_detect()
 {
+	if(save.health < 0) return; // Already dead
 	if(player_iframes)
 	{
 		ERAPI_SpriteToggleVisible(h_player);

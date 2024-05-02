@@ -111,7 +111,7 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 			ERAPI_SpriteShow(manger_bullet[b].handle);
 			ERAPI_SpriteAutoRotateByTime(manger_bullet[b].handle,0,0);
 			//ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
-			ERAPI_SpriteSetType(manger_bullet[b].handle,SPRITE_PROJECTILE);
+			ERAPI_SpriteSetType(manger_bullet[b].handle,SPRITE_PROJECTILE_LASER);
 		}
 		laser_update(i, x, y,manager_laser[i].angle);
 
@@ -185,6 +185,10 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 				{
 					enemy_damage(enemy,1);
 				}
+				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_PROJECTILE_ENEMY,&enemy))
+				{
+					bullet_free_sprite(enemy);
+				}
 			}
 			if(manager_laser[laser_id].type == BULLET_ENEMY)
 			{
@@ -197,6 +201,13 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 #endif
 					player_damage(enemy_bullet_damage*2);
 					manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY; // Only damage player once
+				}
+				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_PROJECTILE,&enemy))
+				{
+#ifdef DEBUG_MGBA
+	mgba_print_string("remove player bullet");
+#endif
+					bullet_free_sprite(enemy);
 				}
 			}
 		}
