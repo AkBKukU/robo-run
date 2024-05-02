@@ -104,6 +104,7 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 			manger_bullet[b].type = BULLET_LASER;
 			manger_bullet[b].xu = 0;
 			manger_bullet[b].yu = 0;
+			manger_bullet[b].hitcheck = frame_count;
 			++bullet_count;
 			// create and stretch sprites
 			manger_bullet[b].handle = ERAPI_SpriteCreateCustom( 2, &sprite_laser);
@@ -405,9 +406,8 @@ void bullet_clean()
 	{
 		// Continue if bullet is not in use
 		if (!manger_bullet[i].live) continue;
-		manger_bullet[i].live = 0;
 
-		ERAPI_SpriteFree(manger_bullet[i].handle);
+		bullet_free(i);
 	}
 
 	// Iterate over all lasers
