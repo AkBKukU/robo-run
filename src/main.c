@@ -17,9 +17,6 @@ extern int __end[];
 // VPK Size(Debug): 11,405  bytes
 // Debug Adds: 144 bytes
 
-// TODO - Enemy damage rate tied to level?
-// TODO - Enemy fire rate tied to level
-// TODO - Enemy spawn rate tied to level
 // TODO - Give L3 bosses small guns
 // TODO - boss gun minimum scal with level
 // TODO - Game needs more threat escalation, it's too easy
