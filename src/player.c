@@ -233,6 +233,7 @@ void player_control()
 	{
 		if(!laser_firing)
 		{
+			// TODO - Add overheat and charge mechanic
 			laser_firing = laser_fire(laser_angle,px+16,py+vertical_offset,1,BULLET_PLAYER)+1;
 			input_debounce = DEBOUNCE_SET;
 		}

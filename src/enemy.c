@@ -128,6 +128,7 @@ void enemy_path(u8 i)
 
 void enemy_spawn(u8 spawn_type)
 {
+	// TODO - Enemy spawn formations (minimum mirrored across tunnel center)
 	// Check all enemies
 	rand_stable_map();
 	if(enemy_spawn_count[spawn_type] >= enemy_spawn_max[spawn_type] ) return;
@@ -141,6 +142,7 @@ void enemy_spawn(u8 spawn_type)
 		u8 y = (8+ERAPI_RandMax(172));
 		while(tunnelslide[ (31) + (y/8 * BACK_X) ] && tile_giveup)
 		{
+			// TODO - Rewrite this to use tunnel_center with an offset of tunnel height
 			y = (8+ERAPI_RandMax(172));
 			--tile_giveup;
 		}
@@ -162,6 +164,7 @@ void enemy_spawn(u8 spawn_type)
 
 		switch(spawn_type)
 		{
+			// TODO - Add medium and heavy enemies
 			case ENEMY_TYPE_ROCK:
 				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1|0x80, &sprite_enemy_rock);
 				manger_enemy[i].health = 100;

@@ -127,6 +127,7 @@ void tunnel_clear()
 	tunnel_groups[0] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
 	rand_stable_map_var(1);
 	tunnel_groups[1] = ERAPI_RandMax(TUNNEL_TILE_GROUP_COUNT);
+	// TODO - Add more tunnel themes that are selected here at random
 
 	tunnel_wall_top = 0;
 	tunnel_wall_bottom = 0;

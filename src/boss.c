@@ -246,6 +246,7 @@ void boss_update()
 
 				if(manger_boss_weapons[i].cooldown == 0 )//|| boss_laser_angle < 135)
 				{
+					// TODO - Player attacking with laser should activate this
 					laser_relese(laser_top-1);
 					laser_relese(laser_bottom-1);
 					laser_top = 0;

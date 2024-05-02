@@ -176,6 +176,7 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 
 		if(manager_laser[laser_id].hitcheck == 0)
 		{
+			// TODO - Lasers need to destroy bullets on collision
 			if(manager_laser[laser_id].type == BULLET_PLAYER)
 			{
 				// Check for hit against enemy bullet
