@@ -145,7 +145,6 @@ void enemy_spawn(u8 spawn_type)
 			--tile_giveup;
 		}
 
-		// TODO - All these values shoudl scale with distance
 		manger_enemy[i].x = 250;
 		manger_enemy[i].y = y;
 		manger_enemy[i].t = 0;
