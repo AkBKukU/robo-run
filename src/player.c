@@ -242,6 +242,7 @@ void player_control()
 		laser_firing=0;
 
 	}
+#ifdef DEBUG_MGBA
 	// Check for pause input
 	if (key & ERAPI_KEY_R && !input_debounce)
 	{
@@ -252,6 +253,7 @@ void player_control()
 	{
 		--laser_angle;
 	}
+#endif
 
 
 	// Clear debounce
