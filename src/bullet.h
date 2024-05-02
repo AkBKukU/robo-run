@@ -17,7 +17,7 @@
 #define LASER_LEN_COUNT 6
 #define LASER_LEN_PX (8*4)
 #define LASER_LEN_PY (8*2)
-#define LASER_HITCHECK_DELAY 5
+#define LASER_HITCHECK_DELAY 15
 
 #define LASER_PX_0 0x00
 #define LASER_PX_1 0x44
