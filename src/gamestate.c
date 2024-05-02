@@ -100,9 +100,6 @@ void game_update()
 	gui_print_score(save.score);
 	player_hit_detect();
 	player_control();
-
-	if(save.health < 0)
-		game_over();
 }
 
 void game_pause()

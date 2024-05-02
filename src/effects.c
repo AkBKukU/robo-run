@@ -66,7 +66,7 @@ void effect_explode(u8 x, u8 y, u8 delay)
 	manger_effects[i].type = EFFECT_EXPLOSION;
 	manger_effects[i].live = 2 + delay;
 	manger_effects[i].countdown = 18;
-	manger_effects[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_effect_explosion);
+	manger_effects[i].handle = ERAPI_SpriteCreateCustom( 1|0x80, &sprite_effect_explosion);
 	ERAPI_SpriteHide(manger_effects[i].handle);
 
 	ERAPI_SetSpritePos(

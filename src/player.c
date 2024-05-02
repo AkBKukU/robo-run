@@ -156,28 +156,52 @@ void player_damage(u8 damage)
 	{
 		return;
 	}
-	ERAPI_PlaySoundSystem(SND_PLAYER_DAMAGE);
 	if (save.shield)
 	{
+		// Reduce shields
 		--save.shield;
 	}else{
-		save.health-=damage;
+		if(save.health < 0) return; // Already dead
+
+		// Take normal damage
+		if(save.health-damage <= 0)
+		{
+			ERAPI_SoundPause(SND_MUSIC_6);
+			ERAPI_PlaySoundSystem(SND_PLAYER_LOSE);
+			effect_explode(px,py+vertical_offset,0);
+			ERAPI_SpriteHide( h_player);
+			save.health = -1;
+			return;
+		}else{
+			save.health-=damage;
+		}
+
 	}
+	ERAPI_PlaySoundSystem(SND_PLAYER_DAMAGE);
 	gui_print_health(save.health,save.shield);
 	player_iframes=PLAYER_IFRAMES_MAX;
-	if(save.health < 0)
-	{
-		ERAPI_PlaySoundSystem(SND_PLAYER_LOSE);
-		effect_explode(px,py+vertical_offset,0);
-		ERAPI_SpriteHide( h_player);
-		save.health = -1;
-		return;
-	}
 }
 
 void player_control()
 {
 	key = ERAPI_GetKeyStateRaw();
+
+	// Check for pause input
+	if (key & ERAPI_KEY_START && !input_debounce)
+	{
+		if(save.health < 0)
+		{
+			// Make player press start to go back to menu after death
+			game_over();
+			return;
+		}
+		game_play = 2;
+		input_debounce = DEBOUNCE_SET;
+		ERAPI_PlaySoundSystem(SND_PAUSE);
+	}
+
+	if(save.health < 0)
+		return;
 
 	// Get direction of movement
 	s8 dir_x = 0, dir_y = 0;
@@ -191,7 +215,6 @@ void player_control()
 	if (fire_cooldown) --fire_cooldown;
 	if (key & ERAPI_KEY_A && !fire_cooldown)
 	{
-		// TODO - 1 is player damage that will scale with powerups
 		rand_true();
 		u32 rand = ERAPI_RandMax(save.spread);
 		bullet_fire(128-rand, 2, px+12, py+vertical_offset,1,BULLET_PLAYER);
@@ -230,14 +253,6 @@ void player_control()
 		--laser_angle;
 	}
 
-
-	// Check for pause input
-	if (key & ERAPI_KEY_START && !input_debounce)
-	{
-		game_play = 2;
-		input_debounce = DEBOUNCE_SET;
-		ERAPI_PlaySoundSystem(SND_PAUSE);
-	}
 
 	// Clear debounce
 	if (input_debounce)
