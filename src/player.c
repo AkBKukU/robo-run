@@ -270,7 +270,7 @@ void player_init()
 	laser_firing=0;
 
 	// Configure player sprite
-	h_player = ERAPI_SpriteCreateCustom( 0, &sprite_player);
+	h_player = ERAPI_SpriteCreateCustom( 0|0x80, &sprite_player);
 	ERAPI_SetSpritePos( h_player, -100, py);
 	ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(h_player,0x30,1);
 	ERAPI_SpriteAutoScaleHeightBySize(h_player,0x200,1);

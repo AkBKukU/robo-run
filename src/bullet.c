@@ -107,6 +107,8 @@ u8 laser_fire(u8 angle, u8 x, u8 y, u8 damage, u8 type)
 			++bullet_count;
 			// create and stretch sprites
 			manger_bullet[b].handle = ERAPI_SpriteCreateCustom( 2, &sprite_laser);
+			ERAPI_SpriteShow(manger_bullet[b].handle);
+			ERAPI_SpriteAutoRotateByTime(manger_bullet[b].handle,0,0);
 			//ERAPI_HANDLE_SpriteAutoScaleWidthUntilSize(manger_bullet[b].handle,1,1);
 			ERAPI_SpriteSetType(manger_bullet[b].handle,SPRITE_PROJECTILE);
 		}
@@ -160,6 +162,7 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 
 		// Rotate sprite to match fire angle
 		ERAPI_SpriteAutoRotateUntilAngle(manger_bullet[b].handle, -angle,1);
+		ERAPI_SpriteShow(manger_bullet[b].handle);
 		// Update drawn position
 		// NOTE - This bypasses the bullet drawing delay to make the sprites all line up properly
 		/*
@@ -402,8 +405,17 @@ void bullet_clean()
 	{
 		// Continue if bullet is not in use
 		if (!manger_bullet[i].live) continue;
+		manger_bullet[i].live = 0;
 
 		ERAPI_SpriteFree(manger_bullet[i].handle);
+	}
+
+	// Iterate over all lasers
+	for ( u8 i = 0; i < LASER_MAX; ++i )
+	{
+		// Continue if bullet is not in use
+		if (manager_laser[i].live)
+			laser_relese(i);
 	}
 
 	bullet_init();

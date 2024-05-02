@@ -162,14 +162,14 @@ void enemy_spawn(u8 spawn_type)
 		switch(spawn_type)
 		{
 			case ENEMY_TYPE_ROCK:
-				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_rock);
+				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1|0x80, &sprite_enemy_rock);
 				manger_enemy[i].health = 100;
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,ERAPI_Mod(frame_count,3));
 				ERAPI_SpriteMirrorToggle(manger_enemy[i].handle,ERAPI_RandMax(3));
-				ERAPI_SpriteAutoRotateByTime(manger_enemy[i].handle,(40+ERAPI_RandMax(90))*(ERAPI_RandMax(3)-1),0);
+				//ERAPI_SpriteAutoRotateByTime(manger_enemy[i].handle,(40+ERAPI_RandMax(90))*(ERAPI_RandMax(3)-1),0);
 				break;
 			case ENEMY_TYPE_LIGHT:
-				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1, &sprite_enemy_light);
+				manger_enemy[i].handle = ERAPI_SpriteCreateCustom( 1|0x80, &sprite_enemy_light);
 				manger_enemy[i].health = 3*(save.level/2);
 				ERAPI_SetSpriteFrame(manger_enemy[i].handle,1);
 				// Debug, uncomment to show powerup type by flipping sprite
