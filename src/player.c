@@ -71,6 +71,9 @@ void player_hit_detect()
 	// Check boss hit
 	if(boss_tile_hit_check(px, py+vertical_offset))
 	{
+#ifdef DEBUG_MGBA
+	mgba_print_string("PDamage[Boss Tile]");
+#endif
 		player_damage(10);
 		fx=-10;
 	}
@@ -84,6 +87,9 @@ void player_hit_detect()
 		u8 angle = ERAPI_CalcAngleBetweenSprites(h_player,hit_sprite);
 		player_bounce(angle);
 		enemy_damage(hit_sprite,1);
+#ifdef DEBUG_MGBA
+	mgba_print_string("PDamage[Enemy Bounce]");
+#endif
 		player_damage(1);
 	}
 
@@ -123,6 +129,9 @@ void player_hit_detect()
 	u32 enemy_bullet; // FIXME - This may cause crashes by not handling simultaneous collisions
 	if (ERAPI_SpriteFindCollisions(h_player,SPRITE_PROJECTILE_ENEMY,&enemy_bullet))
 	{
+#ifdef DEBUG_MGBA
+	mgba_print_string("PDamage[Enemy Bullet]");
+#endif
 		player_damage(enemy_bullet_damage);
 		bullet_free_sprite(enemy_bullet);
 	}
@@ -132,6 +141,9 @@ void player_hit_detect()
 	u8 tile=tunnelslide[(px-tunnel_offset)/8+1+(((py+(vertical_offset)-2)/8)*BACK_X)];
 	if (tile)
 	{
+#ifdef DEBUG_MGBA
+	mgba_print_string("PDamage[Tunnel Bounce]");
+#endif
 		player_damage(20);
 		if (py > (tunnel_center(px/8))*8)
 		{
@@ -171,6 +183,7 @@ void player_damage(u8 damage)
 			effect_explode(px,py+vertical_offset,0);
 			ERAPI_SpriteHide( h_player);
 			save.health = -1;
+			gui_print_health(save.health,save.shield);
 			return;
 		}else{
 			save.health-=damage;

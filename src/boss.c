@@ -182,6 +182,8 @@ void boss_spawn_init()
 
 u8 boss_tile_hit_check(u8 x, u8 y)
 {
+	if(!boss_live) return 0;
+
 	// Returns the value of a boss tile after converting from pixels to tiles
 	return (
 		boss_map[ x/8 + (

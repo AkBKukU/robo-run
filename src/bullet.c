@@ -192,6 +192,9 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 				u32 enemy; // FIXME - This may cause crashes by not handling simultaneous collisions
 				if (ERAPI_SpriteFindCollisions(manger_bullet[b].handle,SPRITE_PLAYER,&enemy))
 				{
+#ifdef DEBUG_MGBA
+	mgba_print_string("PDamage[Boss Laser]");
+#endif
 					player_damage(enemy_bullet_damage*2);
 					manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY; // Only damage player once
 				}
