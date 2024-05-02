@@ -192,6 +192,7 @@ void level_next()
 	++boss_level;
 	boss_level = (boss_level > 3?3:boss_level);
 	++save.level;
+	enemy_bullet_damage = 2 + save.level;
 	level_tiles = 0;
 	tunnel_clear();
 	player_sheild_max = (player_sheild_max + 1 >PLAYER_SHIELD_MAX ? PLAYER_SHIELD_MAX : player_sheild_max+1);

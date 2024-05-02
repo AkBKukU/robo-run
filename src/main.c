@@ -18,7 +18,6 @@ extern int __end[];
 // Debug Adds: 144 bytes
 
 
-// TODO - Copy shared sprite tiles at runtime rather than store them.
 
 static inline void init()
 {

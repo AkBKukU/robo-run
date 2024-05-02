@@ -133,7 +133,6 @@ void tunnel_clear()
 }
 
 // Pick a tile from the currently selected groups
-// TODO - Doesn't seem to be working right
 u8 tunnel_tile_pick()
 {
 	u8 group_slot = ERAPI_RandMax(2);

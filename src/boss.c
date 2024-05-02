@@ -268,7 +268,7 @@ void boss_update()
 		{
 			// Player fire sound
 			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
-			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,2+save.level,BULLET_ENEMY);
+			bullet_fire(0, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,enemy_bullet_damage,BULLET_ENEMY);
 			// Set next cooldown
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}
@@ -277,8 +277,8 @@ void boss_update()
 		{
 			// Player fire sound
 			ERAPI_PlaySoundSystem(SND_ENEMY_FIRE);
-			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,2+save.level,BULLET_ENEMY);
-			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,2+save.level,BULLET_ENEMY);
+			bullet_fire(20, 3, (BACK_X-boss_len-3+manger_boss_weapons[i].x )*8, by,enemy_bullet_damage,BULLET_ENEMY);
+			bullet_fire(235, 3,(BACK_X-boss_len-3+manger_boss_weapons[i].x)*8, by,enemy_bullet_damage,BULLET_ENEMY);
 			// Set next cooldown
 			manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
 		}

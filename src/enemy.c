@@ -1,6 +1,8 @@
 
 #include "enemy.h"
 struct enemy_data manger_enemy[ENEMY_MAX];
+
+// TODO - Copy shared sprite tiles at runtime rather than store them.
 ERAPI_SPRITE sprite_enemy_rock = { emy_0_rockTiles, gfx_enemySharedPal, 4, 4, 3, 4, 0, 2, 1};
 ERAPI_SPRITE sprite_enemy_light = { emy_1_lightTiles, gfx_enemySharedPal, 2, 2, 6, 4, 12, 12, 1};
 
@@ -147,7 +149,7 @@ void enemy_spawn(u8 spawn_type)
 		manger_enemy[i].x = 250;
 		manger_enemy[i].y = y;
 		manger_enemy[i].t = 0;
-		manger_enemy[i].damage = 3;
+		manger_enemy[i].damage = enemy_bullet_damage;
 		manger_enemy[i].drop_type = powerup_drop_chance();
 		manger_enemy[i].live = 1;
 		manger_enemy[i].cooldown = ERAPI_RandMax(240);
@@ -188,6 +190,7 @@ void enemy_init()
 	enemy_spawn_max[ENEMY_TYPE_LIGHT] = 5;
 	enemy_spawn_max[ENEMY_TYPE_ROCK] = 3;
 	enemy_spawn_allowed=1;
+	enemy_bullet_damage = ENEMY_DAMAGE_START;
 
 	// Initialize enemy structs
 	for ( u8 i = 0; i < ENEMY_MAX; ++i )
