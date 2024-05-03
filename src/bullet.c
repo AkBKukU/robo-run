@@ -219,6 +219,7 @@ void laser_update(u8 laser_id,  u8 x, u8 y, u8 angle)
 			if(boss_live && boss_tile_hit_check(224, manager_laser[laser_id].y))
 			{
 				boss_damage(manager_laser[laser_id].damage);
+				boss_stop_laser(-1);
 			}
 			manager_laser[laser_id].hitcheck = LASER_HITCHECK_DELAY;
 		}

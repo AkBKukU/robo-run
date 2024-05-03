@@ -248,16 +248,7 @@ void boss_update()
 
 				if(manger_boss_weapons[i].cooldown == 0 )//|| boss_laser_angle < 135)
 				{
-					// TODO - Player attacking with laser should activate this
-					// TODO - This needs to happen when boss dies
-					laser_relese(laser_top-1);
-					laser_relese(laser_bottom-1);
-					laser_top = 0;
-					laser_bottom = 0;
-					manger_boss_weapons[i].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
-#ifdef DEBUG_MGBA
-	mgba_print_string("Laser removal cooldown set");
-#endif
+					 boss_stop_laser(i);
 				}
 			}
 			continue;
@@ -312,6 +303,28 @@ void boss_update()
 		}
 	}
 }
+void boss_stop_laser(s8 w)
+{
+	// Skip boss weapons
+	if(!boss_live) return;
+
+	// fire weapons
+	if(w==-1)
+	for(u8 i=0;i<BOSS_WEAPON_MAX;++i)
+	{
+		if(manger_boss_weapons[i].type == BOSS_TILE_LASER)
+			w = i;
+	}
+
+	if (laser_top)
+	{
+		laser_relese(laser_top-1);
+		laser_relese(laser_bottom-1);
+		manger_boss_weapons[w].cooldown = BOSS_WEAPON_COOLDOWN_MIN+ERAPI_RandMax(BOSS_WEAPON_COOLDOWN_MAX);
+	}
+	laser_top = 0;
+	laser_bottom = 0;
+}
 
 void boss_damage(u8 damage)
 {
@@ -343,6 +356,8 @@ void boss_damage(u8 damage)
 
 		// Play win sound
 		ERAPI_PlaySoundSystem(SND_DEFEAT_BOSS);
+
+		boss_stop_laser(-1);
 		// Get new enemy spawn values
 		enemy_clean();
 		enemy_init();
